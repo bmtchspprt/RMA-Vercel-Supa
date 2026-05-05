@@ -1,1 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit RMA — Binmaster</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; }
+        .top-bar {
+            background-color: #800000;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .container { max-width: 700px; margin: 40px auto; padding: 0 20px 60px; }
+        h2 { font-size: 22px; font-weight: 700; color: #800000; margin-bottom: 6px; }
+        .subtitle { font-size: 14px; color: #666; margin-bottom: 30px; }
+        .section { margin-bottom: 28px; }
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #800000;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+        }
+        .row { display: grid; gap: 12px; margin-bottom: 12px; }
+        .row.two { grid-template-columns: 1fr 1fr; }
+        .row.three { grid-template-columns: 1fr 1fr 0.6fr; }
+        label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 9px 11px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            color: #222;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #800000;
+        }
+        textarea { resize: vertical; height: 90px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag {
+            font-size: 12px;
+            padding: 5px 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #555;
+            background: white;
+            transition: all 0.15s;
+        }
+        .tag.selected {
+            background: #800000;
+            color: white;
+            border-color: #800000;
+        }
+        .upload-box {
+            border: 1.5px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+        }
+        .upload-box p { font-size: 13px; color: #888; margin-bottom: 6px; }
+        .upload-box input { display: none; }
+        .upload-label { font-size: 12px; color: #800000; cursor: pointer; font-weight: 600; }
+        #file-name { font-size: 12px; color: #444; margin-top: 6px; }
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: 700;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn:hover { background: #600000; }
+        .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+        .success-box {
+            display: none;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .success-box h3 { color: #16a34a; font-size: 18px; margin-bottom: 6px; }
+        .success-box p { font-size: 14px; color: #555; }
+        .error-msg { font-size: 13px; color: #dc2626; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
 
+<div class="top-bar">Binmaster Support Platform</div>
+
+<div class="container">
+    <h2>Submit RMA Request</h2>
+    <p class="subtitle">Fill out the form below to initiate a return or warranty claim.</p>
+
+    <div class="section">
+        <div class="section-title">Contact Information</div>
+        <div class="row two">
+            <div><label>Full Name *</label><input type="text" id="contact_name" placeholder="John Smith" /></div>
+            <div><label>Email *</label><input type="email" id="email" placeholder="john@company.com" /></div>
+        </div>
+        <div class="row two">
+            <div><label>Company</label><input type="text" id="company" placeholder="Company name" /></div>
+            <div><label>Document Number</label><input type="text" id="document_number" placeholder="Invoice, PO, Serial #" /></div>
+        </div>
+        <div class="row">
+            <div><label>Address</label><input type="text" id="address" placeholder="Street address" /></div>
+        </div>
+        <div class="row three">
+            <div><label>City</label><input type="text" id="city" /></div>
+            <div><label>State</label><input type="text" id="state" /></div>
+            <div><label>Zip</label><input type="text" id="zip" /></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Product Information</div>
+        <div class="row">
+            <div>
+                <label>Product Name *</label>
+                <select id="product_name">
+                    <option value="">Select a product...</option>
+                    <option>NCR</option>
+                    <option>CNCR</option>
+                    <option>SmartBob</option>
+                    <option>Rotary</option>
+                    <option>Probe</option>
+                    <option>Vibrating Rod</option>
+                    <option>Senix</option>
+                    <option>Gateway</option>
+                    <option>C100</option>
+                    <option>DPM</option>
+                    <option>Loadcell</option>
+                    <option>Other</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label>Issue Type *</label>
+            <div class="tags" id="issue-tags">
+                <span class="tag" data-value="Stopped working">Stopped working</span>
+                <span class="tag" data-value="Works intermittently">Works intermittently</span>
+                <span class="tag" data-value="Never worked">Never worked</span>
+                <span class="tag" data-value="Broken parts">Broken parts</span>
+                <span class="tag" data-value="Doesn't Power Up">Doesn't Power Up</span>
+                <span class="tag" data-value="Simple Return">Simple Return</span>
+                <span class="tag" data-value="Order Error">Order Error</span>
+                <span class="tag" data-value="Warranty Repair">Warranty Repair</span>
+                <span class="tag" data-value="Repair Quote">Repair Quote</span>
+                <span class="tag" data-value="Product Flawed">Product Flawed</span>
+                <span class="tag" data-value="Wrong Application">Wrong Application</span>
+            </div>
+        </div>
+        <div style="margin-top: 16px;">
+            <label>Describe the Issue *</label>
+            <textarea id="issue_notes" placeholder="Please describe the problem you're experiencing..."></textarea>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Supporting Document</div>
+        <div class="upload-box" onclick="document.getElementById('file-input').click()">
+            <p>Drag file here or click to browse</p>
+            <label class="upload-label">Choose File</label>
+            <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+            <div id="file-name">No file selected</div>
+        </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitRMA()">Submit RMA Request</button>
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="success-box" id="success-box">
+        <h3>RMA Submitted Successfully</h3>
+        <p>Your case number is: <strong id="case-number-display"></strong></p>
+        <p style="margin-top:8px;">A confirmation will be sent to your email.</p>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_guWyn2YIEb-IqTI8tE7B2w_tjolM96TTnlw_0';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let selectedIssue = '';
+
+    document.querySelectorAll('.tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            document.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+            tag.classList.add('selected');
+            selectedIssue = tag.dataset.value;
+        });
+    });
+
+    document.getElementById('file-input').addEventListener('change', function() {
+        const name = this.files[0] ? this.files[0].name : 'No file selected';
+        document.getElementById('file-name').textContent = name;
+    });
+
+    function generateCaseNumber() {
+        const date = new Date();
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const rand = Math.floor(Math.random() * 9000) + 1000;
+        return `RMA-${y}${m}${d}-${rand}`;
+    }
+
+    async function submitRMA() {
+        const btn = document.getElementById('submit-btn');
+        const errorEl = document.getElementById('error-msg');
+        errorEl.style.display = 'none';
+
+        const contact_name = document.getElementById('contact_name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const product_name = document.getElementById('product_name').value;
+        const issue_notes = document.getElementById('issue_notes').value.trim();
+
+        if (!contact_name || !email || !product_name || !selectedIssue || !issue_notes) {
+            errorEl.textContent = 'Please fill in all required fields and select an issue type.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        const caseNumber = generateCaseNumber();
+
+        const { error } = await supabase.from('rma_cases').insert([{
+            case_number: caseNumber,
+            contact_name,
+            email,
+            company: document.getElementById('company').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value.trim(),
+            zip: document.getElementById('zip').value.trim(),
+            product_name,
+            issue_type: selectedIssue,
+            issue_notes,
+            document_number: document.getElementById('document_number').value.trim(),
+            status: 'Submitted'
+        }]);
+
+        if (error) {
+            errorEl.textContent = 'Submission failed: ' + error.message;
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Submit RMA Request';
+        } else {
+            document.getElementById('case-number-display').textContent = caseNumber;
+            document.getElementById('success-box').style.display = 'block';
+            btn.style.display = 'none';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    }
+</script>
+
+</body>
+</html>
