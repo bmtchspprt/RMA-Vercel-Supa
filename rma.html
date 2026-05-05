@@ -179,6 +179,7 @@
         <div class="section-title">Supporting Document</div>
         <div class="upload-box" onclick="document.getElementById('file-input').click()">
             <p>Drag file here or click to browse</p>
+            <p style="font-size:12px; color:#aaa;">PDF, JPG, PNG, DOC accepted</p>
             <label class="upload-label">Choose File</label>
             <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
             <div id="file-name">No file selected</div>
@@ -197,8 +198,8 @@
 
 <script>
     const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_guWyn2YIEb-IqTI8tE7B2w_tjolMEh8';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsenB5cmNza2N2bHNkdGd3ZmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NDY1ODIsImV4cCI6MjA5MzQyMjU4Mn0.kOPX8Wbu0XdRVSc81NpIS2TdwIzaJOMRX_9BeSdbQWI';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let selectedIssue = '';
 
@@ -244,8 +245,24 @@
         btn.textContent = 'Submitting...';
 
         const caseNumber = generateCaseNumber();
+        let filePath = null;
 
-        const { error } = await supabase.from('rma_cases').insert([{
+        const fileInput = document.getElementById('file-input');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const ext = file.name.split('.').pop();
+            const uploadPath = `${caseNumber}.${ext}`;
+            const { error: uploadError } = await supabaseClient.storage
+                .from('rma-documents')
+                .upload(uploadPath, file);
+            if (uploadError) {
+                console.warn('File upload failed:', uploadError.message);
+            } else {
+                filePath = uploadPath;
+            }
+        }
+
+        const { error } = await supabaseClient.from('rma_cases').insert([{
             case_number: caseNumber,
             contact_name,
             email,
@@ -258,6 +275,7 @@
             issue_type: selectedIssue,
             issue_notes,
             document_number: document.getElementById('document_number').value.trim(),
+            attached_documents: filePath,
             status: 'Submitted'
         }]);
 
