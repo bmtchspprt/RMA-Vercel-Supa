@@ -1,1 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Settings — Binmaster</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; font-size: 13px; }
+        .top-bar {
+            background-color: #800000;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-bar a { color: white; font-size: 13px; font-weight: normal; text-decoration: none; opacity: 0.8; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px 60px; }
+        .page-title { font-size: 20px; font-weight: 700; color: #800000; margin-bottom: 6px; }
+        .page-sub { font-size: 13px; color: #666; margin-bottom: 24px; }
 
+        /* Template tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 2px solid #800000;
+        }
+        .tab {
+            padding: 9px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            color: #666;
+            border-radius: 6px 6px 0 0;
+            margin-right: 4px;
+            transition: all 0.15s;
+        }
+        .tab.active { background: #800000; color: white; border-color: #800000; }
+        .tab:hover:not(.active) { background: #f9f9f9; color: #800000; }
+
+        /* Template editor */
+        .template-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .field-group { margin-bottom: 16px; }
+        .field-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type=text], input[type=email], textarea {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            color: #222;
+            background: white;
+        }
+        input:focus, textarea:focus { outline: none; border-color: #800000; }
+        textarea { resize: vertical; }
+
+        /* Variables reference */
+        .vars-box {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+        .vars-box h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .vars-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .var-pill {
+            background: #800000;
+            color: white;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: monospace;
+            user-select: none;
+        }
+        .var-pill:hover { background: #600000; }
+        .var-pill-hint { font-size: 11px; color: #888; margin-top: 6px; }
+
+        /* Action buttons */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .save-btn {
+            padding: 9px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .save-btn:hover { background: #600000; }
+        .reset-btn {
+            padding: 9px 16px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            color: #555;
+        }
+        .reset-btn:hover { border-color: #800000; color: #800000; }
+        .save-status { font-size: 13px; }
+        .save-status.success { color: #16a34a; }
+        .save-status.error { color: #dc2626; }
+
+        /* Preview box */
+        .preview-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .preview-card h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 14px;
+        }
+        .preview-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 3px;
+        }
+        .preview-value {
+            font-size: 13px;
+            color: #222;
+            padding: 8px 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* Sender settings */
+        .sender-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .sender-card h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 16px;
+        }
+        .sender-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    Binmaster — Email Settings
+    <a href="/admin/rma-table.html">← Back to Cases</a>
+</div>
+
+<div class="container">
+    <div class="page-title">Email Templates</div>
+    <p class="page-sub">Create and edit the four email templates used on case detail pages. Click any variable pill to copy it.</p>
+
+    <!-- Sender Info -->
+    <div class="sender-card">
+        <h3>Sender Defaults</h3>
+        <div class="sender-grid">
+            <div class="field-group" style="margin:0;">
+                <label>Default From Name</label>
+                <input type="text" id="sender-name" placeholder="Binmaster Support" />
+            </div>
+            <div class="field-group" style="margin:0;">
+                <label>Default Reply-To Email</label>
+                <input type="email" id="sender-email" placeholder="support@binmaster.com" />
+            </div>
+        </div>
+        <div class="action-row" style="margin-top:14px;">
+            <button class="save-btn" onclick="saveSender()">Save Sender Info</button>
+            <span class="save-status" id="sender-status"></span>
+        </div>
+    </div>
+
+    <!-- Variable Reference -->
+    <div class="vars-box">
+        <h4>Available Variables — click to copy</h4>
+        <div class="vars-grid">
+            <span class="var-pill" onclick="copyVar('{case_number}')">{case_number}</span>
+            <span class="var-pill" onclick="copyVar('{contact_name}')">{contact_name}</span>
+            <span class="var-pill" onclick="copyVar('{company}')">{company}</span>
+            <span class="var-pill" onclick="copyVar('{email}')">{email}</span>
+            <span class="var-pill" onclick="copyVar('{product_name}')">{product_name}</span>
+            <span class="var-pill" onclick="copyVar('{issue_type}')">{issue_type}</span>
+            <span class="var-pill" onclick="copyVar('{status}')">{status}</span>
+            <span class="var-pill" onclick="copyVar('{repair_amount}')">{repair_amount}</span>
+            <span class="var-pill" onclick="copyVar('{credit_amount}')">{credit_amount}</span>
+            <span class="var-pill" onclick="copyVar('{credit_type}')">{credit_type}</span>
+            <span class="var-pill" onclick="copyVar('{document_number}')">{document_number}</span>
+        </div>
+        <p class="var-pill-hint">Variables are automatically replaced with case data when an email is opened.</p>
+    </div>
+
+    <!-- Template Tabs -->
+    <div class="tabs">
+        <div class="tab active" id="tab-rma" onclick="switchTab('rma')">RMA Email</div>
+        <div class="tab" id="tab-quote" onclick="switchTab('quote')">Quote Email</div>
+        <div class="tab" id="tab-credit" onclick="switchTab('credit')">Credit Email</div>
+        <div class="tab" id="tab-cs" onclick="switchTab('cs')">CS Email</div>
+    </div>
+
+    <div class="template-card">
+        <div class="field-group">
+            <label>Template Name</label>
+            <input type="text" id="tpl-title" placeholder="e.g. RMA Received" />
+        </div>
+        <div class="field-group">
+            <label>Subject Line</label>
+            <input type="text" id="tpl-subject" placeholder="e.g. RMA Case {case_number} — Received" />
+        </div>
+        <div class="field-group">
+            <label>Email Body</label>
+            <textarea id="tpl-body" rows="12" placeholder="Write your email here. Use {variable} placeholders."></textarea>
+        </div>
+        <div class="action-row">
+            <button class="save-btn" onclick="saveTemplate()">Save Template</button>
+            <button class="reset-btn" onclick="resetTemplate()">Reset to Default</button>
+            <button class="reset-btn" onclick="updatePreview()">Preview</button>
+            <span class="save-status" id="tpl-status"></span>
+        </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-card" id="preview-card" style="display:none;">
+        <h3>Preview (with sample data)</h3>
+        <div class="preview-label">Subject</div>
+        <div class="preview-value" id="preview-subject"></div>
+        <div class="preview-label">Body</div>
+        <div class="preview-value" id="preview-body"></div>
+    </div>
+
+</div>
+
+<script>
+    const DEFAULTS = {
+        rma: {
+            title: 'RMA Email',
+            subject: 'RMA Case {case_number} — Received',
+            body: `Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned it case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will evaluate your unit and be in touch shortly.\n\nBinmaster Support`
+        },
+        quote: {
+            title: 'Quote Email',
+            subject: 'Repair Quote — Case {case_number}',
+            body: `Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: \${repair_amount}\nCase Number: {case_number}\n\nPlease reply to approve the repair or let us know if you would like the unit returned.\n\nBinmaster Support`
+        },
+        credit: {
+            title: 'Credit Email',
+            subject: 'Credit Issued — Case {case_number}',
+            body: `Dear {contact_name},\n\nA credit of \${credit_amount} has been issued for case {case_number}.\n\nCredit Type: {credit_type}\n\nPlease allow 5-7 business days for processing. If you have any questions please don't hesitate to reach out.\n\nBinmaster Support`
+        },
+        cs: {
+            title: 'CS Email',
+            subject: 'Case Update — {case_number}',
+            body: `Dear {contact_name},\n\nThis is an update regarding your RMA case {case_number}.\n\nProduct: {product_name}\nCurrent Status: {status}\n\nPlease don't hesitate to reach out with any questions.\n\nBinmaster Support`
+        }
+    };
+
+    const SAMPLE = {
+        case_number: 'RMA-20260506-4821',
+        contact_name: 'John Smith',
+        company: 'Acme Industries',
+        email: 'john@acme.com',
+        product_name: 'SmartBob',
+        issue_type: 'Stopped working',
+        status: 'Evaluation',
+        repair_amount: '125.00',
+        credit_amount: '250.00',
+        credit_type: 'WARRANTY',
+        document_number: 'INV-10042'
+    };
+
+    let currentTab = 'rma';
+
+    function switchTab(tab) {
+        currentTab = tab;
+        ['rma','quote','credit','cs'].forEach(t => {
+            document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+        });
+        loadTemplate(tab);
+        document.getElementById('preview-card').style.display = 'none';
+        document.getElementById('tpl-status').textContent = '';
+    }
+
+    function loadTemplate(tab) {
+        const saved = localStorage.getItem(`email_template_${tab}`);
+        const tpl = saved ? JSON.parse(saved) : DEFAULTS[tab];
+        document.getElementById('tpl-title').value = tpl.title || DEFAULTS[tab].title;
+        document.getElementById('tpl-subject').value = tpl.subject || DEFAULTS[tab].subject;
+        document.getElementById('tpl-body').value = tpl.body || DEFAULTS[tab].body;
+    }
+
+    function saveTemplate() {
+        const tpl = {
+            title: document.getElementById('tpl-title').value.trim(),
+            subject: document.getElementById('tpl-subject').value.trim(),
+            body: document.getElementById('tpl-body').value
+        };
+        localStorage.setItem(`email_template_${currentTab}`, JSON.stringify(tpl));
+        const s = document.getElementById('tpl-status');
+        s.textContent = 'Saved!';
+        s.className = 'save-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function resetTemplate() {
+        if (!confirm('Reset this template to default?')) return;
+        localStorage.removeItem(`email_template_${currentTab}`);
+        loadTemplate(currentTab);
+        const s = document.getElementById('tpl-status');
+        s.textContent = 'Reset to default.';
+        s.className = 'save-status';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function fillSample(text) {
+        return text.replace(/\{(\w+)\}/g, (match, key) => SAMPLE[key] || match);
+    }
+
+    function updatePreview() {
+        const subject = document.getElementById('tpl-subject').value;
+        const body = document.getElementById('tpl-body').value;
+        document.getElementById('preview-subject').textContent = fillSample(subject);
+        document.getElementById('preview-body').textContent = fillSample(body);
+        document.getElementById('preview-card').style.display = 'block';
+        document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyVar(v) {
+        navigator.clipboard.writeText(v).then(() => {
+            // Brief flash feedback
+            event.target.style.background = '#16a34a';
+            setTimeout(() => event.target.style.background = '', 600);
+        });
+    }
+
+    function saveSender() {
+        const name = document.getElementById('sender-name').value.trim();
+        const email = document.getElementById('sender-email').value.trim();
+        localStorage.setItem('sender_name', name);
+        localStorage.setItem('sender_email', email);
+        const s = document.getElementById('sender-status');
+        s.textContent = 'Saved!';
+        s.className = 'save-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function loadSender() {
+        document.getElementById('sender-name').value = localStorage.getItem('sender_name') || '';
+        document.getElementById('sender-email').value = localStorage.getItem('sender_email') || '';
+    }
+
+    loadSender();
+    loadTemplate(currentTab);
+</script>
+
+</body>
+</html>
