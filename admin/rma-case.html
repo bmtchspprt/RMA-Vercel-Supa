@@ -56,7 +56,7 @@
             color: #222;
             background: white;
         }
-        select:focus, input:focus, textarea:focus { outline: none; border-color: #800000; }
+        select:focus, input:focus { outline: none; border-color: #800000; }
         textarea {
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -68,6 +68,7 @@
             resize: vertical;
             width: 100%;
         }
+        textarea:focus { outline: none; border-color: #800000; }
         .toggle-group { display: flex; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
         .toggle-opt {
             padding: 6px 14px;
@@ -115,8 +116,8 @@
         .case-notes-header label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
         #case-notes-display {
             width: 100%;
-            min-height: 180px;
-            border: 1px solid #ccc;
+            min-height: 160px;
+            border: 1px solid #e0e0e0;
             border-radius: 5px;
             padding: 10px;
             font-size: 13px;
@@ -125,13 +126,34 @@
             background: #fafafa;
             margin-bottom: 8px;
         }
-        #case-notes-display img { max-width: 100%; border-radius: 4px; margin: 4px 0; }
-        .note-entry { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
-        .note-entry:last-child { border-bottom: none; margin-bottom: 0; }
-        .note-date { font-size: 11px; color: #800000; font-weight: 600; margin-bottom: 2px; }
-        .note-text { color: #333; }
+        .note-entry { padding: 5px 0; border-bottom: 1px solid #f0f0f0; line-height: 1.6; }
+        .note-entry:last-child { border-bottom: none; }
+        .note-date { font-size: 12px; color: #800000; font-weight: 600; margin-right: 6px; }
+        .note-text { color: #333; font-size: 13px; }
+        .note-text img { max-width: 100%; border-radius: 4px; display: block; margin-top: 4px; }
         .new-note-row { display: flex; gap: 8px; align-items: flex-start; }
-        #new-note-input { flex: 1; min-height: 60px; }
+        #new-note-input {
+            flex: 1;
+            min-height: 44px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            color: #222;
+            background: white;
+            outline: none;
+            line-height: 1.5;
+        }
+        #new-note-input:focus { border-color: #800000; }
+        #new-note-input:empty:before {
+            content: attr(data-placeholder);
+            color: #aaa;
+            pointer-events: none;
+        }
+        #new-note-input img { max-width: 100%; border-radius: 4px; }
         .save-bar {
             position: sticky;
             bottom: 0;
@@ -178,23 +200,12 @@
         }
         .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
         .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
-        .modal input, .modal textarea { width: 100%; }
-        .modal textarea { min-height: 180px; }
+        .modal input, .modal textarea { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 7px 9px; font-size: 13px; font-family: Arial, sans-serif; }
+        .modal textarea { min-height: 180px; resize: vertical; }
+        .modal input:focus, .modal textarea:focus { outline: none; border-color: #800000; }
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
         .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
-        .add-note-btn {
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #800000;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .add-note-btn:hover { background: #600000; }
     </style>
 </head>
 <body>
@@ -267,18 +278,15 @@
             <button class="email-btn" onclick="openEmailModal('credit')">📧 Credit Email</button>
             <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
         </div>
-
         <div class="email-field-wrap">
             <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
         </div>
-
         <div class="contact-block">
             <div class="company" id="disp-company"></div>
             <div id="disp-contact-name"></div>
             <div id="disp-address"></div>
             <div id="disp-csz"></div>
         </div>
-
         <a class="settings-link" href="/admin/email-settings.html">⚙ Email Settings</a>
     </div>
 
@@ -337,8 +345,11 @@
         </div>
         <div id="case-notes-display"></div>
         <div class="new-note-row">
-            <textarea id="new-note-input" placeholder="Type a new note and click Add..."></textarea>
-            <button class="add-note-btn" onclick="addNote()">Add</button>
+            <div
+                id="new-note-input"
+                contenteditable="true"
+                data-placeholder="Type a note and press Enter to add. Paste images directly."
+            ></div>
         </div>
     </div>
 
@@ -433,23 +444,24 @@
             display.innerHTML = '<span style="color:#aaa;font-size:12px;">No notes yet.</span>';
             return;
         }
-        display.innerHTML = caseNotes.map((n, i) => `
-            <div class="note-entry">
-                <div class="note-date">${n.date}
-                    <span style="float:right;cursor:pointer;color:#ccc;font-size:11px;" onclick="deleteNote(${i})">✕</span>
-                </div>
-                <div class="note-text">${n.text}</div>
-            </div>
-        `).join('');
+        const reversed = [...caseNotes].reverse();
+        display.innerHTML = reversed.map((n, i) => {
+            const realIndex = caseNotes.length - 1 - i;
+            return `<div class="note-entry">
+                <span class="note-date">${n.date}:</span>
+                <span class="note-text">${n.text}</span>
+                <span style="float:right;cursor:pointer;color:#ddd;font-size:11px;margin-left:8px;" onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ddd'" onclick="deleteNote(${realIndex})">✕</span>
+            </div>`;
+        }).join('');
     }
 
     function addNote() {
         const input = document.getElementById('new-note-input');
-        const cleaned = input.value.split('\n').filter(l => l.trim() !== '').join('\n');
-        if (!cleaned) return;
-        caseNotes.push({ date: today(), text: cleaned.replace(/\n/g, '<br>') });
+        const html = input.innerHTML.trim();
+        if (!html || html === '<br>') return;
+        caseNotes.push({ date: today(), text: html });
         renderNotes();
-        input.value = '';
+        input.innerHTML = '';
     }
 
     function deleteNote(index) {
@@ -458,6 +470,18 @@
             renderNotes();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('new-note-input');
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    addNote();
+                }
+            });
+        }
+    });
 
     async function saveCase() {
         const btn = document.querySelector('.save-btn');
