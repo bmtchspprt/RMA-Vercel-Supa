@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RMA Cases — Binmaster</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; }
@@ -22,40 +23,69 @@
         .top-bar a:hover { opacity: 1; }
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px 60px; }
 
-        /* Metrics Row */
-        .metrics {
-            display: flex;
-            gap: 10px;
+        /* Charts Row */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
             margin-bottom: 24px;
-            flex-wrap: wrap;
         }
-        .metric-card {
+        .chart-card {
             background: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 14px 20px;
-            min-width: 100px;
-            flex: 1;
+            padding: 20px;
         }
-        .metric-card .m-label {
-            font-size: 11px;
+        .chart-card h3 {
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #888;
+            margin-bottom: 16px;
+        }
+        .chart-card canvas { max-height: 220px; }
+
+        /* Stats Box */
+        .stats-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .stats-box h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 16px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .stat-item {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+        .stat-item .s-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #888;
             margin-bottom: 4px;
         }
-        .metric-card .m-value {
-            font-size: 26px;
+        .stat-item .s-value {
+            font-size: 24px;
             font-weight: 700;
             color: #222;
-            line-height: 1.1;
         }
-        .metric-card.highlight .m-value { color: #800000; }
-        .metric-card .m-sub {
-            font-size: 11px;
-            color: #888;
-            margin-top: 2px;
-        }
+        .stat-item.red .s-value { color: #800000; }
+        .stat-item.blue .s-value { color: #1d4ed8; }
+        .stat-item.green .s-value { color: #166534; }
+        .stat-item.purple .s-value { color: #5b21b6; }
+        .stat-item .s-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
 
         .page-header {
             display: flex;
@@ -116,19 +146,9 @@
         .status-Evaluation { background: #ede9fe; color: #5b21b6; }
         .status-Credited { background: #dcfce7; color: #166534; }
         .status-Replaced { background: #d1fae5; color: #065f46; }
-        .doc-link {
-            color: #800000;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 12px;
-        }
+        .doc-link { color: #800000; text-decoration: none; font-weight: 600; font-size: 12px; }
         .doc-link:hover { text-decoration: underline; }
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-            font-size: 14px;
-        }
+        .no-data { text-align: center; padding: 40px; color: #888; font-size: 14px; }
         .count { font-size: 13px; color: #666; }
         .edit-btn {
             background: none;
@@ -151,50 +171,59 @@
 
 <div class="container">
 
-    <!-- Metrics Row -->
-    <div class="metrics">
-        <div class="metric-card highlight">
-            <div class="m-label">Total Cases</div>
-            <div class="m-value" id="m-total">—</div>
+    <div class="charts-row">
+
+        <!-- Stats Box -->
+        <div class="stats-box">
+            <h3>Case Summary</h3>
+            <div class="stats-grid">
+                <div class="stat-item red">
+                    <div class="s-label">Total Cases</div>
+                    <div class="s-value" id="m-total">—</div>
+                </div>
+                <div class="stat-item blue">
+                    <div class="s-label">Submitted</div>
+                    <div class="s-value" id="m-submitted">—</div>
+                </div>
+                <div class="stat-item">
+                    <div class="s-label">Received</div>
+                    <div class="s-value" id="m-received">—</div>
+                </div>
+                <div class="stat-item purple">
+                    <div class="s-label">Evaluation</div>
+                    <div class="s-value" id="m-evaluation">—</div>
+                </div>
+                <div class="stat-item green">
+                    <div class="s-label">Credited</div>
+                    <div class="s-value" id="m-credited">—</div>
+                </div>
+                <div class="stat-item green">
+                    <div class="s-label">Replaced</div>
+                    <div class="s-value" id="m-replaced">—</div>
+                </div>
+                <div class="stat-item">
+                    <div class="s-label">Total Credit $</div>
+                    <div class="s-value" style="font-size:18px;" id="m-credit">—</div>
+                </div>
+                <div class="stat-item">
+                    <div class="s-label">Total Repair $</div>
+                    <div class="s-value" style="font-size:18px;" id="m-repair">—</div>
+                </div>
+            </div>
         </div>
-        <div class="metric-card">
-            <div class="m-label">Submitted</div>
-            <div class="m-value" id="m-submitted">—</div>
+
+        <!-- Pie Chart -->
+        <div class="chart-card">
+            <h3>Cases by Product</h3>
+            <canvas id="pie-chart"></canvas>
         </div>
-        <div class="metric-card">
-            <div class="m-label">Received</div>
-            <div class="m-value" id="m-received">—</div>
+
+        <!-- Line Chart -->
+        <div class="chart-card">
+            <h3>RMA Cases by Month</h3>
+            <canvas id="line-chart"></canvas>
         </div>
-        <div class="metric-card">
-            <div class="m-label">Evaluation</div>
-            <div class="m-value" id="m-evaluation">—</div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Credited</div>
-            <div class="m-value" id="m-credited">—</div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Replaced</div>
-            <div class="m-value" id="m-replaced">—</div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Top Product</div>
-            <div class="m-value" style="font-size:16px;" id="m-top-product">—</div>
-            <div class="m-sub" id="m-top-product-count"></div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Top Issue</div>
-            <div class="m-value" style="font-size:16px;" id="m-top-issue">—</div>
-            <div class="m-sub" id="m-top-issue-count"></div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Total Credit $</div>
-            <div class="m-value" style="font-size:18px;" id="m-credit">—</div>
-        </div>
-        <div class="metric-card">
-            <div class="m-label">Total Repair $</div>
-            <div class="m-value" style="font-size:18px;" id="m-repair">—</div>
-        </div>
+
     </div>
 
     <div class="page-header">
@@ -229,7 +258,7 @@
         </select>
     </div>
 
-    <table id="rma-table">
+    <table>
         <thead>
             <tr>
                 <th>Case #</th>
@@ -257,6 +286,11 @@
 
     let allCases = [];
 
+    const COLORS = [
+        '#800000','#c0392b','#e74c3c','#e67e22','#f39c12',
+        '#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'
+    ];
+
     async function loadCases() {
         const { data, error } = await supabaseClient
             .from('rma_cases')
@@ -271,43 +305,87 @@
 
         allCases = data;
         computeMetrics(allCases);
+        buildPieChart(allCases);
+        buildLineChart(allCases);
         renderTable(allCases);
     }
 
     function computeMetrics(cases) {
-        const total = cases.length;
         const byStatus = s => cases.filter(c => c.status === s).length;
-
-        document.getElementById('m-total').textContent = total;
+        document.getElementById('m-total').textContent = cases.length;
         document.getElementById('m-submitted').textContent = byStatus('Submitted');
         document.getElementById('m-received').textContent = byStatus('Received');
         document.getElementById('m-evaluation').textContent = byStatus('Evaluation');
         document.getElementById('m-credited').textContent = byStatus('Credited');
         document.getElementById('m-replaced').textContent = byStatus('Replaced');
 
-        // Top product
-        const productCounts = {};
-        cases.forEach(c => { if (c.product_name) productCounts[c.product_name] = (productCounts[c.product_name] || 0) + 1; });
-        const topProduct = Object.entries(productCounts).sort((a,b) => b[1]-a[1])[0];
-        if (topProduct) {
-            document.getElementById('m-top-product').textContent = topProduct[0];
-            document.getElementById('m-top-product-count').textContent = `${topProduct[1]} cases`;
-        }
-
-        // Top issue
-        const issueCounts = {};
-        cases.forEach(c => { if (c.issue_type) issueCounts[c.issue_type] = (issueCounts[c.issue_type] || 0) + 1; });
-        const topIssue = Object.entries(issueCounts).sort((a,b) => b[1]-a[1])[0];
-        if (topIssue) {
-            document.getElementById('m-top-issue').textContent = topIssue[0];
-            document.getElementById('m-top-issue-count').textContent = `${topIssue[1]} cases`;
-        }
-
-        // Totals
-        const totalCredit = cases.reduce((sum, c) => sum + (parseFloat(c.credit_amount) || 0), 0);
-        const totalRepair = cases.reduce((sum, c) => sum + (parseFloat(c.repair_amount) || 0), 0);
+        const totalCredit = cases.reduce((s, c) => s + (parseFloat(c.credit_amount) || 0), 0);
+        const totalRepair = cases.reduce((s, c) => s + (parseFloat(c.repair_amount) || 0), 0);
         document.getElementById('m-credit').textContent = totalCredit > 0 ? `$${totalCredit.toFixed(2)}` : '—';
         document.getElementById('m-repair').textContent = totalRepair > 0 ? `$${totalRepair.toFixed(2)}` : '—';
+    }
+
+    function buildPieChart(cases) {
+        const counts = {};
+        cases.forEach(c => {
+            if (c.product_name) counts[c.product_name] = (counts[c.product_name] || 0) + 1;
+        });
+        const labels = Object.keys(counts);
+        const values = Object.values(counts);
+
+        new Chart(document.getElementById('pie-chart'), {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{ data: values, backgroundColor: COLORS.slice(0, labels.length), borderWidth: 1 }]
+            },
+            options: {
+                plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } },
+                maintainAspectRatio: true
+            }
+        });
+    }
+
+    function buildLineChart(cases) {
+        const monthlyCounts = {};
+        cases.forEach(c => {
+            if (!c.date_created) return;
+            const d = new Date(c.date_created);
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            monthlyCounts[key] = (monthlyCounts[key] || 0) + 1;
+        });
+
+        const sorted = Object.keys(monthlyCounts).sort();
+        const labels = sorted.map(k => {
+            const [y, m] = k.split('-');
+            return new Date(y, m - 1).toLocaleString('default', { month: 'short', year: '2-digit' });
+        });
+        const values = sorted.map(k => monthlyCounts[k]);
+
+        new Chart(document.getElementById('line-chart'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Cases',
+                    data: values,
+                    borderColor: '#800000',
+                    backgroundColor: 'rgba(128,0,0,0.08)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } },
+                    x: { ticks: { font: { size: 11 } } }
+                },
+                maintainAspectRatio: true
+            }
+        });
     }
 
     function getFileUrl(path) {
