@@ -43,8 +43,8 @@
             padding: 14px 18px;
             margin-bottom: 10px;
         }
-        .row1 { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-        .case-number { font-size: 20px; font-weight: 700; color: #800000; min-width: 200px; }
+        .row1 { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+        .case-number { font-size: 20px; font-weight: 700; color: #800000; min-width: 180px; padding-bottom: 4px; }
         .field-group { display: flex; flex-direction: column; gap: 3px; }
         .field-group label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
         select, input[type=text], input[type=email] {
@@ -82,6 +82,22 @@
         }
         .toggle-opt.active-yes { background: #16a34a; color: white; }
         .toggle-opt.active-no { background: #dc2626; color: white; }
+        .credit-complete { display: flex; flex-direction: column; gap: 3px; }
+        .credit-complete label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+        .credit-complete-row { display: flex; gap: 6px; align-items: center; }
+        .complete-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #1d4ed8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            height: 31px;
+        }
+        .complete-btn:hover { background: #1e40af; }
         .row2 { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .email-buttons { display: flex; flex-direction: row; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
         .email-btn {
@@ -102,13 +118,7 @@
         .email-field-wrap input { width: 200px; }
         .contact-block { flex: 1; font-size: 13px; line-height: 1.7; color: #222; }
         .contact-block .company { font-weight: 600; }
-        .settings-link {
-            font-size: 12px;
-            color: #800000;
-            text-decoration: none;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
+        .settings-link { font-size: 12px; color: #800000; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
         .settings-link:hover { text-decoration: underline; }
         .row3 { display: grid; grid-template-columns: 1fr 1.5fr 3fr; gap: 12px; align-items: end; }
         .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -149,11 +159,7 @@
             line-height: 1.5;
         }
         #new-note-input:focus { border-color: #800000; }
-        #new-note-input:empty:before {
-            content: attr(data-placeholder);
-            color: #aaa;
-            pointer-events: none;
-        }
+        #new-note-input:empty:before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
         #new-note-input img { max-width: 100%; border-radius: 4px; }
         .save-bar {
             position: sticky;
@@ -177,19 +183,6 @@
         }
         .save-btn:hover { background: #600000; }
         .save-btn:disabled { background: #aaa; cursor: not-allowed; }
-        .complete-btn {
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: 700;
-            background: #1d4ed8;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            white-space: nowrap;
-            align-self: flex-end;
-        }
-        .complete-btn:hover { background: #1e40af; }
         .save-status { font-size: 13px; }
         .save-status.success { color: #16a34a; }
         .save-status.error { color: #dc2626; }
@@ -240,6 +233,7 @@
     <!-- Row 1 -->
     <div class="card row1">
         <div class="case-number" id="display-case-number">Loading...</div>
+
         <div class="field-group">
             <label>Status</label>
             <select id="field-status">
@@ -251,6 +245,7 @@
                 <option>Completed</option>
             </select>
         </div>
+
         <div class="field-group">
             <label>Replacement Sent</label>
             <div class="toggle-group">
@@ -258,10 +253,7 @@
                 <div class="toggle-opt" id="toggle-no" onclick="setReplacement('No')">No</div>
             </div>
         </div>
-        <div class="field-group">
-            <label>Problem Code</label>
-            <input type="text" id="field-problem-code" style="width:130px;" />
-        </div>
+
         <div class="field-group">
             <label>Credit Type</label>
             <select id="field-credit-type">
@@ -275,15 +267,19 @@
                 <option>MISAPPLIED</option>
             </select>
         </div>
+
         <div class="field-group">
             <label>Repair $</label>
             <input type="text" id="field-repair" style="width:80px;" placeholder="0.00" />
         </div>
-        <div class="field-group">
+
+        <div class="credit-complete">
             <label>Credit $</label>
-            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" oninput="onCreditInput()" />
+            <div class="credit-complete-row">
+                <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" oninput="onCreditInput()" />
+                <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
+            </div>
         </div>
-        <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
     </div>
 
     <!-- Row 2 -->
@@ -466,212 +462,4 @@
         const { data, error } = await supabaseClient.from('rma_cases').select('*').eq('id', caseId).single();
         if (error || !data) { document.getElementById('display-case-number').textContent = 'Case not found'; return; }
         caseData = data;
-        populateFields(data);
-        loadEmailButtonStates();
-    }
-
-    function populateFields(d) {
-        document.getElementById('display-case-number').textContent = d.case_number || 'New Case';
-        document.getElementById('field-status').value = d.status || 'Submitted';
-        document.getElementById('field-problem-code').value = d.problem_code || '';
-        document.getElementById('field-credit-type').value = d.credit_type || '';
-        document.getElementById('field-repair').value = d.repair_amount || '';
-        document.getElementById('field-credit').value = d.credit_amount || '';
-        setReplacement(d.replacement_sent || 'No');
-
-        document.getElementById('disp-email').value = d.email || '';
-        document.getElementById('disp-company').textContent = d.company || '';
-        document.getElementById('disp-contact-name').textContent = d.contact_name || '';
-        document.getElementById('disp-address').textContent = d.address || '';
-        const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
-        document.getElementById('disp-csz').textContent = csz || '';
-
-        document.getElementById('field-product').value = d.product_name || '';
-        document.getElementById('field-issue-type').value = d.issue_type || '';
-        document.getElementById('field-issue-notes').value = d.issue_notes || '';
-        document.getElementById('field-received').value = d.received_description || '';
-        document.getElementById('field-evaluation').value = d.evaluation_notes || '';
-
-        if (d.received_description) receivedNoteAdded = true;
-        if (d.evaluation_notes) evaluationNoteAdded = true;
-        if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
-
-        try {
-            caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
-        } catch(e) {
-            caseNotes = d.case_notes ? [{ date: today(), text: d.case_notes }] : [];
-        }
-        renderNotes();
-    }
-
-    function renderNotes() {
-        const display = document.getElementById('case-notes-display');
-        if (caseNotes.length === 0) {
-            display.innerHTML = '<span style="color:#aaa;font-size:12px;">No notes yet.</span>';
-            return;
-        }
-        const reversed = [...caseNotes].reverse();
-        display.innerHTML = reversed.map((n, i) => {
-            const realIndex = caseNotes.length - 1 - i;
-            return `<div class="note-entry">
-                <span class="note-date">${n.date}:</span>
-                <span class="note-text">${n.text}</span>
-                <span style="float:right;cursor:pointer;color:#ddd;font-size:11px;margin-left:8px;"
-                    onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ddd'"
-                    onclick="deleteNote(${realIndex})">✕</span>
-            </div>`;
-        }).join('');
-    }
-
-    function flushPendingNote() {
-        const input = document.getElementById('new-note-input');
-        const html = input.innerHTML.trim();
-        if (html && html !== '<br>') {
-            caseNotes.push({ date: today(), text: html });
-            input.innerHTML = '';
-            renderNotes();
-        }
-    }
-
-    function addNote() {
-        const input = document.getElementById('new-note-input');
-        const html = input.innerHTML.trim();
-        if (!html || html === '<br>') return;
-        caseNotes.push({ date: today(), text: html });
-        renderNotes();
-        input.innerHTML = '';
-    }
-
-    function deleteNote(index) {
-        if (confirm('Delete this note?')) {
-            caseNotes.splice(index, 1);
-            renderNotes();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const input = document.getElementById('new-note-input');
-        if (input) {
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    addNote();
-                }
-            });
-        }
-    });
-
-    async function saveCase() {
-        flushPendingNote();
-
-        const btn = document.querySelector('.save-btn');
-        const statusEl = document.getElementById('save-status');
-        btn.disabled = true;
-        statusEl.textContent = 'Saving...';
-        statusEl.className = 'save-status';
-
-        const updates = {
-            status: document.getElementById('field-status').value,
-            problem_code: document.getElementById('field-problem-code').value.trim(),
-            credit_type: document.getElementById('field-credit-type').value,
-            repair_amount: parseFloat(document.getElementById('field-repair').value) || null,
-            credit_amount: parseFloat(document.getElementById('field-credit').value) || null,
-            product_name: document.getElementById('field-product').value,
-            issue_type: document.getElementById('field-issue-type').value,
-            issue_notes: document.getElementById('field-issue-notes').value.trim(),
-            received_description: document.getElementById('field-received').value.trim(),
-            evaluation_notes: document.getElementById('field-evaluation').value.trim(),
-            case_notes: JSON.stringify(caseNotes),
-            replacement_sent: replacementValue,
-        };
-
-        const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
-        btn.disabled = false;
-
-        if (error) {
-            statusEl.textContent = 'Error: ' + error.message;
-            statusEl.className = 'save-status error';
-        } else {
-            statusEl.textContent = 'Saved successfully.';
-            statusEl.className = 'save-status success';
-            saveEmailButtonStates();
-            setTimeout(() => statusEl.textContent = '', 3000);
-        }
-    }
-
-    function emailStateKey(type) { return `email_sent_${caseId}_${type}`; }
-
-    function loadEmailButtonStates() {
-        ['rma','quote','credit','cs'].forEach(type => {
-            if (localStorage.getItem(emailStateKey(type)) === 'sent') {
-                document.getElementById(`ebtn-${type}`).classList.add('sent');
-            }
-        });
-    }
-
-    function saveEmailButtonStates() {
-        ['rma','quote','credit','cs'].forEach(type => {
-            const btn = document.getElementById(`ebtn-${type}`);
-            if (btn.classList.contains('sent')) {
-                localStorage.setItem(emailStateKey(type), 'sent');
-            }
-        });
-    }
-
-    const EMAIL_DEFAULTS = {
-        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
-    };
-
-    function fillTemplate(text) {
-        return text
-            .replace(/{case_number}/g, caseData.case_number || '')
-            .replace(/{contact_name}/g, caseData.contact_name || '')
-            .replace(/{company}/g, caseData.company || '')
-            .replace(/{product_name}/g, document.getElementById('field-product').value || '')
-            .replace(/{issue_type}/g, document.getElementById('field-issue-type').value || '')
-            .replace(/{status}/g, document.getElementById('field-status').value || '')
-            .replace(/{repair_amount}/g, document.getElementById('field-repair').value || '0.00')
-            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00')
-            .replace(/{credit_type}/g, document.getElementById('field-credit-type').value || '')
-            .replace(/{document_number}/g, caseData.document_number || '');
-    }
-
-    function openEmailModal(type) {
-        currentEmailType = type;
-        const saved = localStorage.getItem(`email_template_${type}`);
-        const tpl = saved ? JSON.parse(saved) : EMAIL_DEFAULTS[type];
-        document.getElementById('modal-title').textContent = tpl.title || EMAIL_DEFAULTS[type].title;
-        document.getElementById('modal-to').value = caseData.email || '';
-        document.getElementById('modal-subject').value = fillTemplate(tpl.subject || EMAIL_DEFAULTS[type].subject);
-        document.getElementById('modal-body').value = fillTemplate(tpl.body || EMAIL_DEFAULTS[type].body);
-        document.getElementById('email-modal').classList.add('open');
-    }
-
-    function closeModal() {
-        document.getElementById('email-modal').classList.remove('open');
-        currentEmailType = null;
-    }
-
-    function sendEmail() {
-        const to = document.getElementById('modal-to').value;
-        const subject = encodeURIComponent(document.getElementById('modal-subject').value);
-        const body = encodeURIComponent(document.getElementById('modal-body').value);
-        if (currentEmailType) {
-            document.getElementById(`ebtn-${currentEmailType}`).classList.add('sent');
-            localStorage.setItem(emailStateKey(currentEmailType), 'sent');
-        }
-        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-        closeModal();
-    }
-
-    document.getElementById('email-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
-    loadCase();
-</script>
-</body>
-</html>
+        popul
