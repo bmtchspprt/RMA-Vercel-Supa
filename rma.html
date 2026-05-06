@@ -15,9 +15,18 @@
             font-size: 1.2em;
             font-weight: bold;
         }
-        .container { max-width: 700px; margin: 40px auto; padding: 0 20px 60px; }
+        .page-wrap {
+            display: flex;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        /* Main Form */
+        .form-col { flex: 1; min-width: 0; }
         h2 { font-size: 22px; font-weight: 700; color: #800000; margin-bottom: 6px; }
-        .subtitle { font-size: 14px; color: #666; margin-bottom: 30px; }
         .section { margin-bottom: 28px; }
         .section-title {
             font-size: 13px;
@@ -42,10 +51,7 @@
             background: white;
             color: #222;
         }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #800000;
-        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #800000; }
         textarea { resize: vertical; height: 90px; }
         .tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .tag {
@@ -58,11 +64,7 @@
             background: white;
             transition: all 0.15s;
         }
-        .tag.selected {
-            background: #800000;
-            color: white;
-            border-color: #800000;
-        }
+        .tag.selected { background: #800000; color: white; border-color: #800000; }
         .upload-box {
             border: 1.5px dashed #ccc;
             border-radius: 8px;
@@ -101,98 +103,249 @@
         .success-box h3 { color: #16a34a; font-size: 18px; margin-bottom: 6px; }
         .success-box p { font-size: 14px; color: #555; }
         .error-msg { font-size: 13px; color: #dc2626; margin-top: 10px; display: none; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+        .sidebar-card { background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; }
+        .sidebar-card h4 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        /* Case Status Lookup */
+        .case-lookup-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; }
+        .case-prefix {
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            white-space: nowrap;
+            background: #f4f4f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 7px 8px;
+        }
+        .case-lookup-row input {
+            flex: 1;
+            padding: 7px 9px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: auto;
+        }
+        .case-lookup-row input:focus { outline: none; border-color: #800000; }
+        .lookup-btn {
+            padding: 7px 10px;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .lookup-btn:hover { background: #600000; }
+        .case-result { font-size: 13px; }
+        .case-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .case-result-number { font-weight: 700; font-size: 14px; color: #222; }
+        .case-company { font-size: 12px; color: #555; margin-bottom: 2px; }
+        .case-company strong { color: #222; }
+        .case-product { font-size: 12px; color: #555; margin-bottom: 10px; }
+        .case-product strong { color: #222; }
+        .status-badge-sm { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-Submitted { background: #dbeafe; color: #1d4ed8; }
+        .badge-Received { background: #fef9c3; color: #854d0e; }
+        .badge-Evaluation { background: #ede9fe; color: #5b21b6; }
+        .badge-Credited { background: #dcfce7; color: #166534; }
+        .badge-Replaced { background: #d1fae5; color: #065f46; }
+        .badge-Completed { background: #166534; color: white; }
+
+        /* Timeline */
+        .timeline { list-style: none; padding: 0; }
+        .timeline li { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+        .tl-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            border: 2px solid #e0e0e0;
+            background: #f4f4f9;
+            color: #aaa;
+        }
+        .tl-icon.done { border-color: #800000; background: #800000; color: white; }
+        .tl-icon.active { border-color: #f59e0b; background: #fef9c3; color: #92400e; }
+        .tl-text { padding-top: 4px; }
+        .tl-label { font-size: 13px; font-weight: 600; color: #222; }
+        .tl-label.inactive { color: #aaa; font-weight: 400; }
+        .tl-date { font-size: 11px; color: #888; }
+        .case-not-found { font-size: 13px; color: #dc2626; padding: 8px 0; }
+
+        /* Product Reference */
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .product-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 4px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+            background: white;
+        }
+        .product-item:hover { border-color: #800000; }
+        .product-item img { width: 44px; height: 44px; object-fit: contain; }
+        .product-item span { font-size: 11px; color: #555; text-align: center; }
+
+        /* Need Help */
+        .help-line { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: #444; }
+        .help-line:last-child { margin-bottom: 0; }
+        .help-icon { font-size: 16px; }
+        .help-link { color: #800000; text-decoration: none; }
+        .help-link:hover { text-decoration: underline; }
+
+        @media (max-width: 700px) {
+            .page-wrap { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="top-bar">Binmaster Support Platform</div>
 
-<div class="container">
-    <h2>Submit RMA Request</h2>
-    <p class="subtitle">Fill out the form below to initiate a return or warranty claim.</p>
+<div class="page-wrap">
 
-    <div class="section">
-        <div class="section-title">Contact Information</div>
-        <div class="row two">
-            <div><label>Full Name *</label><input type="text" id="contact_name" placeholder="John Smith" /></div>
-            <div><label>Email *</label><input type="email" id="email" placeholder="john@company.com" /></div>
+    <!-- Main Form -->
+    <div class="form-col">
+        <h2>Submit RMA Request</h2>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#800000;margin-bottom:6px;">Return Merchandise Authorization</p>
+        <div style="background:#fff8f0;border:1px solid #f0d0a0;border-radius:6px;padding:12px 14px;margin-bottom:20px;font-size:12px;color:#555;line-height:1.6;">
+            RMA services are only provided for BST products purchased through official channels. Terms &amp; Conditions apply. This platform processes warranty claims for repair or replacement of defective products.
+            <a href="https://binmaster.com/terms-conditions" target="_blank" style="color:#800000;font-weight:600;margin-left:4px;">Terms &amp; Conditions ↗</a>
         </div>
-        <div class="row two">
-            <div><label>Company</label><input type="text" id="company" placeholder="Company name" /></div>
-            <div><label>Document Number</label><input type="text" id="document_number" placeholder="Invoice, PO, Serial #" /></div>
-        </div>
-        <div class="row">
-            <div><label>Address</label><input type="text" id="address" placeholder="Street address" /></div>
-        </div>
-        <div class="row three">
-            <div><label>City</label><input type="text" id="city" /></div>
-            <div><label>State</label><input type="text" id="state" /></div>
-            <div><label>Zip</label><input type="text" id="zip" /></div>
-        </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">Product Information</div>
-        <div class="row">
+        <div class="section">
+            <div class="section-title">Contact Information</div>
+            <div class="row two">
+                <div><label>Full Name *</label><input type="text" id="contact_name" placeholder="John Smith" /></div>
+                <div><label>Email *</label><input type="email" id="email" placeholder="john@company.com" /></div>
+            </div>
+            <div class="row two">
+                <div><label>Company</label><input type="text" id="company" placeholder="Company name" /></div>
+                <div><label>Document Number</label><input type="text" id="document_number" placeholder="Invoice, PO, Serial #" /></div>
+            </div>
+            <div class="row">
+                <div><label>Address</label><input type="text" id="address" placeholder="Street address" /></div>
+            </div>
+            <div class="row three">
+                <div><label>City</label><input type="text" id="city" /></div>
+                <div><label>State</label><input type="text" id="state" /></div>
+                <div><label>Zip</label><input type="text" id="zip" /></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Product Information</div>
+            <div class="row">
+                <div>
+                    <label>Product Name *</label>
+                    <select id="product_name">
+                        <option value="">Select a product...</option>
+                        <option>NCR</option><option>CNCR</option><option>SmartBob</option>
+                        <option>Rotary</option><option>Probe</option><option>Vibrating Rod</option>
+                        <option>Senix</option><option>Gateway</option><option>C100</option>
+                        <option>DPM</option><option>Loadcell</option><option>Other</option>
+                    </select>
+                </div>
+            </div>
             <div>
-                <label>Product Name *</label>
-                <select id="product_name">
-                    <option value="">Select a product...</option>
-                    <option>NCR</option>
-                    <option>CNCR</option>
-                    <option>SmartBob</option>
-                    <option>Rotary</option>
-                    <option>Probe</option>
-                    <option>Vibrating Rod</option>
-                    <option>Senix</option>
-                    <option>Gateway</option>
-                    <option>C100</option>
-                    <option>DPM</option>
-                    <option>Loadcell</option>
-                    <option>Other</option>
-                </select>
+                <label>Issue Type *</label>
+                <div class="tags" id="issue-tags">
+                    <span class="tag" data-value="Stopped working">Stopped working</span>
+                    <span class="tag" data-value="Works intermittently">Works intermittently</span>
+                    <span class="tag" data-value="Never worked">Never worked</span>
+                    <span class="tag" data-value="Broken parts">Broken parts</span>
+                    <span class="tag" data-value="Doesn't Power Up">Doesn't Power Up</span>
+                    <span class="tag" data-value="Simple Return">Simple Return</span>
+                    <span class="tag" data-value="Order Error">Order Error</span>
+                    <span class="tag" data-value="Warranty Repair">Warranty Repair</span>
+                    <span class="tag" data-value="Repair Quote">Repair Quote</span>
+                    <span class="tag" data-value="Product Flawed">Product Flawed</span>
+                    <span class="tag" data-value="Wrong Application">Wrong Application</span>
+                </div>
+            </div>
+            <div style="margin-top: 16px;">
+                <label>Describe the Issue *</label>
+                <textarea id="issue_notes" placeholder="Please describe the problem you're experiencing..."></textarea>
             </div>
         </div>
-        <div>
-            <label>Issue Type *</label>
-            <div class="tags" id="issue-tags">
-                <span class="tag" data-value="Stopped working">Stopped working</span>
-                <span class="tag" data-value="Works intermittently">Works intermittently</span>
-                <span class="tag" data-value="Never worked">Never worked</span>
-                <span class="tag" data-value="Broken parts">Broken parts</span>
-                <span class="tag" data-value="Doesn't Power Up">Doesn't Power Up</span>
-                <span class="tag" data-value="Simple Return">Simple Return</span>
-                <span class="tag" data-value="Order Error">Order Error</span>
-                <span class="tag" data-value="Warranty Repair">Warranty Repair</span>
-                <span class="tag" data-value="Repair Quote">Repair Quote</span>
-                <span class="tag" data-value="Product Flawed">Product Flawed</span>
-                <span class="tag" data-value="Wrong Application">Wrong Application</span>
+
+        <div class="section">
+            <div class="section-title">Supporting Document</div>
+            <div class="upload-box" onclick="document.getElementById('file-input').click()">
+                <p>Drag file here or click to browse</p>
+                <p style="font-size:12px;color:#aaa;">PDF, JPG, PNG, DOC accepted</p>
+                <label class="upload-label">Choose File</label>
+                <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                <div id="file-name">No file selected</div>
             </div>
         </div>
-        <div style="margin-top: 16px;">
-            <label>Describe the Issue *</label>
-            <textarea id="issue_notes" placeholder="Please describe the problem you're experiencing..."></textarea>
+
+        <button class="submit-btn" id="submit-btn" onclick="submitRMA()">Submit RMA Request</button>
+        <div class="error-msg" id="error-msg"></div>
+
+        <div class="success-box" id="success-box">
+            <h3>RMA Submitted Successfully</h3>
+            <p>Your case number is: <strong id="case-number-display"></strong></p>
+            <p style="margin-top:8px;">Save your case number to check status using the tool on the right.</p>
         </div>
     </div>
 
-    <div class="section">
-        <div class="section-title">Supporting Document</div>
-        <div class="upload-box" onclick="document.getElementById('file-input').click()">
-            <p>Drag file here or click to browse</p>
-            <p style="font-size:12px; color:#aaa;">PDF, JPG, PNG, DOC accepted</p>
-            <label class="upload-label">Choose File</label>
-            <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
-            <div id="file-name">No file selected</div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <!-- Case Status Lookup -->
+        <div class="sidebar-card">
+            <h4>Check Case Status</h4>
+            <p style="font-size:12px;color:#666;margin-bottom:10px;">Enter your case number to check status</p>
+            <div class="case-lookup-row">
+                <span class="case-prefix">CASE-26-</span>
+                <input type="text" id="case-lookup-input" placeholder="1247" maxlength="6"
+                    onkeydown="if(event.key==='Enter') lookupCase()" />
+                <button class="lookup-btn" onclick="lookupCase()">🔍</button>
+            </div>
+            <div id="case-lookup-result"></div>
         </div>
-    </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="submitRMA()">Submit RMA Request</button>
-    <div class="error-msg" id="error-msg"></div>
+        <!-- Product Reference -->
+        <div class="sidebar-card">
+            <h4>Product Reference</h4>
+            <div class="product-grid" id="product-grid">
+                <div style="font-size:12px;color:#aaa;grid-column:1/-1;text-align:center;padding:10px;">Loading...</div>
+            </div>
+        </div>
 
-    <div class="success-box" id="success-box">
-        <h3>RMA Submitted Successfully</h3>
-        <p>Your case number is: <strong id="case-number-display"></strong></p>
-        <p style="margin-top:8px;">A confirmation will be sent to your email.</p>
+        <!-- Need Help -->
+        <div class="sidebar-card">
+            <h4>Need Help?</h4>
+            <div class="help-line">
+                <span class="help-icon">✉️</span>
+                <a class="help-link" href="mailto:technicalsupport@binmaster.com">technicalsupport@binmaster.com</a>
+            </div>
+            <div class="help-line">
+                <span class="help-icon">📞</span>
+                <a class="help-link" href="tel:8002784241">800-278-4241</a>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -212,9 +365,38 @@
     });
 
     document.getElementById('file-input').addEventListener('change', function() {
-        const name = this.files[0] ? this.files[0].name : 'No file selected';
-        document.getElementById('file-name').textContent = name;
+        document.getElementById('file-name').textContent = this.files[0] ? this.files[0].name : 'No file selected';
     });
+
+    // Load products from Supabase
+    async function loadProducts() {
+        const grid = document.getElementById('product-grid');
+        const { data, error } = await supabaseClient
+            .from('product_reference')
+            .select('*')
+            .eq('active', true)
+            .order('display_order');
+
+        if (error || !data || data.length === 0) {
+            grid.innerHTML = '<div style="font-size:12px;color:#aaa;grid-column:1/-1;text-align:center;padding:10px;">No products found.</div>';
+            return;
+        }
+
+        grid.innerHTML = data.map(p => `
+            <div class="product-item" onclick="selectProduct('${p.name}')">
+                ${p.image_url
+                    ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'" />`
+                    : `<div style="width:44px;height:44px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>`
+                }
+                <span>${p.name}</span>
+            </div>
+        `).join('');
+    }
+
+    function selectProduct(name) {
+        document.getElementById('product_name').value = name;
+        document.getElementById('product_name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     function generateCaseNumber() {
         const date = new Date();
@@ -223,6 +405,56 @@
         const d = String(date.getDate()).padStart(2, '0');
         const rand = Math.floor(Math.random() * 9000) + 1000;
         return `RMA-${y}${m}${d}-${rand}`;
+    }
+
+    const STATUSES = ['Submitted','Received','Evaluation','Credited','Replaced','Completed'];
+    const STATUS_ICONS = { Submitted: '📋', Received: '📦', Evaluation: '🔍', Credited: '💳', Replaced: '🔄', Completed: '✓' };
+
+    async function lookupCase() {
+        const input = document.getElementById('case-lookup-input').value.trim();
+        const resultEl = document.getElementById('case-lookup-result');
+        if (!input) { resultEl.innerHTML = ''; return; }
+
+        const caseNumber = `CASE-26-${input}`;
+        resultEl.innerHTML = '<span style="font-size:12px;color:#888;">Looking up...</span>';
+
+        const { data, error } = await supabaseClient
+            .from('rma_cases')
+            .select('case_number,status,company,contact_name,product_name,date_created')
+            .eq('case_number', caseNumber)
+            .single();
+
+        if (error || !data) {
+            resultEl.innerHTML = `<div class="case-not-found">Case not found. Please check your case number.</div>`;
+            return;
+        }
+
+        const currentIndex = STATUSES.indexOf(data.status);
+        const timelineHTML = STATUSES.map((s, i) => {
+            const isDone = i < currentIndex;
+            const isActive = i === currentIndex;
+            const iconClass = isDone ? 'done' : isActive ? 'active' : '';
+            const labelClass = isDone || isActive ? '' : 'inactive';
+            return `<li>
+                <div class="tl-icon ${iconClass}">${isDone ? '✓' : STATUS_ICONS[s]}</div>
+                <div class="tl-text">
+                    <div class="tl-label ${labelClass}">${s}</div>
+                    ${isActive ? `<div class="tl-date">${new Date(data.date_created).toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'})}</div>` : ''}
+                </div>
+            </li>`;
+        }).join('');
+
+        resultEl.innerHTML = `
+            <div class="case-result">
+                <div class="case-result-header">
+                    <span class="case-result-number">${data.case_number}</span>
+                    <span class="status-badge-sm badge-${data.status}">${data.status}</span>
+                </div>
+                ${data.company ? `<div class="case-company"><strong>Company:</strong> ${data.company}</div>` : ''}
+                ${data.product_name ? `<div class="case-product"><strong>Product:</strong> ${data.product_name}</div>` : ''}
+                <ul class="timeline" style="margin-top:10px;">${timelineHTML}</ul>
+            </div>
+        `;
     }
 
     async function submitRMA() {
@@ -251,15 +483,10 @@
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
             const ext = file.name.split('.').pop();
-            const uploadPath = `${caseNumber}.${ext}`;
             const { error: uploadError } = await supabaseClient.storage
                 .from('rma-documents')
-                .upload(uploadPath, file);
-            if (uploadError) {
-                console.warn('File upload failed:', uploadError.message);
-            } else {
-                filePath = uploadPath;
-            }
+                .upload(`${caseNumber}.${ext}`, file);
+            if (!uploadError) filePath = `${caseNumber}.${ext}`;
         }
 
         const { error } = await supabaseClient.from('rma_cases').insert([{
@@ -288,9 +515,13 @@
             document.getElementById('case-number-display').textContent = caseNumber;
             document.getElementById('success-box').style.display = 'block';
             btn.style.display = 'none';
+            const shortNum = caseNumber.split('-').pop();
+            document.getElementById('case-lookup-input').value = shortNum;
             window.scrollTo(0, document.body.scrollHeight);
         }
     }
+
+    loadProducts();
 </script>
 
 </body>
