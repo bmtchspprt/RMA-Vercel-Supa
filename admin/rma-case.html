@@ -187,6 +187,7 @@
             border-radius: 5px;
             cursor: pointer;
             white-space: nowrap;
+            align-self: flex-end;
         }
         .complete-btn:hover { background: #1e40af; }
         .save-status { font-size: 13px; }
@@ -219,7 +220,6 @@
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
         .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
-        .notes-date-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -281,13 +281,9 @@
         </div>
         <div class="field-group">
             <label>Credit $</label>
-            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00"
-                oninput="onCreditInput()" />
+            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" oninput="onCreditInput()" />
         </div>
-        <div class="field-group">
-            <label>&nbsp;</label>
-            <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
-        </div>
+        <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
     </div>
 
     <!-- Row 2 -->
@@ -412,6 +408,7 @@
     let receivedNoteAdded = false;
     let evaluationNoteAdded = false;
     let creditNoteAdded = false;
+    let currentEmailType = null;
 
     function today() {
         return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -423,14 +420,12 @@
         document.getElementById('toggle-no').className = 'toggle-opt' + (val === 'No' ? ' active-no' : '');
     }
 
-    // Auto-actions on field input
     function onReceivedInput() {
         if (receivedNoteAdded) return;
         const val = document.getElementById('field-received').value.trim();
         if (val.length > 0) {
             receivedNoteAdded = true;
             document.getElementById('field-status').value = 'Received';
-            // Prepend date to received notes if not already there
             const current = document.getElementById('field-received').value;
             if (!current.startsWith('[')) {
                 document.getElementById('field-received').value = `[${today()}]\n` + current;
@@ -497,7 +492,6 @@
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
 
-        // Mark auto-flags if fields already have data
         if (d.received_description) receivedNoteAdded = true;
         if (d.evaluation_notes) evaluationNoteAdded = true;
         if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
@@ -568,7 +562,6 @@
     });
 
     async function saveCase() {
-        // Flush any pending unsaved note text before saving
         flushPendingNote();
 
         const btn = document.querySelector('.save-btn');
@@ -594,6 +587,7 @@
 
         const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
         btn.disabled = false;
+
         if (error) {
             statusEl.textContent = 'Error: ' + error.message;
             statusEl.className = 'save-status error';
@@ -605,7 +599,6 @@
         }
     }
 
-    // Email button green state — persisted in localStorage per case
     function emailStateKey(type) { return `email_sent_${caseId}_${type}`; }
 
     function loadEmailButtonStates() {
@@ -631,8 +624,6 @@
         credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
         cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
-
-    let currentEmailType = null;
 
     function fillTemplate(text) {
         return text
@@ -668,10 +659,8 @@
         const to = document.getElementById('modal-to').value;
         const subject = encodeURIComponent(document.getElementById('modal-subject').value);
         const body = encodeURIComponent(document.getElementById('modal-body').value);
-        // Mark button green
         if (currentEmailType) {
-            const btn = document.getElementById(`ebtn-${currentEmailType}`);
-            btn.classList.add('sent');
+            document.getElementById(`ebtn-${currentEmailType}`).classList.add('sent');
             localStorage.setItem(emailStateKey(currentEmailType), 'sent');
         }
         window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
