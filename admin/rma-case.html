@@ -36,7 +36,6 @@
         .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.1); }
         .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
         .container { max-width: 1100px; margin: 20px auto; padding: 0 20px 80px; }
-
         .card {
             background: white;
             border: 1px solid #e0e0e0;
@@ -44,27 +43,10 @@
             padding: 14px 18px;
             margin-bottom: 10px;
         }
-
-        /* Row 1 */
-        .row1 {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-        .case-number {
-            font-size: 20px;
-            font-weight: 700;
-            color: #800000;
-            min-width: 200px;
-        }
+        .row1 { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .case-number { font-size: 20px; font-weight: 700; color: #800000; min-width: 200px; }
         .field-group { display: flex; flex-direction: column; gap: 3px; }
-        .field-group label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-        }
+        .field-group label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
         select, input[type=text], input[type=email] {
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -99,19 +81,8 @@
         }
         .toggle-opt.active-yes { background: #16a34a; color: white; }
         .toggle-opt.active-no { background: #dc2626; color: white; }
-
-        /* Row 2 */
-        .row2 {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .email-buttons {
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
-            flex-shrink: 0;
-        }
+        .row2 { display: flex; align-items: center; gap: 16px; }
+        .email-buttons { display: flex; flex-direction: row; gap: 8px; flex-shrink: 0; }
         .email-btn {
             padding: 7px 14px;
             font-size: 12px;
@@ -125,31 +96,10 @@
             transition: all 0.15s;
         }
         .email-btn:hover { background: #800000; color: white; border-color: #800000; }
-
-        .email-field-wrap {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex-shrink: 0;
-        }
-        .email-field-wrap label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-        }
-        .email-field-wrap input {
-            width: 200px;
-        }
-
-        .contact-block {
-            flex: 1;
-            font-size: 13px;
-            line-height: 1.7;
-            color: #222;
-        }
-        .contact-block .name { font-weight: 600; }
-
+        .email-field-wrap { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+        .email-field-wrap input { width: 200px; }
+        .contact-block { flex: 1; font-size: 13px; line-height: 1.7; color: #222; }
+        .contact-block .company { font-weight: 600; }
         .settings-link {
             font-size: 12px;
             color: #800000;
@@ -158,37 +108,11 @@
             flex-shrink: 0;
         }
         .settings-link:hover { text-decoration: underline; }
-
-        /* Row 3 */
-        .row3 {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 3fr;
-            gap: 12px;
-            align-items: end;
-        }
-
-        /* Notes */
-        .notes-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* Case Notes */
+        .row3 { display: grid; grid-template-columns: 1fr 1.5fr 3fr; gap: 12px; align-items: end; }
+        .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .case-notes-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 18px; }
-        .case-notes-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        .case-notes-header label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-        }
+        .case-notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .case-notes-header label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
         #case-notes-display {
             width: 100%;
             min-height: 180px;
@@ -208,8 +132,6 @@
         .note-text { color: #333; }
         .new-note-row { display: flex; gap: 8px; align-items: flex-start; }
         #new-note-input { flex: 1; min-height: 60px; }
-
-        /* Save bar */
         .save-bar {
             position: sticky;
             bottom: 0;
@@ -235,8 +157,6 @@
         .save-status { font-size: 13px; }
         .save-status.success { color: #16a34a; }
         .save-status.error { color: #dc2626; }
-
-        /* Email Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -257,26 +177,11 @@
             overflow-y: auto;
         }
         .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
-        .modal label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-            display: block;
-            margin-bottom: 4px;
-            margin-top: 12px;
-        }
+        .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
         .modal input, .modal textarea { width: 100%; }
         .modal textarea { min-height: 180px; }
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
-        .modal-footer button {
-            padding: 7px 20px;
-            font-size: 13px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            background: white;
-        }
+        .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
         .add-note-btn {
             padding: 6px 14px;
@@ -364,12 +269,12 @@
         </div>
 
         <div class="email-field-wrap">
-            <label>Email</label>
             <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
         </div>
 
         <div class="contact-block">
-            <div class="name" id="disp-company-name"></div>
+            <div class="company" id="disp-company"></div>
+            <div id="disp-contact-name"></div>
             <div id="disp-address"></div>
             <div id="disp-csz"></div>
         </div>
@@ -377,7 +282,7 @@
         <a class="settings-link" href="/admin/email-settings.html">⚙ Email Settings</a>
     </div>
 
-    <!-- Row 3: Product / Issue -->
+    <!-- Row 3 -->
     <div class="card">
         <div class="row3">
             <div class="field-group">
@@ -501,20 +406,16 @@
         document.getElementById('field-credit').value = d.credit_amount || '';
         setReplacement(d.replacement_sent || 'No');
 
-        // Row 2 contact display
         document.getElementById('disp-email').value = d.email || '';
-        const nameLine = [d.company, d.contact_name].filter(Boolean).join(' — ');
-        document.getElementById('disp-company-name').textContent = nameLine || '';
+        document.getElementById('disp-company').textContent = d.company || '';
+        document.getElementById('disp-contact-name').textContent = d.contact_name || '';
         document.getElementById('disp-address').textContent = d.address || '';
         const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
         document.getElementById('disp-csz').textContent = csz || '';
 
-        // Row 3
         document.getElementById('field-product').value = d.product_name || '';
         document.getElementById('field-issue-type').value = d.issue_type || '';
         document.getElementById('field-issue-notes').value = d.issue_notes || '';
-
-        // Notes
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
 
@@ -593,10 +494,10 @@
     }
 
     const EMAIL_DEFAULTS = {
-        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',   body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',    body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',   body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',          body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
 
     function fillTemplate(text) {
