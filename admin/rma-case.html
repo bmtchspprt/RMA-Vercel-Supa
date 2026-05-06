@@ -100,20 +100,20 @@
         .toggle-opt.active-yes { background: #16a34a; color: white; }
         .toggle-opt.active-no { background: #dc2626; color: white; }
 
-        /* Row 2 — email + contact */
+        /* Row 2 */
         .row2 {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
         }
         .email-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 7px;
+            flex-direction: row;
+            gap: 8px;
             flex-shrink: 0;
         }
         .email-btn {
-            padding: 7px 16px;
+            padding: 7px 14px;
             font-size: 12px;
             font-weight: 600;
             border: 1px solid #ccc;
@@ -121,47 +121,45 @@
             background: white;
             cursor: pointer;
             color: #333;
-            text-align: left;
             white-space: nowrap;
             transition: all 0.15s;
         }
         .email-btn:hover { background: #800000; color: white; border-color: #800000; }
-        .contact-display {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 20px;
-            font-size: 13px;
-            padding: 4px 0;
+
+        .email-field-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-shrink: 0;
         }
-        .contact-field { display: flex; flex-direction: column; gap: 1px; }
-        .contact-field .c-label {
+        .email-field-wrap label {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #888;
         }
-        .contact-field .c-value {
-            font-size: 13px;
-            color: #222;
-            font-weight: 500;
+        .email-field-wrap input {
+            width: 200px;
         }
-        .contact-field .c-value.email-val { color: #1d4ed8; }
+
+        .contact-block {
+            flex: 1;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #222;
+        }
+        .contact-block .name { font-weight: 600; }
+
         .settings-link {
             font-size: 12px;
             color: #800000;
-            cursor: pointer;
             text-decoration: none;
-            display: flex;
-            align-items: flex-start;
-            gap: 4px;
-            flex-shrink: 0;
-            padding-top: 2px;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         .settings-link:hover { text-decoration: underline; }
 
-        /* Row 3 — product */
+        /* Row 3 */
         .row3 {
             display: grid;
             grid-template-columns: 1fr 1.5fr 3fr;
@@ -234,7 +232,7 @@
         }
         .save-btn:hover { background: #600000; }
         .save-btn:disabled { background: #aaa; cursor: not-allowed; }
-        .save-status { font-size: 13px; color: #666; }
+        .save-status { font-size: 13px; }
         .save-status.success { color: #16a34a; }
         .save-status.error { color: #dc2626; }
 
@@ -309,10 +307,9 @@
 
 <div class="container">
 
-    <!-- Row 1: Case header -->
+    <!-- Row 1 -->
     <div class="card row1">
         <div class="case-number" id="display-case-number">Loading...</div>
-
         <div class="field-group">
             <label>Status</label>
             <select id="field-status">
@@ -323,7 +320,6 @@
                 <option>Replaced</option>
             </select>
         </div>
-
         <div class="field-group">
             <label>Replacement Sent</label>
             <div class="toggle-group">
@@ -331,12 +327,10 @@
                 <div class="toggle-opt" id="toggle-no" onclick="setReplacement('No')">No</div>
             </div>
         </div>
-
         <div class="field-group">
             <label>Problem Code</label>
             <input type="text" id="field-problem-code" style="width:130px;" />
         </div>
-
         <div class="field-group">
             <label>Credit Type</label>
             <select id="field-credit-type">
@@ -350,19 +344,17 @@
                 <option>MISAPPLIED</option>
             </select>
         </div>
-
         <div class="field-group">
             <label>Repair $</label>
             <input type="text" id="field-repair" style="width:80px;" placeholder="0.00" />
         </div>
-
         <div class="field-group">
             <label>Credit $</label>
             <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" />
         </div>
     </div>
 
-    <!-- Row 2: Email buttons + contact read-only -->
+    <!-- Row 2 -->
     <div class="card row2">
         <div class="email-buttons">
             <button class="email-btn" onclick="openEmailModal('rma')">📧 RMA Email</button>
@@ -371,31 +363,15 @@
             <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
         </div>
 
-        <div class="contact-display">
-            <div class="contact-field">
-                <span class="c-label">Company</span>
-                <span class="c-value" id="disp-company">—</span>
-            </div>
-            <div class="contact-field">
-                <span class="c-label">Contact Name</span>
-                <span class="c-value" id="disp-contact-name">—</span>
-            </div>
-            <div class="contact-field">
-                <span class="c-label">Email</span>
-                <span class="c-value email-val" id="disp-email">—</span>
-            </div>
-            <div class="contact-field">
-                <span class="c-label">Address</span>
-                <span class="c-value" id="disp-address">—</span>
-            </div>
-            <div class="contact-field">
-                <span class="c-label">City / State / Zip</span>
-                <span class="c-value" id="disp-csz">—</span>
-            </div>
-            <div class="contact-field">
-                <span class="c-label">Document #</span>
-                <span class="c-value" id="disp-doc-number">—</span>
-            </div>
+        <div class="email-field-wrap">
+            <label>Email</label>
+            <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
+        </div>
+
+        <div class="contact-block">
+            <div class="name" id="disp-company-name"></div>
+            <div id="disp-address"></div>
+            <div id="disp-csz"></div>
         </div>
 
         <a class="settings-link" href="/admin/email-settings.html">⚙ Email Settings</a>
@@ -433,7 +409,7 @@
         </div>
     </div>
 
-    <!-- Received + Evaluation Notes -->
+    <!-- Notes -->
     <div class="notes-grid">
         <div class="card" style="margin-bottom:0;">
             <div class="field-group" style="width:100%">
@@ -518,8 +494,6 @@
 
     function populateFields(d) {
         document.getElementById('display-case-number').textContent = d.case_number || 'New Case';
-
-        // Row 1 editable
         document.getElementById('field-status').value = d.status || 'Submitted';
         document.getElementById('field-problem-code').value = d.problem_code || '';
         document.getElementById('field-credit-type').value = d.credit_type || '';
@@ -527,14 +501,13 @@
         document.getElementById('field-credit').value = d.credit_amount || '';
         setReplacement(d.replacement_sent || 'No');
 
-        // Row 2 read-only contact display
-        document.getElementById('disp-company').textContent = d.company || '—';
-        document.getElementById('disp-contact-name').textContent = d.contact_name || '—';
-        document.getElementById('disp-email').textContent = d.email || '—';
-        document.getElementById('disp-address').textContent = d.address || '—';
+        // Row 2 contact display
+        document.getElementById('disp-email').value = d.email || '';
+        const nameLine = [d.company, d.contact_name].filter(Boolean).join(' — ');
+        document.getElementById('disp-company-name').textContent = nameLine || '';
+        document.getElementById('disp-address').textContent = d.address || '';
         const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
-        document.getElementById('disp-csz').textContent = csz || '—';
-        document.getElementById('disp-doc-number').textContent = d.document_number || '—';
+        document.getElementById('disp-csz').textContent = csz || '';
 
         // Row 3
         document.getElementById('field-product').value = d.product_name || '';
@@ -545,7 +518,6 @@
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
 
-        // Case notes
         try {
             caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
         } catch(e) {
@@ -620,12 +592,11 @@
         }
     }
 
-    // Email
     const EMAIL_DEFAULTS = {
-        rma: { title: 'RMA Email', subject: 'RMA Case {case_number} — Received', body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote: { title: 'Quote Email', subject: 'Repair Quote — Case {case_number}', body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}', body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs: { title: 'CS Email', subject: 'Case Update — {case_number}', body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out with any questions.\n\nBinmaster Support' }
+        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',   body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',    body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',   body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',          body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
 
     function fillTemplate(text) {
