@@ -11,50 +11,61 @@
         .top-bar {
             background-color: #800000;
             color: white;
-            padding: 12px 24px;
+            padding: 0 24px;
             font-size: 1.1em;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            height: 52px;
         }
-        .top-bar a { color: white; font-size: 13px; font-weight: normal; text-decoration: none; opacity: 0.8; }
-        .container { max-width: 1100px; margin: 24px auto; padding: 0 20px 60px; }
+        .top-nav { display: flex; align-items: center; gap: 4px; height: 100%; }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 0 14px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            opacity: 0.85;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+        }
+        .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+        .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px 80px; }
 
-        /* Rows */
         .card {
             background: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
         }
 
-        /* Row 1 — Case header */
+        /* Row 1 */
         .row1 {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
         }
         .case-number {
             font-size: 20px;
             font-weight: 700;
             color: #800000;
-            min-width: 180px;
+            min-width: 200px;
         }
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
+        .field-group { display: flex; flex-direction: column; gap: 3px; }
         .field-group label {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #888;
         }
-        select, input[type=text], input[type=email], textarea {
+        select, input[type=text], input[type=email] {
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 6px 9px;
@@ -63,16 +74,19 @@
             color: #222;
             background: white;
         }
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: #800000;
-        }
-        .toggle-group {
-            display: flex;
+        select:focus, input:focus, textarea:focus { outline: none; border-color: #800000; }
+        textarea {
             border: 1px solid #ccc;
             border-radius: 5px;
-            overflow: hidden;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            color: #222;
+            background: white;
+            resize: vertical;
+            width: 100%;
         }
+        .toggle-group { display: flex; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
         .toggle-opt {
             padding: 6px 14px;
             cursor: pointer;
@@ -86,12 +100,17 @@
         .toggle-opt.active-yes { background: #16a34a; color: white; }
         .toggle-opt.active-no { background: #dc2626; color: white; }
 
-        /* Row 2 — Email buttons */
+        /* Row 2 — email + contact */
         .row2 {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .email-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex-shrink: 0;
         }
         .email-btn {
             padding: 7px 16px;
@@ -102,31 +121,48 @@
             background: white;
             cursor: pointer;
             color: #333;
+            text-align: left;
+            white-space: nowrap;
             transition: all 0.15s;
         }
         .email-btn:hover { background: #800000; color: white; border-color: #800000; }
+        .contact-display {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+            font-size: 13px;
+            padding: 4px 0;
+        }
+        .contact-field { display: flex; flex-direction: column; gap: 1px; }
+        .contact-field .c-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+        }
+        .contact-field .c-value {
+            font-size: 13px;
+            color: #222;
+            font-weight: 500;
+        }
+        .contact-field .c-value.email-val { color: #1d4ed8; }
         .settings-link {
-            margin-left: auto;
             font-size: 12px;
             color: #800000;
             cursor: pointer;
             text-decoration: none;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 4px;
+            flex-shrink: 0;
+            padding-top: 2px;
+            white-space: nowrap;
         }
         .settings-link:hover { text-decoration: underline; }
 
-        /* Row 3 — Contact */
+        /* Row 3 — product */
         .row3 {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1.5fr 2fr 1fr 0.7fr 0.8fr;
-            gap: 12px;
-            align-items: end;
-        }
-
-        /* Row 4 — Product */
-        .row4 {
             display: grid;
             grid-template-columns: 1fr 1.5fr 3fr;
             gap: 12px;
@@ -137,34 +173,27 @@
         .notes-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-        textarea { width: 100%; resize: vertical; font-size: 13px; line-height: 1.5; }
 
         /* Case Notes */
-        .case-notes-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px 20px; }
+        .case-notes-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 18px; }
         .case-notes-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 8px;
         }
-        .case-notes-header label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
-        .add-note-btn {
-            padding: 5px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            background: #800000;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .case-notes-header label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
         }
-        .add-note-btn:hover { background: #600000; }
         #case-notes-display {
             width: 100%;
-            min-height: 200px;
+            min-height: 180px;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
@@ -175,20 +204,12 @@
             margin-bottom: 8px;
         }
         #case-notes-display img { max-width: 100%; border-radius: 4px; margin: 4px 0; }
-        .note-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+        .note-entry { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
         .note-entry:last-child { border-bottom: none; margin-bottom: 0; }
         .note-date { font-size: 11px; color: #800000; font-weight: 600; margin-bottom: 2px; }
         .note-text { color: #333; }
-        .new-note-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-        }
-        #new-note-input {
-            flex: 1;
-            min-height: 60px;
-            resize: vertical;
-        }
+        .new-note-row { display: flex; gap: 8px; align-items: flex-start; }
+        #new-note-input { flex: 1; min-height: 60px; }
 
         /* Save bar */
         .save-bar {
@@ -196,15 +217,14 @@
             bottom: 0;
             background: white;
             border-top: 1px solid #e0e0e0;
-            padding: 12px 20px;
+            padding: 10px 18px;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-top: 20px;
         }
         .save-btn {
-            padding: 9px 28px;
-            font-size: 14px;
+            padding: 8px 26px;
+            font-size: 13px;
             font-weight: 700;
             background: #800000;
             color: white;
@@ -239,9 +259,17 @@
             overflow-y: auto;
         }
         .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
-        .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
+        .modal label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            display: block;
+            margin-bottom: 4px;
+            margin-top: 12px;
+        }
         .modal input, .modal textarea { width: 100%; }
-        .modal textarea { min-height: 120px; }
+        .modal textarea { min-height: 180px; }
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
         .modal-footer button {
             padding: 7px 20px;
@@ -252,20 +280,31 @@
             background: white;
         }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
-        .status-badge {
-            display: inline-block;
-            padding: 3px 9px;
-            border-radius: 12px;
-            font-size: 11px;
+        .add-note-btn {
+            padding: 6px 14px;
+            font-size: 12px;
             font-weight: 600;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
         }
+        .add-note-btn:hover { background: #600000; }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    Binmaster RMA — Case Detail
-    <a href="/admin/rma-table.html">← Back to Cases</a>
+    Binmaster Support Platform
+    <nav class="top-nav">
+        <a class="nav-link" href="/index.html">Home</a>
+        <a class="nav-link active" href="/admin/rma-table.html">RMA Cases</a>
+        <a class="nav-link" href="/rma.html" target="_blank">Submit RMA</a>
+        <a class="nav-link" href="/admin/email-settings.html">Email Settings</a>
+        <a class="nav-link" href="/agents.html">Agents</a>
+    </nav>
 </div>
 
 <div class="container">
@@ -295,7 +334,7 @@
 
         <div class="field-group">
             <label>Problem Code</label>
-            <input type="text" id="field-problem-code" style="width:140px;" />
+            <input type="text" id="field-problem-code" style="width:130px;" />
         </div>
 
         <div class="field-group">
@@ -314,61 +353,57 @@
 
         <div class="field-group">
             <label>Repair $</label>
-            <input type="text" id="field-repair" style="width:90px;" placeholder="0.00" />
+            <input type="text" id="field-repair" style="width:80px;" placeholder="0.00" />
         </div>
 
         <div class="field-group">
             <label>Credit $</label>
-            <input type="text" id="field-credit" style="width:90px;" placeholder="0.00" />
+            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" />
         </div>
     </div>
 
-    <!-- Row 2: Email buttons -->
+    <!-- Row 2: Email buttons + contact read-only -->
     <div class="card row2">
-        <button class="email-btn" onclick="openEmailModal('rma')">📧 RMA Email</button>
-        <button class="email-btn" onclick="openEmailModal('quote')">📧 Quote Email</button>
-        <button class="email-btn" onclick="openEmailModal('credit')">📧 Credit Email</button>
-        <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
+        <div class="email-buttons">
+            <button class="email-btn" onclick="openEmailModal('rma')">📧 RMA Email</button>
+            <button class="email-btn" onclick="openEmailModal('quote')">📧 Quote Email</button>
+            <button class="email-btn" onclick="openEmailModal('credit')">📧 Credit Email</button>
+            <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
+        </div>
+
+        <div class="contact-display">
+            <div class="contact-field">
+                <span class="c-label">Company</span>
+                <span class="c-value" id="disp-company">—</span>
+            </div>
+            <div class="contact-field">
+                <span class="c-label">Contact Name</span>
+                <span class="c-value" id="disp-contact-name">—</span>
+            </div>
+            <div class="contact-field">
+                <span class="c-label">Email</span>
+                <span class="c-value email-val" id="disp-email">—</span>
+            </div>
+            <div class="contact-field">
+                <span class="c-label">Address</span>
+                <span class="c-value" id="disp-address">—</span>
+            </div>
+            <div class="contact-field">
+                <span class="c-label">City / State / Zip</span>
+                <span class="c-value" id="disp-csz">—</span>
+            </div>
+            <div class="contact-field">
+                <span class="c-label">Document #</span>
+                <span class="c-value" id="disp-doc-number">—</span>
+            </div>
+        </div>
+
         <a class="settings-link" href="/admin/email-settings.html">⚙ Email Settings</a>
     </div>
 
-    <!-- Row 3: Contact -->
+    <!-- Row 3: Product / Issue -->
     <div class="card">
         <div class="row3">
-            <div class="field-group">
-                <label>Company</label>
-                <input type="text" id="field-company" />
-            </div>
-            <div class="field-group">
-                <label>Contact Name</label>
-                <input type="text" id="field-contact-name" />
-            </div>
-            <div class="field-group">
-                <label>Email</label>
-                <input type="email" id="field-email" />
-            </div>
-            <div class="field-group">
-                <label>Address</label>
-                <input type="text" id="field-address" />
-            </div>
-            <div class="field-group">
-                <label>City</label>
-                <input type="text" id="field-city" />
-            </div>
-            <div class="field-group">
-                <label>State</label>
-                <input type="text" id="field-state" />
-            </div>
-            <div class="field-group">
-                <label>Zip</label>
-                <input type="text" id="field-zip" />
-            </div>
-        </div>
-    </div>
-
-    <!-- Row 4: Product -->
-    <div class="card">
-        <div class="row4">
             <div class="field-group">
                 <label>Product</label>
                 <select id="field-product">
@@ -391,14 +426,14 @@
                     <option>Wrong Application</option>
                 </select>
             </div>
-            <div class="field-group" style="width:100%">
+            <div class="field-group">
                 <label>Issue Description</label>
                 <input type="text" id="field-issue-notes" style="width:100%;" />
             </div>
         </div>
     </div>
 
-    <!-- Notes Row -->
+    <!-- Received + Evaluation Notes -->
     <div class="notes-grid">
         <div class="card" style="margin-bottom:0;">
             <div class="field-group" style="width:100%">
@@ -434,7 +469,7 @@
 
 </div>
 
-<!-- Email Preview Modal -->
+<!-- Email Modal -->
 <div class="modal-overlay" id="email-modal">
     <div class="modal">
         <h3 id="modal-title">Email Preview</h3>
@@ -443,7 +478,7 @@
         <label>Subject</label>
         <input type="text" id="modal-subject" />
         <label>Body</label>
-        <textarea id="modal-body" rows="10"></textarea>
+        <textarea id="modal-body" rows="12"></textarea>
         <div class="modal-footer">
             <button onclick="closeModal()">Cancel</button>
             <button class="btn-primary" onclick="sendEmail()">Open in Email Client</button>
@@ -463,11 +498,6 @@
     let caseNotes = [];
     let replacementValue = 'No';
 
-    function formatDate(ts) {
-        if (!ts) return '-';
-        return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-
     function today() {
         return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
@@ -479,53 +509,46 @@
     }
 
     async function loadCase() {
-        if (!caseId) {
-            document.getElementById('display-case-number').textContent = 'No case ID';
-            return;
-        }
-
-        const { data, error } = await supabaseClient
-            .from('rma_cases')
-            .select('*')
-            .eq('id', caseId)
-            .single();
-
-        if (error || !data) {
-            document.getElementById('display-case-number').textContent = 'Case not found';
-            return;
-        }
-
+        if (!caseId) { document.getElementById('display-case-number').textContent = 'No case ID'; return; }
+        const { data, error } = await supabaseClient.from('rma_cases').select('*').eq('id', caseId).single();
+        if (error || !data) { document.getElementById('display-case-number').textContent = 'Case not found'; return; }
         caseData = data;
         populateFields(data);
     }
 
     function populateFields(d) {
         document.getElementById('display-case-number').textContent = d.case_number || 'New Case';
+
+        // Row 1 editable
         document.getElementById('field-status').value = d.status || 'Submitted';
         document.getElementById('field-problem-code').value = d.problem_code || '';
         document.getElementById('field-credit-type').value = d.credit_type || '';
         document.getElementById('field-repair').value = d.repair_amount || '';
         document.getElementById('field-credit').value = d.credit_amount || '';
-        document.getElementById('field-company').value = d.company || '';
-        document.getElementById('field-contact-name').value = d.contact_name || '';
-        document.getElementById('field-email').value = d.email || '';
-        document.getElementById('field-address').value = d.address || '';
-        document.getElementById('field-city').value = d.city || '';
-        document.getElementById('field-state').value = d.state || '';
-        document.getElementById('field-zip').value = d.zip || '';
+        setReplacement(d.replacement_sent || 'No');
+
+        // Row 2 read-only contact display
+        document.getElementById('disp-company').textContent = d.company || '—';
+        document.getElementById('disp-contact-name').textContent = d.contact_name || '—';
+        document.getElementById('disp-email').textContent = d.email || '—';
+        document.getElementById('disp-address').textContent = d.address || '—';
+        const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
+        document.getElementById('disp-csz').textContent = csz || '—';
+        document.getElementById('disp-doc-number').textContent = d.document_number || '—';
+
+        // Row 3
         document.getElementById('field-product').value = d.product_name || '';
         document.getElementById('field-issue-type').value = d.issue_type || '';
         document.getElementById('field-issue-notes').value = d.issue_notes || '';
+
+        // Notes
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
 
-        setReplacement(d.replacement_sent || 'No');
-
-        // Parse case notes
+        // Case notes
         try {
             caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
         } catch(e) {
-            // Legacy plain text fallback
             caseNotes = d.case_notes ? [{ date: today(), text: d.case_notes }] : [];
         }
         renderNotes();
@@ -539,7 +562,9 @@
         }
         display.innerHTML = caseNotes.map((n, i) => `
             <div class="note-entry">
-                <div class="note-date">${n.date} <span style="float:right;cursor:pointer;color:#ccc;font-size:11px;" onclick="deleteNote(${i})">✕</span></div>
+                <div class="note-date">${n.date}
+                    <span style="float:right;cursor:pointer;color:#ccc;font-size:11px;" onclick="deleteNote(${i})">✕</span>
+                </div>
                 <div class="note-text">${n.text}</div>
             </div>
         `).join('');
@@ -547,9 +572,7 @@
 
     function addNote() {
         const input = document.getElementById('new-note-input');
-        const raw = input.value;
-        // Clean blank lines
-        const cleaned = raw.split('\n').filter(l => l.trim() !== '').join('\n');
+        const cleaned = input.value.split('\n').filter(l => l.trim() !== '').join('\n');
         if (!cleaned) return;
         caseNotes.push({ date: today(), text: cleaned.replace(/\n/g, '<br>') });
         renderNotes();
@@ -565,10 +588,10 @@
 
     async function saveCase() {
         const btn = document.querySelector('.save-btn');
-        const status = document.getElementById('save-status');
+        const statusEl = document.getElementById('save-status');
         btn.disabled = true;
-        status.textContent = 'Saving...';
-        status.className = 'save-status';
+        statusEl.textContent = 'Saving...';
+        statusEl.className = 'save-status';
 
         const updates = {
             status: document.getElementById('field-status').value,
@@ -576,13 +599,6 @@
             credit_type: document.getElementById('field-credit-type').value,
             repair_amount: parseFloat(document.getElementById('field-repair').value) || null,
             credit_amount: parseFloat(document.getElementById('field-credit').value) || null,
-            company: document.getElementById('field-company').value.trim(),
-            contact_name: document.getElementById('field-contact-name').value.trim(),
-            email: document.getElementById('field-email').value.trim(),
-            address: document.getElementById('field-address').value.trim(),
-            city: document.getElementById('field-city').value.trim(),
-            state: document.getElementById('field-state').value.trim(),
-            zip: document.getElementById('field-zip').value.trim(),
             product_name: document.getElementById('field-product').value,
             issue_type: document.getElementById('field-issue-type').value,
             issue_notes: document.getElementById('field-issue-notes').value.trim(),
@@ -592,72 +608,51 @@
             replacement_sent: replacementValue,
         };
 
-        const { error } = await supabaseClient
-            .from('rma_cases')
-            .update(updates)
-            .eq('id', caseId);
-
+        const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
         btn.disabled = false;
         if (error) {
-            status.textContent = 'Error: ' + error.message;
-            status.className = 'save-status error';
+            statusEl.textContent = 'Error: ' + error.message;
+            statusEl.className = 'save-status error';
         } else {
-            status.textContent = 'Saved successfully.';
-            status.className = 'save-status success';
-            setTimeout(() => status.textContent = '', 3000);
+            statusEl.textContent = 'Saved successfully.';
+            statusEl.className = 'save-status success';
+            setTimeout(() => statusEl.textContent = '', 3000);
         }
     }
 
-    // Email modal
-    const EMAIL_TEMPLATES = {
-        rma: {
-            title: 'RMA Email',
-            subject: 'RMA Case {case_number} — Received',
-            body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned it case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support'
-        },
-        quote: {
-            title: 'Quote Email',
-            subject: 'Repair Quote — Case {case_number}',
-            body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support'
-        },
-        credit: {
-            title: 'Credit Email',
-            subject: 'Credit Issued — Case {case_number}',
-            body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support'
-        },
-        cs: {
-            title: 'CS Email',
-            subject: 'Case Update — {case_number}',
-            body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out with any questions.\n\nBinmaster Support'
-        }
+    // Email
+    const EMAIL_DEFAULTS = {
+        rma: { title: 'RMA Email', subject: 'RMA Case {case_number} — Received', body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote: { title: 'Quote Email', subject: 'Repair Quote — Case {case_number}', body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}', body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs: { title: 'CS Email', subject: 'Case Update — {case_number}', body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out with any questions.\n\nBinmaster Support' }
     };
 
     function fillTemplate(text) {
         return text
             .replace(/{case_number}/g, caseData.case_number || '')
-            .replace(/{contact_name}/g, document.getElementById('field-contact-name').value || '')
+            .replace(/{contact_name}/g, caseData.contact_name || '')
+            .replace(/{company}/g, caseData.company || '')
             .replace(/{product_name}/g, document.getElementById('field-product').value || '')
             .replace(/{issue_type}/g, document.getElementById('field-issue-type').value || '')
             .replace(/{status}/g, document.getElementById('field-status').value || '')
             .replace(/{repair_amount}/g, document.getElementById('field-repair').value || '0.00')
-            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00');
+            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00')
+            .replace(/{credit_type}/g, document.getElementById('field-credit-type').value || '')
+            .replace(/{document_number}/g, caseData.document_number || '');
     }
 
     function openEmailModal(type) {
-        // Check for saved custom template first
         const saved = localStorage.getItem(`email_template_${type}`);
-        const template = saved ? JSON.parse(saved) : EMAIL_TEMPLATES[type];
-
-        document.getElementById('modal-title').textContent = template.title || EMAIL_TEMPLATES[type].title;
-        document.getElementById('modal-to').value = document.getElementById('field-email').value || '';
-        document.getElementById('modal-subject').value = fillTemplate(template.subject || EMAIL_TEMPLATES[type].subject);
-        document.getElementById('modal-body').value = fillTemplate(template.body || EMAIL_TEMPLATES[type].body);
+        const tpl = saved ? JSON.parse(saved) : EMAIL_DEFAULTS[type];
+        document.getElementById('modal-title').textContent = tpl.title || EMAIL_DEFAULTS[type].title;
+        document.getElementById('modal-to').value = caseData.email || '';
+        document.getElementById('modal-subject').value = fillTemplate(tpl.subject || EMAIL_DEFAULTS[type].subject);
+        document.getElementById('modal-body').value = fillTemplate(tpl.body || EMAIL_DEFAULTS[type].body);
         document.getElementById('email-modal').classList.add('open');
     }
 
-    function closeModal() {
-        document.getElementById('email-modal').classList.remove('open');
-    }
+    function closeModal() { document.getElementById('email-modal').classList.remove('open'); }
 
     function sendEmail() {
         const to = document.getElementById('modal-to').value;
@@ -667,15 +662,9 @@
         closeModal();
     }
 
-    // Close modal on overlay click
     document.getElementById('email-modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
-
-    // Also need replacement_sent column — add it if missing
-    async function ensureColumns() {
-        // Silently try — will succeed or fail gracefully
-    }
 
     loadCase();
 </script>
