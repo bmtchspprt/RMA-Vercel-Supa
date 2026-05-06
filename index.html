@@ -19,12 +19,7 @@
             justify-content: space-between;
             height: 52px;
         }
-        .top-nav {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            height: 100%;
-        }
+        .top-nav { display: flex; align-items: center; gap: 4px; height: 100%; }
         .nav-link {
             color: white;
             text-decoration: none;
@@ -58,11 +53,7 @@
         .status-card .value { font-size: 17px; font-weight: 600; color: #222; }
         .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ccc; margin-right: 6px; }
         .dot.green { background: #22c55e; }
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .nav-card {
             background: white;
             border-radius: 8px;
@@ -79,14 +70,7 @@
         .nav-card p { font-size: 12px; color: #666; line-height: 1.5; }
         .page-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #800000; }
         .page-sub { font-size: 13px; color: #666; margin-bottom: 28px; }
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #888;
-            margin-bottom: 12px;
-            margin-top: 28px;
-        }
+        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 12px; margin-top: 28px; }
     </style>
 </head>
 <body>
@@ -97,7 +81,7 @@
         <a class="nav-link active" href="/index.html">Home</a>
         <a class="nav-link" href="/admin/rma-table.html">RMA Cases</a>
         <a class="nav-link" href="/rma.html" target="_blank">Submit RMA</a>
-        <a class="nav-link" href="/admin/email-settings.html">Email Settings</a>
+        <a class="nav-link" href="/admin/email-settings.html">Settings</a>
         <a class="nav-link" href="/agents.html">Agents</a>
     </nav>
 </div>
@@ -135,9 +119,9 @@
             <p>Public-facing form for customers to submit a new return or warranty claim.</p>
         </a>
         <a class="nav-card" href="/admin/email-settings.html">
-            <div class="icon">✉️</div>
-            <h3>Email Settings</h3>
-            <p>Edit RMA, Quote, Credit, and CS email templates used on case pages.</p>
+            <div class="icon">⚙️</div>
+            <h3>Settings</h3>
+            <p>Import/export cases, edit email templates, and configure sender defaults.</p>
         </a>
     </div>
 
