@@ -82,8 +82,8 @@
         }
         .toggle-opt.active-yes { background: #16a34a; color: white; }
         .toggle-opt.active-no { background: #dc2626; color: white; }
-        .row2 { display: flex; align-items: center; gap: 16px; }
-        .email-buttons { display: flex; flex-direction: row; gap: 8px; flex-shrink: 0; }
+        .row2 { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .email-buttons { display: flex; flex-direction: row; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
         .email-btn {
             padding: 7px 14px;
             font-size: 12px;
@@ -94,9 +94,10 @@
             cursor: pointer;
             color: #333;
             white-space: nowrap;
-            transition: all 0.15s;
+            transition: all 0.2s;
         }
         .email-btn:hover { background: #800000; color: white; border-color: #800000; }
+        .email-btn.sent { background: #16a34a; color: white; border-color: #16a34a; }
         .email-field-wrap { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
         .email-field-wrap input { width: 200px; }
         .contact-block { flex: 1; font-size: 13px; line-height: 1.7; color: #222; }
@@ -176,6 +177,18 @@
         }
         .save-btn:hover { background: #600000; }
         .save-btn:disabled { background: #aaa; cursor: not-allowed; }
+        .complete-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #1d4ed8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .complete-btn:hover { background: #1e40af; }
         .save-status { font-size: 13px; }
         .save-status.success { color: #16a34a; }
         .save-status.error { color: #dc2626; }
@@ -206,6 +219,7 @@
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
         .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
+        .notes-date-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -234,6 +248,7 @@
                 <option>Evaluation</option>
                 <option>Credited</option>
                 <option>Replaced</option>
+                <option>Completed</option>
             </select>
         </div>
         <div class="field-group">
@@ -266,17 +281,22 @@
         </div>
         <div class="field-group">
             <label>Credit $</label>
-            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" />
+            <input type="text" id="field-credit" style="width:80px;" placeholder="0.00"
+                oninput="onCreditInput()" />
+        </div>
+        <div class="field-group">
+            <label>&nbsp;</label>
+            <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
         </div>
     </div>
 
     <!-- Row 2 -->
     <div class="card row2">
         <div class="email-buttons">
-            <button class="email-btn" onclick="openEmailModal('rma')">📧 RMA Email</button>
-            <button class="email-btn" onclick="openEmailModal('quote')">📧 Quote Email</button>
-            <button class="email-btn" onclick="openEmailModal('credit')">📧 Credit Email</button>
-            <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
+            <button class="email-btn" id="ebtn-rma" onclick="openEmailModal('rma')">📧 RMA Email</button>
+            <button class="email-btn" id="ebtn-quote" onclick="openEmailModal('quote')">📧 Quote Email</button>
+            <button class="email-btn" id="ebtn-credit" onclick="openEmailModal('credit')">📧 Credit Email</button>
+            <button class="email-btn" id="ebtn-cs" onclick="openEmailModal('cs')">📧 CS Email</button>
         </div>
         <div class="email-field-wrap">
             <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
@@ -327,13 +347,13 @@
         <div class="card" style="margin-bottom:0;">
             <div class="field-group" style="width:100%">
                 <label>Received Notes</label>
-                <textarea id="field-received" rows="4"></textarea>
+                <textarea id="field-received" rows="4" oninput="onReceivedInput()"></textarea>
             </div>
         </div>
         <div class="card" style="margin-bottom:0;">
             <div class="field-group" style="width:100%">
                 <label>Evaluation Notes</label>
-                <textarea id="field-evaluation" rows="4"></textarea>
+                <textarea id="field-evaluation" rows="4" oninput="onEvaluationInput()"></textarea>
             </div>
         </div>
     </div>
@@ -389,6 +409,9 @@
     let caseData = {};
     let caseNotes = [];
     let replacementValue = 'No';
+    let receivedNoteAdded = false;
+    let evaluationNoteAdded = false;
+    let creditNoteAdded = false;
 
     function today() {
         return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -400,12 +423,56 @@
         document.getElementById('toggle-no').className = 'toggle-opt' + (val === 'No' ? ' active-no' : '');
     }
 
+    // Auto-actions on field input
+    function onReceivedInput() {
+        if (receivedNoteAdded) return;
+        const val = document.getElementById('field-received').value.trim();
+        if (val.length > 0) {
+            receivedNoteAdded = true;
+            document.getElementById('field-status').value = 'Received';
+            // Prepend date to received notes if not already there
+            const current = document.getElementById('field-received').value;
+            if (!current.startsWith('[')) {
+                document.getElementById('field-received').value = `[${today()}]\n` + current;
+            }
+        }
+    }
+
+    function onEvaluationInput() {
+        if (evaluationNoteAdded) return;
+        const val = document.getElementById('field-evaluation').value.trim();
+        if (val.length > 0) {
+            evaluationNoteAdded = true;
+            document.getElementById('field-status').value = 'Evaluation';
+            const current = document.getElementById('field-evaluation').value;
+            if (!current.startsWith('[')) {
+                document.getElementById('field-evaluation').value = `[${today()}]\n` + current;
+            }
+        }
+    }
+
+    function onCreditInput() {
+        if (creditNoteAdded) return;
+        const val = document.getElementById('field-credit').value.trim();
+        if (val.length > 0 && parseFloat(val) > 0) {
+            creditNoteAdded = true;
+            document.getElementById('field-status').value = 'Credited';
+        }
+    }
+
+    async function markComplete() {
+        if (!confirm('Mark this case as Completed? It will move to the Completed Cases table.')) return;
+        document.getElementById('field-status').value = 'Completed';
+        await saveCase();
+    }
+
     async function loadCase() {
         if (!caseId) { document.getElementById('display-case-number').textContent = 'No case ID'; return; }
         const { data, error } = await supabaseClient.from('rma_cases').select('*').eq('id', caseId).single();
         if (error || !data) { document.getElementById('display-case-number').textContent = 'Case not found'; return; }
         caseData = data;
         populateFields(data);
+        loadEmailButtonStates();
     }
 
     function populateFields(d) {
@@ -430,6 +497,11 @@
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
 
+        // Mark auto-flags if fields already have data
+        if (d.received_description) receivedNoteAdded = true;
+        if (d.evaluation_notes) evaluationNoteAdded = true;
+        if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
+
         try {
             caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
         } catch(e) {
@@ -450,9 +522,21 @@
             return `<div class="note-entry">
                 <span class="note-date">${n.date}:</span>
                 <span class="note-text">${n.text}</span>
-                <span style="float:right;cursor:pointer;color:#ddd;font-size:11px;margin-left:8px;" onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ddd'" onclick="deleteNote(${realIndex})">✕</span>
+                <span style="float:right;cursor:pointer;color:#ddd;font-size:11px;margin-left:8px;"
+                    onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ddd'"
+                    onclick="deleteNote(${realIndex})">✕</span>
             </div>`;
         }).join('');
+    }
+
+    function flushPendingNote() {
+        const input = document.getElementById('new-note-input');
+        const html = input.innerHTML.trim();
+        if (html && html !== '<br>') {
+            caseNotes.push({ date: today(), text: html });
+            input.innerHTML = '';
+            renderNotes();
+        }
     }
 
     function addNote() {
@@ -484,6 +568,9 @@
     });
 
     async function saveCase() {
+        // Flush any pending unsaved note text before saving
+        flushPendingNote();
+
         const btn = document.querySelector('.save-btn');
         const statusEl = document.getElementById('save-status');
         btn.disabled = true;
@@ -513,8 +600,29 @@
         } else {
             statusEl.textContent = 'Saved successfully.';
             statusEl.className = 'save-status success';
+            saveEmailButtonStates();
             setTimeout(() => statusEl.textContent = '', 3000);
         }
+    }
+
+    // Email button green state — persisted in localStorage per case
+    function emailStateKey(type) { return `email_sent_${caseId}_${type}`; }
+
+    function loadEmailButtonStates() {
+        ['rma','quote','credit','cs'].forEach(type => {
+            if (localStorage.getItem(emailStateKey(type)) === 'sent') {
+                document.getElementById(`ebtn-${type}`).classList.add('sent');
+            }
+        });
+    }
+
+    function saveEmailButtonStates() {
+        ['rma','quote','credit','cs'].forEach(type => {
+            const btn = document.getElementById(`ebtn-${type}`);
+            if (btn.classList.contains('sent')) {
+                localStorage.setItem(emailStateKey(type), 'sent');
+            }
+        });
     }
 
     const EMAIL_DEFAULTS = {
@@ -523,6 +631,8 @@
         credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
         cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
+
+    let currentEmailType = null;
 
     function fillTemplate(text) {
         return text
@@ -539,6 +649,7 @@
     }
 
     function openEmailModal(type) {
+        currentEmailType = type;
         const saved = localStorage.getItem(`email_template_${type}`);
         const tpl = saved ? JSON.parse(saved) : EMAIL_DEFAULTS[type];
         document.getElementById('modal-title').textContent = tpl.title || EMAIL_DEFAULTS[type].title;
@@ -548,12 +659,21 @@
         document.getElementById('email-modal').classList.add('open');
     }
 
-    function closeModal() { document.getElementById('email-modal').classList.remove('open'); }
+    function closeModal() {
+        document.getElementById('email-modal').classList.remove('open');
+        currentEmailType = null;
+    }
 
     function sendEmail() {
         const to = document.getElementById('modal-to').value;
         const subject = encodeURIComponent(document.getElementById('modal-subject').value);
         const body = encodeURIComponent(document.getElementById('modal-body').value);
+        // Mark button green
+        if (currentEmailType) {
+            const btn = document.getElementById(`ebtn-${currentEmailType}`);
+            btn.classList.add('sent');
+            localStorage.setItem(emailStateKey(currentEmailType), 'sent');
+        }
         window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         closeModal();
     }
