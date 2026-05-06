@@ -462,4 +462,209 @@
         const { data, error } = await supabaseClient.from('rma_cases').select('*').eq('id', caseId).single();
         if (error || !data) { document.getElementById('display-case-number').textContent = 'Case not found'; return; }
         caseData = data;
-        popul
+        populateFields(data);
+        loadEmailButtonStates();
+    }
+
+    function populateFields(d) {
+        document.getElementById('display-case-number').textContent = d.case_number || 'New Case';
+        document.getElementById('field-status').value = d.status || 'Submitted';
+        document.getElementById('field-credit-type').value = d.credit_type || '';
+        document.getElementById('field-repair').value = d.repair_amount || '';
+        document.getElementById('field-credit').value = d.credit_amount || '';
+        setReplacement(d.replacement_sent || 'No');
+
+        document.getElementById('disp-email').value = d.email || '';
+        document.getElementById('disp-company').textContent = d.company || '';
+        document.getElementById('disp-contact-name').textContent = d.contact_name || '';
+        document.getElementById('disp-address').textContent = d.address || '';
+        const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
+        document.getElementById('disp-csz').textContent = csz || '';
+
+        document.getElementById('field-product').value = d.product_name || '';
+        document.getElementById('field-issue-type').value = d.issue_type || '';
+        document.getElementById('field-issue-notes').value = d.issue_notes || '';
+        document.getElementById('field-received').value = d.received_description || '';
+        document.getElementById('field-evaluation').value = d.evaluation_notes || '';
+
+        if (d.received_description) receivedNoteAdded = true;
+        if (d.evaluation_notes) evaluationNoteAdded = true;
+        if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
+
+        try {
+            caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
+        } catch(e) {
+            caseNotes = d.case_notes ? [{ date: today(), text: d.case_notes }] : [];
+        }
+        renderNotes();
+    }
+
+    function renderNotes() {
+        const display = document.getElementById('case-notes-display');
+        if (caseNotes.length === 0) {
+            display.innerHTML = '<span style="color:#aaa;font-size:12px;">No notes yet.</span>';
+            return;
+        }
+        const reversed = [...caseNotes].reverse();
+        display.innerHTML = reversed.map((n, i) => {
+            const realIndex = caseNotes.length - 1 - i;
+            return `<div class="note-entry">
+                <span class="note-date">${n.date}:</span>
+                <span class="note-text">${n.text}</span>
+                <span style="float:right;cursor:pointer;color:#ddd;font-size:11px;margin-left:8px;"
+                    onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ddd'"
+                    onclick="deleteNote(${realIndex})">✕</span>
+            </div>`;
+        }).join('');
+    }
+
+    function flushPendingNote() {
+        const input = document.getElementById('new-note-input');
+        const html = input.innerHTML.trim();
+        if (html && html !== '<br>') {
+            caseNotes.push({ date: today(), text: html });
+            input.innerHTML = '';
+            renderNotes();
+        }
+    }
+
+    function addNote() {
+        const input = document.getElementById('new-note-input');
+        const html = input.innerHTML.trim();
+        if (!html || html === '<br>') return;
+        caseNotes.push({ date: today(), text: html });
+        renderNotes();
+        input.innerHTML = '';
+    }
+
+    function deleteNote(index) {
+        if (confirm('Delete this note?')) {
+            caseNotes.splice(index, 1);
+            renderNotes();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('new-note-input');
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    addNote();
+                }
+            });
+        }
+    });
+
+    async function saveCase() {
+        flushPendingNote();
+        const btn = document.querySelector('.save-btn');
+        const statusEl = document.getElementById('save-status');
+        btn.disabled = true;
+        statusEl.textContent = 'Saving...';
+        statusEl.className = 'save-status';
+
+        const updates = {
+            status: document.getElementById('field-status').value,
+            credit_type: document.getElementById('field-credit-type').value || null,
+            repair_amount: parseFloat(document.getElementById('field-repair').value) || null,
+            credit_amount: parseFloat(document.getElementById('field-credit').value) || null,
+            product_name: document.getElementById('field-product').value,
+            issue_type: document.getElementById('field-issue-type').value,
+            issue_notes: document.getElementById('field-issue-notes').value.trim(),
+            received_description: document.getElementById('field-received').value.trim(),
+            evaluation_notes: document.getElementById('field-evaluation').value.trim(),
+            case_notes: JSON.stringify(caseNotes),
+            replacement_sent: replacementValue,
+        };
+
+        const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
+        btn.disabled = false;
+
+        if (error) {
+            statusEl.textContent = 'Error: ' + error.message;
+            statusEl.className = 'save-status error';
+        } else {
+            statusEl.textContent = 'Saved successfully.';
+            statusEl.className = 'save-status success';
+            saveEmailButtonStates();
+            setTimeout(() => statusEl.textContent = '', 3000);
+        }
+    }
+
+    function emailStateKey(type) { return `email_sent_${caseId}_${type}`; }
+
+    function loadEmailButtonStates() {
+        ['rma','quote','credit','cs'].forEach(type => {
+            if (localStorage.getItem(emailStateKey(type)) === 'sent') {
+                document.getElementById(`ebtn-${type}`).classList.add('sent');
+            }
+        });
+    }
+
+    function saveEmailButtonStates() {
+        ['rma','quote','credit','cs'].forEach(type => {
+            const btn = document.getElementById(`ebtn-${type}`);
+            if (btn.classList.contains('sent')) {
+                localStorage.setItem(emailStateKey(type), 'sent');
+            }
+        });
+    }
+
+    const EMAIL_DEFAULTS = {
+        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+    };
+
+    function fillTemplate(text) {
+        return text
+            .replace(/{case_number}/g, caseData.case_number || '')
+            .replace(/{contact_name}/g, caseData.contact_name || '')
+            .replace(/{company}/g, caseData.company || '')
+            .replace(/{product_name}/g, document.getElementById('field-product').value || '')
+            .replace(/{issue_type}/g, document.getElementById('field-issue-type').value || '')
+            .replace(/{status}/g, document.getElementById('field-status').value || '')
+            .replace(/{repair_amount}/g, document.getElementById('field-repair').value || '0.00')
+            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00')
+            .replace(/{credit_type}/g, document.getElementById('field-credit-type').value || '')
+            .replace(/{document_number}/g, caseData.document_number || '');
+    }
+
+    function openEmailModal(type) {
+        currentEmailType = type;
+        const saved = localStorage.getItem(`email_template_${type}`);
+        const tpl = saved ? JSON.parse(saved) : EMAIL_DEFAULTS[type];
+        document.getElementById('modal-title').textContent = tpl.title || EMAIL_DEFAULTS[type].title;
+        document.getElementById('modal-to').value = caseData.email || '';
+        document.getElementById('modal-subject').value = fillTemplate(tpl.subject || EMAIL_DEFAULTS[type].subject);
+        document.getElementById('modal-body').value = fillTemplate(tpl.body || EMAIL_DEFAULTS[type].body);
+        document.getElementById('email-modal').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('email-modal').classList.remove('open');
+        currentEmailType = null;
+    }
+
+    function sendEmail() {
+        const to = document.getElementById('modal-to').value;
+        const subject = encodeURIComponent(document.getElementById('modal-subject').value);
+        const body = encodeURIComponent(document.getElementById('modal-body').value);
+        if (currentEmailType) {
+            document.getElementById(`ebtn-${currentEmailType}`).classList.add('sent');
+            localStorage.setItem(emailStateKey(currentEmailType), 'sent');
+        }
+        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        closeModal();
+    }
+
+    document.getElementById('email-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    loadCase();
+</script>
+</body>
+</html>
