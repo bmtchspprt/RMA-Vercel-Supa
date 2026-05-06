@@ -6,6 +6,7 @@
     <title>RMA Cases — Binmaster</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; }
@@ -38,30 +39,11 @@
         .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px 60px; }
 
-        .charts-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            user-select: none;
-            margin-bottom: 12px;
-            color: #800000;
-            font-size: 13px;
-            font-weight: 600;
-        }
+        .charts-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; margin-bottom: 12px; color: #800000; font-size: 13px; font-weight: 600; }
         .charts-toggle:hover { opacity: 0.75; }
         .toggle-arrow { display: inline-block; font-size: 11px; transition: transform 0.25s ease; }
         .toggle-arrow.open { transform: rotate(180deg); }
-        .charts-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-            overflow: hidden;
-            max-height: 320px;
-            transition: max-height 0.35s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
-            opacity: 1;
-        }
+        .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; overflow: hidden; max-height: 320px; transition: max-height 0.35s ease, opacity 0.3s ease, margin-bottom 0.3s ease; opacity: 1; }
         .charts-row.collapsed { max-height: 0; opacity: 0; margin-bottom: 0; }
         .chart-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
         .chart-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 16px; }
@@ -77,45 +59,68 @@
         .stat-item.green .s-value { color: #166534; }
         .stat-item.purple .s-value { color: #5b21b6; }
 
-        .table-controls {
+        /* Import/Export Bar */
+        .io-bar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
             gap: 10px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
+        .io-bar-label { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 4px; }
+        .io-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: white;
+            color: #333;
+            transition: all 0.15s;
+        }
+        .io-btn:hover { border-color: #800000; color: #800000; }
+        .io-btn.primary { background: #800000; color: white; border-color: #800000; }
+        .io-btn.primary:hover { background: #600000; }
+        .io-divider { width: 1px; height: 24px; background: #e0e0e0; margin: 0 4px; }
+        .io-status { font-size: 12px; color: #666; margin-left: 8px; }
+        .io-status.success { color: #16a34a; }
+        .io-status.error { color: #dc2626; }
+        #upload-input { display: none; }
+
+        /* Upload Preview Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: white; border-radius: 10px; padding: 24px; width: 800px; max-width: 95vw; max-height: 85vh; overflow-y: auto; }
+        .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 8px; }
+        .modal p { font-size: 13px; color: #666; margin-bottom: 16px; }
+        .preview-table-wrap { overflow-x: auto; max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 16px; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .preview-table th { background: #800000; color: white; padding: 8px 10px; text-align: left; white-space: nowrap; }
+        .preview-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+        .preview-table tr:last-child td { border-bottom: none; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-footer button { padding: 8px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
+        .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
+        .upload-summary { background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 12px 16px; font-size: 13px; margin-bottom: 16px; }
+        .upload-summary.warning { background: #fefce8; border-color: #fde047; }
+        .upload-errors { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #dc2626; margin-bottom: 16px; max-height: 100px; overflow-y: auto; }
+
+        .table-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
         .page-title { font-size: 18px; font-weight: 700; color: #800000; }
         .controls-right { display: flex; align-items: center; gap: 10px; }
         .count { font-size: 13px; color: #666; }
-        .view-toggle { display: flex; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; font-size: 12px; }
+        .view-toggle { display: flex; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; }
         .view-btn { padding: 6px 14px; cursor: pointer; background: white; color: #555; border: none; font-size: 12px; font-weight: 600; }
         .view-btn.active { background: #800000; color: white; }
         .chooser-wrap { position: relative; }
-        .col-chooser-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            color: #555;
-        }
+        .col-chooser-btn { padding: 6px 12px; font-size: 12px; font-weight: 600; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; color: #555; }
         .col-chooser-btn:hover { border-color: #800000; color: #800000; }
-        .col-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: calc(100% + 6px);
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 12px;
-            z-index: 100;
-            width: 260px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
+        .col-dropdown { display: none; position: absolute; right: 0; top: calc(100% + 6px); background: white; border: 1px solid #ddd; border-radius: 8px; padding: 12px; z-index: 100; width: 260px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
         .col-dropdown.open { display: block; }
         .col-dropdown h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 10px; }
         .col-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -127,53 +132,17 @@
 
         .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .filters input, .filters select { padding: 7px 11px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; }
-        .filters input { width: 220px; }
+        .filters input { width: 260px; }
 
-        .section-label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #800000;
-            margin: 24px 0 10px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #800000;
-        }
+        .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin: 24px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #800000; }
         .section-label.completed { color: #166534; border-bottom-color: #166534; }
 
         .table-wrap { overflow-x: auto; margin-bottom: 8px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
-            font-size: 13px;
-            table-layout: fixed;
-        }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; font-size: 13px; table-layout: fixed; }
         thead { background: #800000; color: white; }
         thead.completed-head { background: #166534; }
-        th {
-            padding: 11px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        th .resize-handle {
-            position: absolute;
-            right: 0; top: 0; bottom: 0;
-            width: 5px;
-            cursor: col-resize;
-            background: rgba(255,255,255,0.2);
-            user-select: none;
-        }
+        th { padding: 11px 12px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; position: relative; overflow: hidden; text-overflow: ellipsis; }
+        th .resize-handle { position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; background: rgba(255,255,255,0.2); user-select: none; }
         th .resize-handle:hover { background: rgba(255,255,255,0.5); }
         td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         tr:last-child td { border-bottom: none; }
@@ -230,7 +199,18 @@
         <div class="chart-card"><h3>RMA Cases by Month</h3><canvas id="line-chart"></canvas></div>
     </div>
 
-    <!-- Search -->
+    <!-- Import / Export Bar -->
+    <div class="io-bar">
+        <span class="io-bar-label">Data</span>
+        <button class="io-btn primary" onclick="downloadExcel()">⬇ Download All Cases (.xlsx)</button>
+        <button class="io-btn" onclick="downloadTemplate()">⬇ Download Empty Template</button>
+        <div class="io-divider"></div>
+        <button class="io-btn" onclick="document.getElementById('upload-input').click()">⬆ Upload Cases (.xlsx)</button>
+        <input type="file" id="upload-input" accept=".xlsx,.xls,.csv" onchange="handleUpload(event)" />
+        <span class="io-status" id="io-status"></span>
+    </div>
+
+    <!-- Filters -->
     <div class="filters">
         <input type="text" id="search" placeholder="Search all cases — name, email, company, case #..." oninput="filterTables()" />
         <select id="filter-status" onchange="filterTables()">
@@ -279,10 +259,9 @@
 
     <!-- Completed Cases -->
     <div class="section-label completed">Completed Cases</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div class="count" id="completed-count" style="font-size:13px;color:#666;"></div>
+    <div style="margin-bottom:10px;">
+        <span class="count" id="completed-count" style="font-size:13px;color:#666;"></span>
     </div>
-
     <div class="table-wrap">
         <table id="completed-table">
             <thead id="completed-head"></thead>
@@ -290,6 +269,26 @@
         </table>
     </div>
 
+</div>
+
+<!-- Upload Preview Modal -->
+<div class="modal-overlay" id="upload-modal">
+    <div class="modal">
+        <h3>Upload Preview</h3>
+        <p>Review the data below before importing. Existing cases with matching case numbers will be skipped.</p>
+        <div id="upload-summary"></div>
+        <div id="upload-errors"></div>
+        <div class="preview-table-wrap">
+            <table class="preview-table">
+                <thead id="preview-head"></thead>
+                <tbody id="preview-body"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeUploadModal()">Cancel</button>
+            <button class="btn-primary" id="confirm-upload-btn" onclick="confirmUpload()">Import Cases</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -301,6 +300,15 @@
     let chartsOpen = true;
     let currentView = 'default';
     let resizing = null;
+    let pendingUploadRows = [];
+
+    // Column definitions matching Supabase exactly
+    const DB_COLUMNS = [
+        'case_number','contact_name','email','company','address','city','state','zip',
+        'product_name','issue_type','issue_notes','document_number','attached_documents',
+        'date_created','status','credit_type','repair_amount','credit_amount',
+        'received_description','evaluation_notes','case_notes','replacement_sent'
+    ];
 
     const ALL_COLUMNS = [
         { key: 'case_number', label: 'Case #' },
@@ -324,14 +332,171 @@
         { key: 'received_description', label: 'Received Desc' },
         { key: 'evaluation_notes', label: 'Eval Notes' },
         { key: 'case_notes', label: 'Case Notes' },
+        { key: 'replacement_sent', label: 'Replacement Sent' },
         { key: 'action', label: 'Action' },
     ];
 
     const DEFAULT_COLUMNS = ['case_number','date_created','contact_name','company','product_name','issue_type','status','document_number','attached_documents','action'];
     let customColumns = [...DEFAULT_COLUMNS];
-
     const COLORS = ['#800000','#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'];
 
+    // ── Download All Cases ──────────────────────────────────────────
+    function downloadExcel() {
+        if (allCases.length === 0) { alert('No cases to download.'); return; }
+        const rows = allCases.map(c => {
+            const row = {};
+            DB_COLUMNS.forEach(col => { row[col] = c[col] ?? ''; });
+            return row;
+        });
+        const ws = XLSX.utils.json_to_sheet(rows, { header: DB_COLUMNS });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'RMA Cases');
+        XLSX.writeFile(wb, `binmaster_rma_cases_${today()}.xlsx`);
+        setIOStatus('Downloaded successfully.', 'success');
+    }
+
+    // ── Download Empty Template ─────────────────────────────────────
+    function downloadTemplate() {
+        const ws = XLSX.utils.json_to_sheet([{}], { header: DB_COLUMNS });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'RMA Cases Template');
+        XLSX.writeFile(wb, 'binmaster_rma_template.xlsx');
+        setIOStatus('Template downloaded.', 'success');
+    }
+
+    // ── Handle Upload File ──────────────────────────────────────────
+    function handleUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        event.target.value = ''; // reset so same file can be re-uploaded
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+                if (rows.length === 0) {
+                    setIOStatus('File is empty.', 'error');
+                    return;
+                }
+
+                // Validate columns
+                const fileKeys = Object.keys(rows[0]);
+                const missing = DB_COLUMNS.filter(c => c !== 'date_created' && c !== 'attached_documents' && !fileKeys.includes(c));
+
+                pendingUploadRows = rows;
+                showUploadPreview(rows, missing);
+            } catch(err) {
+                setIOStatus('Error reading file: ' + err.message, 'error');
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function showUploadPreview(rows, missingCols) {
+        const existingCaseNumbers = new Set(allCases.map(c => c.case_number));
+        const newRows = rows.filter(r => !existingCaseNumbers.has(r.case_number));
+        const dupRows = rows.filter(r => existingCaseNumbers.has(r.case_number));
+
+        // Summary
+        const summaryEl = document.getElementById('upload-summary');
+        summaryEl.className = 'upload-summary' + (dupRows.length > 0 ? ' warning' : '');
+        summaryEl.innerHTML = `
+            <strong>${rows.length}</strong> rows in file &nbsp;·&nbsp;
+            <strong style="color:#16a34a">${newRows.length}</strong> new (will be imported) &nbsp;·&nbsp;
+            <strong style="color:#854d0e">${dupRows.length}</strong> duplicates (will be skipped)
+        `;
+
+        // Errors
+        const errEl = document.getElementById('upload-errors');
+        if (missingCols.length > 0) {
+            errEl.style.display = 'block';
+            errEl.innerHTML = `<strong>Warning:</strong> These columns are missing from the file and will be left blank: ${missingCols.join(', ')}`;
+        } else {
+            errEl.style.display = 'none';
+        }
+
+        // Preview table — show first 10 rows
+        const previewCols = DB_COLUMNS.filter(c => Object.keys(rows[0]).includes(c));
+        document.getElementById('preview-head').innerHTML = `<tr>${previewCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
+        document.getElementById('preview-body').innerHTML = rows.slice(0, 10).map(r =>
+            `<tr>${previewCols.map(c => `<td>${String(r[c]||'').substring(0,40)}</td>`).join('')}</tr>`
+        ).join('');
+
+        document.getElementById('confirm-upload-btn').disabled = newRows.length === 0;
+        document.getElementById('upload-modal').classList.add('open');
+    }
+
+    async function confirmUpload() {
+        const btn = document.getElementById('confirm-upload-btn');
+        btn.disabled = true;
+        btn.textContent = 'Importing...';
+
+        const existingCaseNumbers = new Set(allCases.map(c => c.case_number));
+        const newRows = pendingUploadRows
+            .filter(r => !existingCaseNumbers.has(r.case_number))
+            .map(r => {
+                const row = {};
+                DB_COLUMNS.forEach(col => {
+                    const val = r[col];
+                    if (col === 'repair_amount' || col === 'credit_amount') {
+                        row[col] = val !== '' && val !== null ? parseFloat(val) || null : null;
+                    } else if (col === 'date_created') {
+                        row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
+                    } else {
+                        row[col] = val !== undefined ? String(val) : null;
+                    }
+                });
+                if (!row.status) row.status = 'Submitted';
+                return row;
+            });
+
+        // Insert in batches of 50
+        let imported = 0;
+        let errors = 0;
+        for (let i = 0; i < newRows.length; i += 50) {
+            const batch = newRows.slice(i, i + 50);
+            const { error } = await supabaseClient.from('rma_cases').insert(batch);
+            if (error) { errors += batch.length; console.error(error); }
+            else imported += batch.length;
+        }
+
+        closeUploadModal();
+        btn.textContent = 'Import Cases';
+        btn.disabled = false;
+
+        if (errors > 0) {
+            setIOStatus(`Imported ${imported}, ${errors} failed.`, 'error');
+        } else {
+            setIOStatus(`Successfully imported ${imported} cases.`, 'success');
+        }
+
+        await loadCases(); // Refresh
+    }
+
+    function closeUploadModal() {
+        document.getElementById('upload-modal').classList.remove('open');
+        pendingUploadRows = [];
+    }
+
+    document.getElementById('upload-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeUploadModal();
+    });
+
+    function setIOStatus(msg, type) {
+        const el = document.getElementById('io-status');
+        el.textContent = msg;
+        el.className = 'io-status' + (type ? ' ' + type : '');
+        setTimeout(() => el.textContent = '', 5000);
+    }
+
+    function today() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    // ── Charts ──────────────────────────────────────────────────────
     function toggleCharts() {
         chartsOpen = !chartsOpen;
         document.getElementById('charts-row').classList.toggle('collapsed', !chartsOpen);
@@ -339,6 +504,7 @@
         document.getElementById('toggle-label').textContent = chartsOpen ? 'Hide Charts' : 'Show Charts';
     }
 
+    // ── View / Column Chooser ───────────────────────────────────────
     function switchView(view) {
         currentView = view;
         document.getElementById('btn-default').classList.toggle('active', view === 'default');
@@ -384,16 +550,14 @@
 
     function buildHeaders() {
         const cols = getActiveCols();
-        const headerHTML = `<tr>${cols.map((col, i) => `
-            <th style="width:${col.key==='action'?70:130}px;" data-col="${i}">
+        const makeHead = (tableId) => `<tr>${cols.map((col, i) => `
+            <th style="width:${col.key==='action'?70:130}px;">
                 ${col.label}
-                <div class="resize-handle" onmousedown="startResize(event,${i},'active-table')"></div>
+                <div class="resize-handle" onmousedown="startResize(event,${i},'${tableId}')"></div>
             </th>`).join('')}</tr>`;
-        document.getElementById('active-head').innerHTML = headerHTML;
-        // Completed table uses same columns
-        document.getElementById('completed-head').innerHTML = headerHTML
-            .replace('<thead>', '<thead class="completed-head">')
-            .replace(/onmousedown="startResize\(event,(\d+),'active-table'\)"/g, `onmousedown="startResize(event,$1,'completed-table')"`);
+        document.getElementById('active-head').innerHTML = makeHead('active-table');
+        document.getElementById('completed-head').innerHTML = makeHead('completed-table');
+        document.getElementById('completed-head').className = 'completed-head';
     }
 
     function startResize(e, colIndex, tableId) {
@@ -403,16 +567,10 @@
         document.addEventListener('mousemove', doResize);
         document.addEventListener('mouseup', stopResize);
     }
-    function doResize(e) {
-        if (!resizing) return;
-        resizing.th.style.width = Math.max(60, resizing.startW + (e.clientX - resizing.startX)) + 'px';
-    }
-    function stopResize() {
-        resizing = null;
-        document.removeEventListener('mousemove', doResize);
-        document.removeEventListener('mouseup', stopResize);
-    }
+    function doResize(e) { if (!resizing) return; resizing.th.style.width = Math.max(60, resizing.startW + (e.clientX - resizing.startX)) + 'px'; }
+    function stopResize() { resizing = null; document.removeEventListener('mousemove', doResize); document.removeEventListener('mouseup', stopResize); }
 
+    // ── Load & Render ───────────────────────────────────────────────
     async function loadCases() {
         const { data, error } = await supabaseClient.from('rma_cases').select('*').order('date_created', { ascending: false });
         if (error) { document.getElementById('active-body').innerHTML = `<tr><td colspan="10" class="no-data">Error: ${error.message}</td></tr>`; return; }
@@ -460,15 +618,15 @@
         const sorted = Object.keys(monthly).sort();
         new Chart(document.getElementById('line-chart'), {
             type: 'line',
-            data: { labels: sorted.map(k => { const [y,m] = k.split('-'); return new Date(y,m-1).toLocaleString('default',{month:'short',year:'2-digit'}); }),
-                datasets: [{ data: sorted.map(k => monthly[k]), borderColor: '#800000', backgroundColor: 'rgba(128,0,0,0.08)', borderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 }] },
+            data: {
+                labels: sorted.map(k => { const [y,m] = k.split('-'); return new Date(y,m-1).toLocaleString('default',{month:'short',year:'2-digit'}); }),
+                datasets: [{ data: sorted.map(k => monthly[k]), borderColor: '#800000', backgroundColor: 'rgba(128,0,0,0.08)', borderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 }]
+            },
             options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } }
         });
     }
 
-    function getFileUrl(path) {
-        return path ? `${SUPABASE_URL}/storage/v1/object/public/rma-documents/${path}` : null;
-    }
+    function getFileUrl(path) { return path ? `${SUPABASE_URL}/storage/v1/object/public/rma-documents/${path}` : null; }
 
     function formatDate(ts) {
         if (!ts) return '-';
@@ -503,7 +661,7 @@
         });
     }
 
-    function renderTable(cases, bodyId, colSpan) {
+    function renderTable(cases, bodyId) {
         const cols = getActiveCols();
         const tbody = document.getElementById(bodyId);
         if (cases.length === 0) {
@@ -519,10 +677,8 @@
         const filtered = applyFilters(allCases);
         const active = filtered.filter(c => c.status !== 'Completed');
         const completed = filtered.filter(c => c.status === 'Completed');
-
         document.getElementById('active-count').textContent = `${active.length} case${active.length !== 1 ? 's' : ''}`;
         document.getElementById('completed-count').textContent = `${completed.length} completed case${completed.length !== 1 ? 's' : ''}`;
-
         renderTable(active, 'active-body');
         renderTable(completed, 'completed-body');
     }
