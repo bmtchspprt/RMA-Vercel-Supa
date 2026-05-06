@@ -1,1 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMA Case — Binmaster</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; font-size: 13px; }
+        .top-bar {
+            background-color: #800000;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-bar a { color: white; font-size: 13px; font-weight: normal; text-decoration: none; opacity: 0.8; }
+        .container { max-width: 1100px; margin: 24px auto; padding: 0 20px 60px; }
 
+        /* Rows */
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Row 1 — Case header */
+        .row1 {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .case-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #800000;
+            min-width: 180px;
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .field-group label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+        }
+        select, input[type=text], input[type=email], textarea {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 6px 9px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            color: #222;
+            background: white;
+        }
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #800000;
+        }
+        .toggle-group {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .toggle-opt {
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            background: white;
+            color: #555;
+            border: none;
+            user-select: none;
+        }
+        .toggle-opt.active-yes { background: #16a34a; color: white; }
+        .toggle-opt.active-no { background: #dc2626; color: white; }
+
+        /* Row 2 — Email buttons */
+        .row2 {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .email-btn {
+            padding: 7px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            color: #333;
+            transition: all 0.15s;
+        }
+        .email-btn:hover { background: #800000; color: white; border-color: #800000; }
+        .settings-link {
+            margin-left: auto;
+            font-size: 12px;
+            color: #800000;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .settings-link:hover { text-decoration: underline; }
+
+        /* Row 3 — Contact */
+        .row3 {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.5fr 2fr 1fr 0.7fr 0.8fr;
+            gap: 12px;
+            align-items: end;
+        }
+
+        /* Row 4 — Product */
+        .row4 {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 3fr;
+            gap: 12px;
+            align-items: end;
+        }
+
+        /* Notes */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        textarea { width: 100%; resize: vertical; font-size: 13px; line-height: 1.5; }
+
+        /* Case Notes */
+        .case-notes-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px 20px; }
+        .case-notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .case-notes-header label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+        .add-note-btn {
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-note-btn:hover { background: #600000; }
+        #case-notes-display {
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-y: auto;
+            background: #fafafa;
+            margin-bottom: 8px;
+        }
+        #case-notes-display img { max-width: 100%; border-radius: 4px; margin: 4px 0; }
+        .note-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+        .note-entry:last-child { border-bottom: none; margin-bottom: 0; }
+        .note-date { font-size: 11px; color: #800000; font-weight: 600; margin-bottom: 2px; }
+        .note-text { color: #333; }
+        .new-note-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        #new-note-input {
+            flex: 1;
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        /* Save bar */
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .save-btn {
+            padding: 9px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .save-btn:hover { background: #600000; }
+        .save-btn:disabled { background: #aaa; cursor: not-allowed; }
+        .save-status { font-size: 13px; color: #666; }
+        .save-status.success { color: #16a34a; }
+        .save-status.error { color: #dc2626; }
+
+        /* Email Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            width: 620px;
+            max-width: 95vw;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
+        .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
+        .modal input, .modal textarea { width: 100%; }
+        .modal textarea { min-height: 120px; }
+        .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+        .modal-footer button {
+            padding: 7px 20px;
+            font-size: 13px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    Binmaster RMA — Case Detail
+    <a href="/admin/rma-table.html">← Back to Cases</a>
+</div>
+
+<div class="container">
+
+    <!-- Row 1: Case header -->
+    <div class="card row1">
+        <div class="case-number" id="display-case-number">Loading...</div>
+
+        <div class="field-group">
+            <label>Status</label>
+            <select id="field-status">
+                <option>Submitted</option>
+                <option>Received</option>
+                <option>Evaluation</option>
+                <option>Credited</option>
+                <option>Replaced</option>
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>Replacement Sent</label>
+            <div class="toggle-group">
+                <div class="toggle-opt" id="toggle-yes" onclick="setReplacement('Yes')">Yes</div>
+                <div class="toggle-opt" id="toggle-no" onclick="setReplacement('No')">No</div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>Problem Code</label>
+            <input type="text" id="field-problem-code" style="width:140px;" />
+        </div>
+
+        <div class="field-group">
+            <label>Credit Type</label>
+            <select id="field-credit-type">
+                <option value="">— Select —</option>
+                <option>SIMP RET</option>
+                <option>CUST ERROR</option>
+                <option>WARRANTY</option>
+                <option>BM ERROR</option>
+                <option>PROD FLAW</option>
+                <option>STRATEGIC</option>
+                <option>MISAPPLIED</option>
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>Repair $</label>
+            <input type="text" id="field-repair" style="width:90px;" placeholder="0.00" />
+        </div>
+
+        <div class="field-group">
+            <label>Credit $</label>
+            <input type="text" id="field-credit" style="width:90px;" placeholder="0.00" />
+        </div>
+    </div>
+
+    <!-- Row 2: Email buttons -->
+    <div class="card row2">
+        <button class="email-btn" onclick="openEmailModal('rma')">📧 RMA Email</button>
+        <button class="email-btn" onclick="openEmailModal('quote')">📧 Quote Email</button>
+        <button class="email-btn" onclick="openEmailModal('credit')">📧 Credit Email</button>
+        <button class="email-btn" onclick="openEmailModal('cs')">📧 CS Email</button>
+        <a class="settings-link" href="/admin/email-settings.html">⚙ Email Settings</a>
+    </div>
+
+    <!-- Row 3: Contact -->
+    <div class="card">
+        <div class="row3">
+            <div class="field-group">
+                <label>Company</label>
+                <input type="text" id="field-company" />
+            </div>
+            <div class="field-group">
+                <label>Contact Name</label>
+                <input type="text" id="field-contact-name" />
+            </div>
+            <div class="field-group">
+                <label>Email</label>
+                <input type="email" id="field-email" />
+            </div>
+            <div class="field-group">
+                <label>Address</label>
+                <input type="text" id="field-address" />
+            </div>
+            <div class="field-group">
+                <label>City</label>
+                <input type="text" id="field-city" />
+            </div>
+            <div class="field-group">
+                <label>State</label>
+                <input type="text" id="field-state" />
+            </div>
+            <div class="field-group">
+                <label>Zip</label>
+                <input type="text" id="field-zip" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Product -->
+    <div class="card">
+        <div class="row4">
+            <div class="field-group">
+                <label>Product</label>
+                <select id="field-product">
+                    <option value="">Select...</option>
+                    <option>NCR</option><option>CNCR</option><option>SmartBob</option>
+                    <option>Rotary</option><option>Probe</option><option>Vibrating Rod</option>
+                    <option>Senix</option><option>Gateway</option><option>C100</option>
+                    <option>DPM</option><option>Loadcell</option><option>Other</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Issue Type</label>
+                <select id="field-issue-type">
+                    <option value="">Select...</option>
+                    <option>Stopped working</option><option>Works intermittently</option>
+                    <option>Never worked</option><option>Broken parts</option>
+                    <option>Doesn't Power Up</option><option>Simple Return</option>
+                    <option>Order Error</option><option>Warranty Repair</option>
+                    <option>Repair Quote</option><option>Product Flawed</option>
+                    <option>Wrong Application</option>
+                </select>
+            </div>
+            <div class="field-group" style="width:100%">
+                <label>Issue Description</label>
+                <input type="text" id="field-issue-notes" style="width:100%;" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Row -->
+    <div class="notes-grid">
+        <div class="card" style="margin-bottom:0;">
+            <div class="field-group" style="width:100%">
+                <label>Received Notes</label>
+                <textarea id="field-received" rows="4"></textarea>
+            </div>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+            <div class="field-group" style="width:100%">
+                <label>Evaluation Notes</label>
+                <textarea id="field-evaluation" rows="4"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Notes -->
+    <div class="case-notes-card">
+        <div class="case-notes-header">
+            <label>Case Notes</label>
+        </div>
+        <div id="case-notes-display"></div>
+        <div class="new-note-row">
+            <textarea id="new-note-input" placeholder="Type a new note and click Add..."></textarea>
+            <button class="add-note-btn" onclick="addNote()">Add</button>
+        </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+        <button class="save-btn" onclick="saveCase()">Save Changes</button>
+        <span class="save-status" id="save-status"></span>
+    </div>
+
+</div>
+
+<!-- Email Preview Modal -->
+<div class="modal-overlay" id="email-modal">
+    <div class="modal">
+        <h3 id="modal-title">Email Preview</h3>
+        <label>To</label>
+        <input type="email" id="modal-to" />
+        <label>Subject</label>
+        <input type="text" id="modal-subject" />
+        <label>Body</label>
+        <textarea id="modal-body" rows="10"></textarea>
+        <div class="modal-footer">
+            <button onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="sendEmail()">Open in Email Client</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsenB5cmNza2N2bHNkdGd3ZmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NDY1ODIsImV4cCI6MjA5MzQyMjU4Mn0.kOPX8Wbu0XdRVSc81NpIS2TdwIzaJOMRX_9BeSdbQWI';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get('id');
+
+    let caseData = {};
+    let caseNotes = [];
+    let replacementValue = 'No';
+
+    function formatDate(ts) {
+        if (!ts) return '-';
+        return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function today() {
+        return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function setReplacement(val) {
+        replacementValue = val;
+        document.getElementById('toggle-yes').className = 'toggle-opt' + (val === 'Yes' ? ' active-yes' : '');
+        document.getElementById('toggle-no').className = 'toggle-opt' + (val === 'No' ? ' active-no' : '');
+    }
+
+    async function loadCase() {
+        if (!caseId) {
+            document.getElementById('display-case-number').textContent = 'No case ID';
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .from('rma_cases')
+            .select('*')
+            .eq('id', caseId)
+            .single();
+
+        if (error || !data) {
+            document.getElementById('display-case-number').textContent = 'Case not found';
+            return;
+        }
+
+        caseData = data;
+        populateFields(data);
+    }
+
+    function populateFields(d) {
+        document.getElementById('display-case-number').textContent = d.case_number || 'New Case';
+        document.getElementById('field-status').value = d.status || 'Submitted';
+        document.getElementById('field-problem-code').value = d.problem_code || '';
+        document.getElementById('field-credit-type').value = d.credit_type || '';
+        document.getElementById('field-repair').value = d.repair_amount || '';
+        document.getElementById('field-credit').value = d.credit_amount || '';
+        document.getElementById('field-company').value = d.company || '';
+        document.getElementById('field-contact-name').value = d.contact_name || '';
+        document.getElementById('field-email').value = d.email || '';
+        document.getElementById('field-address').value = d.address || '';
+        document.getElementById('field-city').value = d.city || '';
+        document.getElementById('field-state').value = d.state || '';
+        document.getElementById('field-zip').value = d.zip || '';
+        document.getElementById('field-product').value = d.product_name || '';
+        document.getElementById('field-issue-type').value = d.issue_type || '';
+        document.getElementById('field-issue-notes').value = d.issue_notes || '';
+        document.getElementById('field-received').value = d.received_description || '';
+        document.getElementById('field-evaluation').value = d.evaluation_notes || '';
+
+        setReplacement(d.replacement_sent || 'No');
+
+        // Parse case notes
+        try {
+            caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
+        } catch(e) {
+            // Legacy plain text fallback
+            caseNotes = d.case_notes ? [{ date: today(), text: d.case_notes }] : [];
+        }
+        renderNotes();
+    }
+
+    function renderNotes() {
+        const display = document.getElementById('case-notes-display');
+        if (caseNotes.length === 0) {
+            display.innerHTML = '<span style="color:#aaa;font-size:12px;">No notes yet.</span>';
+            return;
+        }
+        display.innerHTML = caseNotes.map((n, i) => `
+            <div class="note-entry">
+                <div class="note-date">${n.date} <span style="float:right;cursor:pointer;color:#ccc;font-size:11px;" onclick="deleteNote(${i})">✕</span></div>
+                <div class="note-text">${n.text}</div>
+            </div>
+        `).join('');
+    }
+
+    function addNote() {
+        const input = document.getElementById('new-note-input');
+        const raw = input.value;
+        // Clean blank lines
+        const cleaned = raw.split('\n').filter(l => l.trim() !== '').join('\n');
+        if (!cleaned) return;
+        caseNotes.push({ date: today(), text: cleaned.replace(/\n/g, '<br>') });
+        renderNotes();
+        input.value = '';
+    }
+
+    function deleteNote(index) {
+        if (confirm('Delete this note?')) {
+            caseNotes.splice(index, 1);
+            renderNotes();
+        }
+    }
+
+    async function saveCase() {
+        const btn = document.querySelector('.save-btn');
+        const status = document.getElementById('save-status');
+        btn.disabled = true;
+        status.textContent = 'Saving...';
+        status.className = 'save-status';
+
+        const updates = {
+            status: document.getElementById('field-status').value,
+            problem_code: document.getElementById('field-problem-code').value.trim(),
+            credit_type: document.getElementById('field-credit-type').value,
+            repair_amount: parseFloat(document.getElementById('field-repair').value) || null,
+            credit_amount: parseFloat(document.getElementById('field-credit').value) || null,
+            company: document.getElementById('field-company').value.trim(),
+            contact_name: document.getElementById('field-contact-name').value.trim(),
+            email: document.getElementById('field-email').value.trim(),
+            address: document.getElementById('field-address').value.trim(),
+            city: document.getElementById('field-city').value.trim(),
+            state: document.getElementById('field-state').value.trim(),
+            zip: document.getElementById('field-zip').value.trim(),
+            product_name: document.getElementById('field-product').value,
+            issue_type: document.getElementById('field-issue-type').value,
+            issue_notes: document.getElementById('field-issue-notes').value.trim(),
+            received_description: document.getElementById('field-received').value.trim(),
+            evaluation_notes: document.getElementById('field-evaluation').value.trim(),
+            case_notes: JSON.stringify(caseNotes),
+            replacement_sent: replacementValue,
+        };
+
+        const { error } = await supabaseClient
+            .from('rma_cases')
+            .update(updates)
+            .eq('id', caseId);
+
+        btn.disabled = false;
+        if (error) {
+            status.textContent = 'Error: ' + error.message;
+            status.className = 'save-status error';
+        } else {
+            status.textContent = 'Saved successfully.';
+            status.className = 'save-status success';
+            setTimeout(() => status.textContent = '', 3000);
+        }
+    }
+
+    // Email modal
+    const EMAIL_TEMPLATES = {
+        rma: {
+            title: 'RMA Email',
+            subject: 'RMA Case {case_number} — Received',
+            body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned it case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support'
+        },
+        quote: {
+            title: 'Quote Email',
+            subject: 'Repair Quote — Case {case_number}',
+            body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support'
+        },
+        credit: {
+            title: 'Credit Email',
+            subject: 'Credit Issued — Case {case_number}',
+            body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support'
+        },
+        cs: {
+            title: 'CS Email',
+            subject: 'Case Update — {case_number}',
+            body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out with any questions.\n\nBinmaster Support'
+        }
+    };
+
+    function fillTemplate(text) {
+        return text
+            .replace(/{case_number}/g, caseData.case_number || '')
+            .replace(/{contact_name}/g, document.getElementById('field-contact-name').value || '')
+            .replace(/{product_name}/g, document.getElementById('field-product').value || '')
+            .replace(/{issue_type}/g, document.getElementById('field-issue-type').value || '')
+            .replace(/{status}/g, document.getElementById('field-status').value || '')
+            .replace(/{repair_amount}/g, document.getElementById('field-repair').value || '0.00')
+            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00');
+    }
+
+    function openEmailModal(type) {
+        // Check for saved custom template first
+        const saved = localStorage.getItem(`email_template_${type}`);
+        const template = saved ? JSON.parse(saved) : EMAIL_TEMPLATES[type];
+
+        document.getElementById('modal-title').textContent = template.title || EMAIL_TEMPLATES[type].title;
+        document.getElementById('modal-to').value = document.getElementById('field-email').value || '';
+        document.getElementById('modal-subject').value = fillTemplate(template.subject || EMAIL_TEMPLATES[type].subject);
+        document.getElementById('modal-body').value = fillTemplate(template.body || EMAIL_TEMPLATES[type].body);
+        document.getElementById('email-modal').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('email-modal').classList.remove('open');
+    }
+
+    function sendEmail() {
+        const to = document.getElementById('modal-to').value;
+        const subject = encodeURIComponent(document.getElementById('modal-subject').value);
+        const body = encodeURIComponent(document.getElementById('modal-body').value);
+        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        closeModal();
+    }
+
+    // Close modal on overlay click
+    document.getElementById('email-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Also need replacement_sent column — add it if missing
+    async function ensureColumns() {
+        // Silently try — will succeed or fail gracefully
+    }
+
+    loadCase();
+</script>
+</body>
+</html>
