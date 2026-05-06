@@ -20,10 +20,9 @@
             justify-content: space-between;
         }
         .top-bar a { color: white; font-size: 13px; font-weight: normal; text-decoration: none; opacity: 0.8; }
-        .top-bar a:hover { opacity: 1; }
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px 60px; }
 
-        /* Toggle Bar */
+        /* Toggle Charts */
         .charts-toggle {
             display: flex;
             align-items: center;
@@ -36,15 +35,8 @@
             font-weight: 600;
         }
         .charts-toggle:hover { opacity: 0.75; }
-        .toggle-arrow {
-            display: inline-block;
-            font-size: 11px;
-            transition: transform 0.25s ease;
-            color: #800000;
-        }
+        .toggle-arrow { display: inline-block; font-size: 11px; transition: transform 0.25s ease; }
         .toggle-arrow.open { transform: rotate(180deg); }
-
-        /* Charts Row */
         .charts-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -55,70 +47,120 @@
             transition: max-height 0.35s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
             opacity: 1;
         }
-        .charts-row.collapsed {
-            max-height: 0;
-            opacity: 0;
-            margin-bottom: 0;
-        }
+        .charts-row.collapsed { max-height: 0; opacity: 0; margin-bottom: 0; }
         .chart-card {
             background: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
         }
-        .chart-card h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-            margin-bottom: 16px;
-        }
+        .chart-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 16px; }
         .chart-card canvas { max-height: 220px; }
-
-        /* Stats Box */
-        .stats-box {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-        }
-        .stats-box h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #888;
-            margin-bottom: 16px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .stat-item {
-            background: #f9f9f9;
-            border-radius: 6px;
-            padding: 12px 14px;
-        }
-        .stat-item .s-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #888;
-            margin-bottom: 4px;
-        }
+        .stats-box { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
+        .stats-box h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 16px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-item { background: #f9f9f9; border-radius: 6px; padding: 12px 14px; }
+        .stat-item .s-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 4px; }
         .stat-item .s-value { font-size: 24px; font-weight: 700; color: #222; }
         .stat-item.red .s-value { color: #800000; }
         .stat-item.blue .s-value { color: #1d4ed8; }
         .stat-item.green .s-value { color: #166534; }
         .stat-item.purple .s-value { color: #5b21b6; }
 
-        .page-header {
+        /* Table Controls */
+        .table-controls {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .page-title { font-size: 20px; font-weight: 700; color: #800000; }
+        .controls-right { display: flex; align-items: center; gap: 10px; }
+        .count { font-size: 13px; color: #666; }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+        .view-btn {
+            padding: 6px 14px;
+            cursor: pointer;
+            background: white;
+            color: #555;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .view-btn.active { background: #800000; color: white; }
+
+        /* Column Chooser */
+        .col-chooser-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            color: #555;
+            position: relative;
+        }
+        .col-chooser-btn:hover { border-color: #800000; color: #800000; }
+        .col-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 100;
+            width: 260px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .col-dropdown.open { display: block; }
+        .col-dropdown h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 10px; }
+        .col-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .col-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #333;
+            cursor: pointer;
+            padding: 3px 0;
+        }
+        .col-item input { cursor: pointer; accent-color: #800000; }
+        .col-dropdown-footer {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+        }
+        .col-dropdown-footer button {
+            flex: 1;
+            padding: 5px;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .col-dropdown-footer button.apply {
+            background: #800000;
+            color: white;
+            border-color: #800000;
+        }
+        .chooser-wrap { position: relative; }
+
         .filters {
             display: flex;
             gap: 10px;
@@ -133,6 +175,9 @@
             background: white;
         }
         .filters input { width: 220px; }
+
+        /* Resizable Table */
+        .table-wrap { overflow-x: auto; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -141,6 +186,7 @@
             overflow: hidden;
             border: 1px solid #e0e0e0;
             font-size: 13px;
+            table-layout: fixed;
         }
         thead { background: #800000; color: white; }
         th {
@@ -151,11 +197,28 @@
             text-transform: uppercase;
             letter-spacing: 0.04em;
             white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+        th .resize-handle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: col-resize;
+            background: rgba(255,255,255,0.2);
+            user-select: none;
+        }
+        th .resize-handle:hover { background: rgba(255,255,255,0.5); }
         td {
             padding: 10px 12px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: top;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fdf8f8; }
@@ -174,7 +237,6 @@
         .doc-link { color: #800000; text-decoration: none; font-weight: 600; font-size: 12px; }
         .doc-link:hover { text-decoration: underline; }
         .no-data { text-align: center; padding: 40px; color: #888; font-size: 14px; }
-        .count { font-size: 13px; color: #666; }
         .edit-btn {
             background: none;
             border: 1px solid #ccc;
@@ -196,68 +258,49 @@
 
 <div class="container">
 
-    <!-- Toggle -->
     <div class="charts-toggle" onclick="toggleCharts()">
-        <span class="toggle-arrow" id="toggle-arrow">▼</span>
+        <span class="toggle-arrow open" id="toggle-arrow">▼</span>
         <span id="toggle-label">Hide Charts</span>
     </div>
 
-    <!-- Charts Row -->
     <div class="charts-row" id="charts-row">
-
         <div class="stats-box">
             <h3>Case Summary</h3>
             <div class="stats-grid">
-                <div class="stat-item red">
-                    <div class="s-label">Total Cases</div>
-                    <div class="s-value" id="m-total">—</div>
-                </div>
-                <div class="stat-item blue">
-                    <div class="s-label">Submitted</div>
-                    <div class="s-value" id="m-submitted">—</div>
-                </div>
-                <div class="stat-item">
-                    <div class="s-label">Received</div>
-                    <div class="s-value" id="m-received">—</div>
-                </div>
-                <div class="stat-item purple">
-                    <div class="s-label">Evaluation</div>
-                    <div class="s-value" id="m-evaluation">—</div>
-                </div>
-                <div class="stat-item green">
-                    <div class="s-label">Credited</div>
-                    <div class="s-value" id="m-credited">—</div>
-                </div>
-                <div class="stat-item green">
-                    <div class="s-label">Replaced</div>
-                    <div class="s-value" id="m-replaced">—</div>
-                </div>
-                <div class="stat-item">
-                    <div class="s-label">Total Credit $</div>
-                    <div class="s-value" style="font-size:18px;" id="m-credit">—</div>
-                </div>
-                <div class="stat-item">
-                    <div class="s-label">Total Repair $</div>
-                    <div class="s-value" style="font-size:18px;" id="m-repair">—</div>
+                <div class="stat-item red"><div class="s-label">Total Cases</div><div class="s-value" id="m-total">—</div></div>
+                <div class="stat-item blue"><div class="s-label">Submitted</div><div class="s-value" id="m-submitted">—</div></div>
+                <div class="stat-item"><div class="s-label">Received</div><div class="s-value" id="m-received">—</div></div>
+                <div class="stat-item purple"><div class="s-label">Evaluation</div><div class="s-value" id="m-evaluation">—</div></div>
+                <div class="stat-item green"><div class="s-label">Credited</div><div class="s-value" id="m-credited">—</div></div>
+                <div class="stat-item green"><div class="s-label">Replaced</div><div class="s-value" id="m-replaced">—</div></div>
+                <div class="stat-item"><div class="s-label">Total Credit $</div><div class="s-value" style="font-size:18px;" id="m-credit">—</div></div>
+                <div class="stat-item"><div class="s-label">Total Repair $</div><div class="s-value" style="font-size:18px;" id="m-repair">—</div></div>
+            </div>
+        </div>
+        <div class="chart-card"><h3>Cases by Product</h3><canvas id="pie-chart"></canvas></div>
+        <div class="chart-card"><h3>RMA Cases by Month</h3><canvas id="line-chart"></canvas></div>
+    </div>
+
+    <div class="table-controls">
+        <div class="page-title">All RMA Cases</div>
+        <div class="controls-right">
+            <div class="count" id="case-count">Loading...</div>
+            <div class="view-toggle">
+                <button class="view-btn active" id="btn-default" onclick="switchView('default')">Default</button>
+                <button class="view-btn" id="btn-custom" onclick="switchView('custom')">Custom</button>
+            </div>
+            <div class="chooser-wrap" id="chooser-wrap" style="display:none;">
+                <button class="col-chooser-btn" onclick="toggleDropdown()">⚙ Columns</button>
+                <div class="col-dropdown" id="col-dropdown">
+                    <h4>Choose Columns</h4>
+                    <div class="col-list" id="col-list"></div>
+                    <div class="col-dropdown-footer">
+                        <button onclick="resetColumns()">Reset</button>
+                        <button class="apply" onclick="applyColumns()">Apply</button>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="chart-card">
-            <h3>Cases by Product</h3>
-            <canvas id="pie-chart"></canvas>
-        </div>
-
-        <div class="chart-card">
-            <h3>RMA Cases by Month</h3>
-            <canvas id="line-chart"></canvas>
-        </div>
-
-    </div>
-
-    <div class="page-header">
-        <div class="page-title">All RMA Cases</div>
-        <div class="count" id="case-count">Loading...</div>
     </div>
 
     <div class="filters">
@@ -272,40 +315,21 @@
         </select>
         <select id="filter-product" onchange="filterTable()">
             <option value="">All Products</option>
-            <option>NCR</option>
-            <option>CNCR</option>
-            <option>SmartBob</option>
-            <option>Rotary</option>
-            <option>Probe</option>
-            <option>Vibrating Rod</option>
-            <option>Senix</option>
-            <option>Gateway</option>
-            <option>C100</option>
-            <option>DPM</option>
-            <option>Loadcell</option>
-            <option>Other</option>
+            <option>NCR</option><option>CNCR</option><option>SmartBob</option>
+            <option>Rotary</option><option>Probe</option><option>Vibrating Rod</option>
+            <option>Senix</option><option>Gateway</option><option>C100</option>
+            <option>DPM</option><option>Loadcell</option><option>Other</option>
         </select>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Case #</th>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Company</th>
-                <th>Product</th>
-                <th>Issue Type</th>
-                <th>Status</th>
-                <th>Doc #</th>
-                <th>File</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            <tr><td colspan="10" class="no-data">Loading cases...</td></tr>
-        </tbody>
-    </table>
+    <div class="table-wrap">
+        <table id="rma-table">
+            <thead id="table-head"></thead>
+            <tbody id="table-body">
+                <tr><td colspan="20" class="no-data">Loading cases...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -315,31 +339,149 @@
 
     let allCases = [];
     let chartsOpen = true;
+    let currentView = 'default';
+
+    // All available columns
+    const ALL_COLUMNS = [
+        { key: 'case_number',          label: 'Case #' },
+        { key: 'date_created',         label: 'Date' },
+        { key: 'contact_name',         label: 'Name' },
+        { key: 'email',                label: 'Email' },
+        { key: 'company',              label: 'Company' },
+        { key: 'address',              label: 'Address' },
+        { key: 'city',                 label: 'City' },
+        { key: 'state',                label: 'State' },
+        { key: 'zip',                  label: 'Zip' },
+        { key: 'product_name',         label: 'Product' },
+        { key: 'issue_type',           label: 'Issue Type' },
+        { key: 'issue_notes',          label: 'Issue Notes' },
+        { key: 'document_number',      label: 'Doc #' },
+        { key: 'attached_documents',   label: 'File' },
+        { key: 'status',               label: 'Status' },
+        { key: 'problem_code',         label: 'Problem Code' },
+        { key: 'credit_type',          label: 'Credit Type' },
+        { key: 'repair_amount',        label: 'Repair $' },
+        { key: 'credit_amount',        label: 'Credit $' },
+        { key: 'received_description', label: 'Received Desc' },
+        { key: 'evaluation_notes',     label: 'Eval Notes' },
+        { key: 'case_notes',           label: 'Case Notes' },
+        { key: 'action',               label: 'Action' },
+    ];
+
+    const DEFAULT_COLUMNS = [
+        'case_number','date_created','contact_name','company',
+        'product_name','issue_type','status','document_number',
+        'attached_documents','action'
+    ];
+
+    let customColumns = [...DEFAULT_COLUMNS];
 
     const COLORS = [
         '#800000','#c0392b','#e74c3c','#e67e22','#f39c12',
         '#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'
     ];
 
+    // Charts toggle
     function toggleCharts() {
         chartsOpen = !chartsOpen;
         const row = document.getElementById('charts-row');
         const arrow = document.getElementById('toggle-arrow');
         const label = document.getElementById('toggle-label');
-        if (chartsOpen) {
-            row.classList.remove('collapsed');
-            arrow.classList.add('open');
-            label.textContent = 'Hide Charts';
-        } else {
-            row.classList.add('collapsed');
-            arrow.classList.remove('open');
-            label.textContent = 'Show Charts';
-        }
+        row.classList.toggle('collapsed', !chartsOpen);
+        arrow.classList.toggle('open', chartsOpen);
+        label.textContent = chartsOpen ? 'Hide Charts' : 'Show Charts';
     }
 
-    // Start open with arrow pointing down
-    document.getElementById('toggle-arrow').classList.add('open');
+    // View switcher
+    function switchView(view) {
+        currentView = view;
+        document.getElementById('btn-default').classList.toggle('active', view === 'default');
+        document.getElementById('btn-custom').classList.toggle('active', view === 'custom');
+        document.getElementById('chooser-wrap').style.display = view === 'custom' ? 'block' : 'none';
+        renderTable(getFiltered());
+        buildTableHead();
+    }
 
+    // Column chooser dropdown
+    function toggleDropdown() {
+        document.getElementById('col-dropdown').classList.toggle('open');
+        buildColList();
+    }
+
+    function buildColList() {
+        const list = document.getElementById('col-list');
+        list.innerHTML = ALL_COLUMNS.map(col => `
+            <label class="col-item">
+                <input type="checkbox" value="${col.key}"
+                    ${customColumns.includes(col.key) ? 'checked' : ''} />
+                ${col.label}
+            </label>
+        `).join('');
+    }
+
+    function applyColumns() {
+        const checks = document.querySelectorAll('#col-list input[type=checkbox]');
+        customColumns = Array.from(checks).filter(c => c.checked).map(c => c.value);
+        document.getElementById('col-dropdown').classList.remove('open');
+        buildTableHead();
+        renderTable(getFiltered());
+    }
+
+    function resetColumns() {
+        customColumns = [...DEFAULT_COLUMNS];
+        buildColList();
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', e => {
+        const wrap = document.getElementById('chooser-wrap');
+        if (wrap && !wrap.contains(e.target)) {
+            document.getElementById('col-dropdown').classList.remove('open');
+        }
+    });
+
+    function getActiveColumns() {
+        return currentView === 'default'
+            ? ALL_COLUMNS.filter(c => DEFAULT_COLUMNS.includes(c.key))
+            : ALL_COLUMNS.filter(c => customColumns.includes(c.key));
+    }
+
+    function buildTableHead() {
+        const cols = getActiveColumns();
+        document.getElementById('table-head').innerHTML = `
+            <tr>${cols.map((col, i) => `
+                <th style="width:${col.key === 'action' ? 70 : 130}px;" data-col="${i}">
+                    ${col.label}
+                    <div class="resize-handle" onmousedown="startResize(event, ${i})"></div>
+                </th>
+            `).join('')}</tr>
+        `;
+    }
+
+    // Column resizing
+    let resizing = null;
+
+    function startResize(e, colIndex) {
+        e.preventDefault();
+        const th = document.querySelectorAll('thead th')[colIndex];
+        resizing = { th, startX: e.clientX, startW: th.offsetWidth };
+        document.addEventListener('mousemove', doResize);
+        document.addEventListener('mouseup', stopResize);
+    }
+
+    function doResize(e) {
+        if (!resizing) return;
+        const newW = Math.max(60, resizing.startW + (e.clientX - resizing.startX));
+        resizing.th.style.width = newW + 'px';
+    }
+
+    function stopResize() {
+        resizing = null;
+        document.removeEventListener('mousemove', doResize);
+        document.removeEventListener('mouseup', stopResize);
+    }
+
+    // Load data
     async function loadCases() {
         const { data, error } = await supabaseClient
             .from('rma_cases')
@@ -348,7 +490,7 @@
 
         if (error) {
             document.getElementById('table-body').innerHTML =
-                `<tr><td colspan="10" class="no-data">Error: ${error.message}</td></tr>`;
+                `<tr><td colspan="20" class="no-data">Error: ${error.message}</td></tr>`;
             return;
         }
 
@@ -356,6 +498,7 @@
         computeMetrics(allCases);
         buildPieChart(allCases);
         buildLineChart(allCases);
+        buildTableHead();
         renderTable(allCases);
     }
 
@@ -380,14 +523,8 @@
         const values = Object.values(counts);
         new Chart(document.getElementById('pie-chart'), {
             type: 'pie',
-            data: {
-                labels,
-                datasets: [{ data: values, backgroundColor: COLORS.slice(0, labels.length), borderWidth: 1 }]
-            },
-            options: {
-                plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } },
-                maintainAspectRatio: true
-            }
+            data: { labels, datasets: [{ data: values, backgroundColor: COLORS.slice(0, labels.length), borderWidth: 1 }] },
+            options: { plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } }, maintainAspectRatio: true }
         });
     }
 
@@ -396,44 +533,21 @@
         cases.forEach(c => {
             if (!c.date_created) return;
             const d = new Date(c.date_created);
-            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
             monthlyCounts[key] = (monthlyCounts[key] || 0) + 1;
         });
         const sorted = Object.keys(monthlyCounts).sort();
-        const labels = sorted.map(k => {
-            const [y, m] = k.split('-');
-            return new Date(y, m - 1).toLocaleString('default', { month: 'short', year: '2-digit' });
-        });
+        const labels = sorted.map(k => { const [y,m] = k.split('-'); return new Date(y,m-1).toLocaleString('default',{month:'short',year:'2-digit'}); });
         const values = sorted.map(k => monthlyCounts[k]);
         new Chart(document.getElementById('line-chart'), {
             type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    label: 'Cases',
-                    data: values,
-                    borderColor: '#800000',
-                    backgroundColor: 'rgba(128,0,0,0.08)',
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } },
-                    x: { ticks: { font: { size: 11 } } }
-                },
-                maintainAspectRatio: true
-            }
+            data: { labels, datasets: [{ label: 'Cases', data: values, borderColor: '#800000', backgroundColor: 'rgba(128,0,0,0.08)', borderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 }] },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } }, maintainAspectRatio: true }
         });
     }
 
     function getFileUrl(path) {
-        if (!path) return null;
-        return `${SUPABASE_URL}/storage/v1/object/public/rma-documents/${path}`;
+        return path ? `${SUPABASE_URL}/storage/v1/object/public/rma-documents/${path}` : null;
     }
 
     function formatDate(ts) {
@@ -441,54 +555,52 @@
         return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
-    function renderTable(cases) {
-        const tbody = document.getElementById('table-body');
-        document.getElementById('case-count').textContent = `${cases.length} case${cases.length !== 1 ? 's' : ''}`;
-        if (cases.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" class="no-data">No cases found.</td></tr>';
-            return;
+    function cellValue(c, key) {
+        switch(key) {
+            case 'date_created': return formatDate(c.date_created);
+            case 'status': return c.status ? `<span class="status-badge status-${c.status}">${c.status}</span>` : '-';
+            case 'attached_documents': return c.attached_documents ? `<a class="doc-link" href="${getFileUrl(c.attached_documents)}" target="_blank">View File</a>` : '-';
+            case 'contact_name': return `${c.contact_name || '-'}<br><span style="color:#888;font-size:11px;">${c.email||''}</span>`;
+            case 'email': return c.email || '-';
+            case 'repair_amount': return c.repair_amount ? `$${parseFloat(c.repair_amount).toFixed(2)}` : '-';
+            case 'credit_amount': return c.credit_amount ? `$${parseFloat(c.credit_amount).toFixed(2)}` : '-';
+            case 'action': return `<button class="edit-btn" onclick="viewCase('${c.id}')">View</button>`;
+            default: return c[key] || '-';
         }
-        tbody.innerHTML = cases.map(c => `
-            <tr>
-                <td><strong>${c.case_number || '-'}</strong></td>
-                <td>${formatDate(c.date_created)}</td>
-                <td>${c.contact_name || '-'}<br><span style="color:#888;font-size:11px;">${c.email || ''}</span></td>
-                <td>${c.company || '-'}</td>
-                <td>${c.product_name || '-'}</td>
-                <td>${c.issue_type || '-'}</td>
-                <td><span class="status-badge status-${c.status}">${c.status || 'Submitted'}</span></td>
-                <td>${c.document_number || '-'}</td>
-                <td>${c.attached_documents
-                    ? `<a class="doc-link" href="${getFileUrl(c.attached_documents)}" target="_blank">View File</a>`
-                    : '-'}</td>
-                <td><button class="edit-btn" onclick="viewCase('${c.id}')">View</button></td>
-            </tr>
-        `).join('');
     }
 
-    function filterTable() {
+    function getFiltered() {
         const search = document.getElementById('search').value.toLowerCase();
         const status = document.getElementById('filter-status').value;
         const product = document.getElementById('filter-product').value;
-        const filtered = allCases.filter(c => {
+        return allCases.filter(c => {
             const matchSearch = !search ||
-                (c.contact_name || '').toLowerCase().includes(search) ||
-                (c.email || '').toLowerCase().includes(search) ||
-                (c.company || '').toLowerCase().includes(search) ||
-                (c.case_number || '').toLowerCase().includes(search);
-            const matchStatus = !status || c.status === status;
-            const matchProduct = !product || c.product_name === product;
-            return matchSearch && matchStatus && matchProduct;
+                (c.contact_name||'').toLowerCase().includes(search) ||
+                (c.email||'').toLowerCase().includes(search) ||
+                (c.company||'').toLowerCase().includes(search) ||
+                (c.case_number||'').toLowerCase().includes(search);
+            return matchSearch && (!status || c.status === status) && (!product || c.product_name === product);
         });
-        renderTable(filtered);
     }
 
-    function viewCase(id) {
-        window.location.href = `/admin/rma-case.html?id=${id}`;
+    function renderTable(cases) {
+        const cols = getActiveColumns();
+        const tbody = document.getElementById('table-body');
+        document.getElementById('case-count').textContent = `${cases.length} case${cases.length !== 1 ? 's' : ''}`;
+        if (cases.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="${cols.length}" class="no-data">No cases found.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = cases.map(c =>
+            `<tr>${cols.map(col => `<td title="${String(c[col.key]||'').replace(/"/g,"'")}">${cellValue(c, col.key)}</td>`).join('')}</tr>`
+        ).join('');
     }
+
+    function filterTable() { renderTable(getFiltered()); }
+
+    function viewCase(id) { window.location.href = `/admin/rma-case.html?id=${id}`; }
 
     loadCases();
 </script>
-
 </body>
 </html>
