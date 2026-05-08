@@ -37,7 +37,6 @@
         .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.1); }
         .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px 60px; }
-
         .charts-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; margin-bottom: 12px; color: #800000; font-size: 13px; font-weight: 600; }
         .charts-toggle:hover { opacity: 0.75; }
         .toggle-arrow { display: inline-block; font-size: 11px; transition: transform 0.25s ease; }
@@ -57,7 +56,6 @@
         .stat-item.blue .s-value { color: #1d4ed8; }
         .stat-item.green .s-value { color: #166534; }
         .stat-item.purple .s-value { color: #5b21b6; }
-
         .table-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
         .page-title { font-size: 18px; font-weight: 700; color: #800000; }
         .controls-right { display: flex; align-items: center; gap: 10px; }
@@ -77,24 +75,22 @@
         .col-dropdown-footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 8px; }
         .col-dropdown-footer button { flex: 1; padding: 5px; font-size: 11px; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .col-dropdown-footer button.apply { background: #800000; color: white; border-color: #800000; }
-
         .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .filters input, .filters select { padding: 7px 11px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; }
         .filters input { width: 260px; }
-
         .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin: 24px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #800000; }
         .section-label.completed { color: #166534; border-bottom-color: #166534; }
-
         .table-wrap { overflow-x: auto; margin-bottom: 8px; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; font-size: 13px; table-layout: fixed; }
         thead { background: #800000; color: white; }
-        thead.completed-head { background: #166534; }
+        thead.completed-head { background: #166634; }
         th { padding: 11px 12px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; position: relative; overflow: hidden; text-overflow: ellipsis; }
         th .resize-handle { position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; background: rgba(255,255,255,0.2); user-select: none; }
         th .resize-handle:hover { background: rgba(255,255,255,0.5); }
         td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fdf8f8; }
+        tr.data-row { cursor: pointer; }
         .status-badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600; }
         .status-Submitted { background: #dbeafe; color: #1d4ed8; }
         .status-Received { background: #fef9c3; color: #854d0e; }
@@ -105,8 +101,7 @@
         .doc-link { color: #800000; text-decoration: none; font-weight: 600; font-size: 12px; }
         .doc-link:hover { text-decoration: underline; }
         .no-data { text-align: center; padding: 40px; color: #888; font-size: 14px; }
-        .edit-btn { background: none; border: 1px solid #ccc; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; color: #555; }
-        .edit-btn:hover { border-color: #800000; color: #800000; }
+        .dblclick-hint { font-size: 11px; color: #aaa; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -185,6 +180,8 @@
         </div>
     </div>
 
+    <p class="dblclick-hint">Double-click any row to open case details</p>
+
     <div class="table-wrap">
         <table id="active-table">
             <thead id="active-head"></thead>
@@ -193,9 +190,11 @@
     </div>
 
     <div class="section-label completed">Completed Cases</div>
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom:6px;">
         <span class="count" id="completed-count" style="font-size:13px;color:#666;"></span>
     </div>
+    <p class="dblclick-hint">Double-click any row to open case details</p>
+
     <div class="table-wrap">
         <table id="completed-table">
             <thead id="completed-head"></thead>
@@ -238,11 +237,14 @@
         { key: 'evaluation_notes', label: 'Eval Notes' },
         { key: 'case_notes', label: 'Case Notes' },
         { key: 'replacement_sent', label: 'Replacement Sent' },
-        { key: 'action', label: 'Action' },
     ];
 
-    const DEFAULT_COLUMNS = ['case_number','date_created','contact_name','company','product_name','issue_type','status','document_number','attached_documents','action'];
+    const DEFAULT_COLUMNS = [
+        'case_number','date_created','contact_name','company',
+        'product_name','issue_type','status','document_number','attached_documents'
+    ];
     let customColumns = [...DEFAULT_COLUMNS];
+
     const COLORS = ['#800000','#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'];
 
     function toggleCharts() {
@@ -298,7 +300,7 @@
     function buildHeaders() {
         const cols = getActiveCols();
         const makeHead = (tableId) => `<tr>${cols.map((col, i) => `
-            <th style="width:${col.key==='action'?70:130}px;">
+            <th style="width:130px;">
                 ${col.label}
                 <div class="resize-handle" onmousedown="startResize(event,${i},'${tableId}')"></div>
             </th>`).join('')}</tr>`;
@@ -319,7 +321,10 @@
 
     async function loadCases() {
         const { data, error } = await supabaseClient.from('rma_cases').select('*').order('date_created', { ascending: false });
-        if (error) { document.getElementById('active-body').innerHTML = `<tr><td colspan="10" class="no-data">Error: ${error.message}</td></tr>`; return; }
+        if (error) {
+            document.getElementById('active-body').innerHTML = `<tr><td colspan="10" class="no-data">Error: ${error.message}</td></tr>`;
+            return;
+        }
         allCases = data;
         computeMetrics(data.filter(c => c.status !== 'Completed'));
         buildPieChart(data.filter(c => c.status !== 'Completed'));
@@ -383,12 +388,11 @@
         switch(key) {
             case 'date_created': return formatDate(c.date_created);
             case 'status': return c.status ? `<span class="status-badge status-${c.status}">${c.status}</span>` : '-';
-            case 'attached_documents': return c.attached_documents ? `<a class="doc-link" href="${getFileUrl(c.attached_documents)}" target="_blank">View File</a>` : '-';
+            case 'attached_documents': return c.attached_documents ? `<a class="doc-link" href="${getFileUrl(c.attached_documents)}" target="_blank" onclick="event.stopPropagation()">View File</a>` : '-';
             case 'contact_name': return `${c.contact_name||'-'}<br><span style="color:#888;font-size:11px;">${c.email||''}</span>`;
             case 'email': return c.email || '-';
             case 'repair_amount': return c.repair_amount ? `$${parseFloat(c.repair_amount).toFixed(2)}` : '-';
             case 'credit_amount': return c.credit_amount ? `$${parseFloat(c.credit_amount).toFixed(2)}` : '-';
-            case 'action': return `<button class="edit-btn" onclick="viewCase('${c.id}')">View</button>`;
             default: return c[key] || '-';
         }
     }
@@ -415,7 +419,9 @@
             return;
         }
         tbody.innerHTML = cases.map(c =>
-            `<tr>${cols.map(col => `<td title="${String(c[col.key]||'').replace(/"/g,"'")}">${cellValue(c, col.key)}</td>`).join('')}</tr>`
+            `<tr class="data-row" ondblclick="viewCase('${c.id}')" title="Double-click to open case details">
+                ${cols.map(col => `<td title="${String(c[col.key]||'').replace(/"/g,"'")}">${cellValue(c, col.key)}</td>`).join('')}
+            </tr>`
         ).join('');
     }
 
