@@ -65,6 +65,8 @@
             transition: all 0.15s;
         }
         .tag.selected { background: #800000; color: white; border-color: #800000; }
+
+        /* Upload Box */
         .upload-box {
             border: 1.5px dashed #ccc;
             border-radius: 8px;
@@ -72,11 +74,14 @@
             text-align: center;
             background: #fafafa;
             cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
         }
+        .upload-box:hover { border-color: #800000; background: #fff5f5; }
+        .upload-box.dragover { border-color: #800000; background: #fff5f5; }
         .upload-box p { font-size: 13px; color: #888; margin-bottom: 6px; }
-        .upload-box input { display: none; }
         .upload-label { font-size: 12px; color: #800000; cursor: pointer; font-weight: 600; }
         #file-name { font-size: 12px; color: #444; margin-top: 6px; }
+
         .submit-btn {
             width: 100%;
             padding: 13px;
@@ -105,8 +110,8 @@
         .error-msg { font-size: 13px; color: #dc2626; margin-top: 10px; display: none; }
 
         /* Sidebar */
-        .sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
-        .sidebar-card { background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; }
+        .sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+        .sidebar-card { background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; overflow: hidden; }
         .sidebar-card h4 {
             font-size: 12px;
             font-weight: 700;
@@ -116,45 +121,48 @@
             margin-bottom: 12px;
         }
 
-        /* Case Status Lookup */
-        .case-lookup-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; }
+        /* Case lookup */
+        .case-lookup-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; width: 100%; }
         .case-prefix {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #555;
             white-space: nowrap;
             background: #f4f4f9;
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 7px 8px;
+            padding: 7px 6px;
+            flex-shrink: 0;
         }
         .case-lookup-row input {
             flex: 1;
-            padding: 7px 9px;
+            min-width: 0;
+            padding: 7px 8px;
             font-size: 13px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: auto;
+            width: 0;
         }
         .case-lookup-row input:focus { outline: none; border-color: #800000; }
         .lookup-btn {
-            padding: 7px 10px;
+            padding: 7px 9px;
             background: #800000;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
         .lookup-btn:hover { background: #600000; }
-        .case-result { font-size: 13px; }
-        .case-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .case-result-number { font-weight: 700; font-size: 14px; color: #222; }
+        .case-result { font-size: 13px; word-break: break-word; }
+        .case-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; }
+        .case-result-number { font-weight: 700; font-size: 13px; color: #222; }
         .case-company { font-size: 12px; color: #555; margin-bottom: 2px; }
         .case-company strong { color: #222; }
         .case-product { font-size: 12px; color: #555; margin-bottom: 10px; }
         .case-product strong { color: #222; }
-        .status-badge-sm { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .status-badge-sm { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
         .badge-Submitted { background: #dbeafe; color: #1d4ed8; }
         .badge-Received { background: #fef9c3; color: #854d0e; }
         .badge-Evaluation { background: #ede9fe; color: #5b21b6; }
@@ -164,15 +172,12 @@
 
         /* Timeline */
         .timeline { list-style: none; padding: 0; }
-        .timeline li { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+        .timeline li { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; }
         .tl-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px; height: 28px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
             flex-shrink: 0;
             border: 2px solid #e0e0e0;
             background: #f4f4f9;
@@ -180,35 +185,29 @@
         }
         .tl-icon.done { border-color: #800000; background: #800000; color: white; }
         .tl-icon.active { border-color: #f59e0b; background: #fef9c3; color: #92400e; }
-        .tl-text { padding-top: 4px; }
-        .tl-label { font-size: 13px; font-weight: 600; color: #222; }
+        .tl-text { padding-top: 3px; }
+        .tl-label { font-size: 12px; font-weight: 600; color: #222; }
         .tl-label.inactive { color: #aaa; font-weight: 400; }
         .tl-date { font-size: 11px; color: #888; }
-        .case-not-found { font-size: 13px; color: #dc2626; padding: 8px 0; }
+        .case-not-found { font-size: 12px; color: #dc2626; padding: 6px 0; }
 
-        /* Product Reference */
-        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        /* Product grid */
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .product-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 4px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: border-color 0.15s;
-            background: white;
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            padding: 6px 3px;
+            border: 1px solid #e0e0e0; border-radius: 6px;
+            cursor: pointer; transition: border-color 0.15s; background: white;
         }
         .product-item:hover { border-color: #800000; }
-        .product-item img { width: 44px; height: 44px; object-fit: contain; }
-        .product-item span { font-size: 11px; color: #555; text-align: center; }
+        .product-item img { width: 38px; height: 38px; object-fit: contain; }
+        .product-item span { font-size: 10px; color: #555; text-align: center; line-height: 1.2; }
 
-        /* Need Help */
-        .help-line { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: #444; }
+        /* Help */
+        .help-line { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; color: #444; }
         .help-line:last-child { margin-bottom: 0; }
-        .help-icon { font-size: 16px; }
-        .help-link { color: #800000; text-decoration: none; }
+        .help-icon { font-size: 14px; flex-shrink: 0; }
+        .help-link { color: #800000; text-decoration: none; word-break: break-all; }
         .help-link:hover { text-decoration: underline; }
 
         @media (max-width: 700px) {
@@ -290,11 +289,11 @@
 
         <div class="section">
             <div class="section-title">Supporting Document</div>
-            <div class="upload-box" onclick="document.getElementById('file-input').click()">
+            <div class="upload-box" id="upload-box">
                 <p>Drag file here or click to browse</p>
                 <p style="font-size:12px;color:#aaa;">PDF, JPG, PNG, DOC accepted</p>
-                <label class="upload-label">Choose File</label>
-                <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                <span class="upload-label">Choose File</span>
+                <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display:none;" />
                 <div id="file-name">No file selected</div>
             </div>
         </div>
@@ -318,7 +317,7 @@
             <p style="font-size:12px;color:#666;margin-bottom:10px;">Enter your case number to check status</p>
             <div class="case-lookup-row">
                 <span class="case-prefix">CASE-26-</span>
-                <input type="text" id="case-lookup-input" placeholder="1247" maxlength="6"
+                <input type="text" id="case-lookup-input" placeholder="2001" maxlength="6"
                     onkeydown="if(event.key==='Enter') lookupCase()" />
                 <button class="lookup-btn" onclick="lookupCase()">🔍</button>
             </div>
@@ -355,7 +354,9 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let selectedIssue = '';
+    let selectedFile = null;
 
+    // Tags
     document.querySelectorAll('.tag').forEach(tag => {
         tag.addEventListener('click', () => {
             document.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
@@ -364,8 +365,33 @@
         });
     });
 
-    document.getElementById('file-input').addEventListener('change', function() {
-        document.getElementById('file-name').textContent = this.files[0] ? this.files[0].name : 'No file selected';
+    // File upload — click
+    const uploadBox = document.getElementById('upload-box');
+    const fileInput = document.getElementById('file-input');
+
+    uploadBox.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', function() {
+        if (this.files[0]) {
+            selectedFile = this.files[0];
+            document.getElementById('file-name').textContent = selectedFile.name;
+        }
+    });
+
+    // File upload — drag and drop
+    uploadBox.addEventListener('dragover', e => {
+        e.preventDefault();
+        uploadBox.classList.add('dragover');
+    });
+    uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('dragover'));
+    uploadBox.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadBox.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            selectedFile = file;
+            document.getElementById('file-name').textContent = file.name;
+        }
     });
 
     // Load products from Supabase
@@ -386,7 +412,7 @@
             <div class="product-item" onclick="selectProduct('${p.name}')">
                 ${p.image_url
                     ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'" />`
-                    : `<div style="width:44px;height:44px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>`
+                    : `<div style="width:38px;height:38px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;">📦</div>`
                 }
                 <span>${p.name}</span>
             </div>
@@ -398,13 +424,25 @@
         document.getElementById('product_name').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function generateCaseNumber() {
-        const date = new Date();
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        const rand = Math.floor(Math.random() * 9000) + 1000;
-        return `RMA-${y}${m}${d}-${rand}`;
+    // Generate case number — CASE-26-XXXX starting at 2000
+    async function generateCaseNumber() {
+        const { data } = await supabaseClient
+            .from('rma_cases')
+            .select('case_number')
+            .like('case_number', 'CASE-26-%')
+            .order('case_number', { ascending: false })
+            .limit(1);
+
+        let nextNum = 2000;
+        if (data && data.length > 0) {
+            const last = data[0].case_number;
+            const parts = last.split('-');
+            const lastNum = parseInt(parts[parts.length - 1]);
+            if (!isNaN(lastNum) && lastNum >= 2000) {
+                nextNum = lastNum + 1;
+            }
+        }
+        return `CASE-26-${String(nextNum).padStart(4, '0')}`;
     }
 
     const STATUSES = ['Submitted','Received','Evaluation','Credited','Replaced','Completed'];
@@ -415,7 +453,7 @@
         const resultEl = document.getElementById('case-lookup-result');
         if (!input) { resultEl.innerHTML = ''; return; }
 
-        const caseNumber = `CASE-26-${input}`;
+        const caseNumber = `CASE-26-${input.padStart(4,'0')}`;
         resultEl.innerHTML = '<span style="font-size:12px;color:#888;">Looking up...</span>';
 
         const { data, error } = await supabaseClient
@@ -433,12 +471,10 @@
         const timelineHTML = STATUSES.map((s, i) => {
             const isDone = i < currentIndex;
             const isActive = i === currentIndex;
-            const iconClass = isDone ? 'done' : isActive ? 'active' : '';
-            const labelClass = isDone || isActive ? '' : 'inactive';
             return `<li>
-                <div class="tl-icon ${iconClass}">${isDone ? '✓' : STATUS_ICONS[s]}</div>
+                <div class="tl-icon ${isDone ? 'done' : isActive ? 'active' : ''}">${isDone ? '✓' : STATUS_ICONS[s]}</div>
                 <div class="tl-text">
-                    <div class="tl-label ${labelClass}">${s}</div>
+                    <div class="tl-label ${isDone || isActive ? '' : 'inactive'}">${s}</div>
                     ${isActive ? `<div class="tl-date">${new Date(data.date_created).toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'})}</div>` : ''}
                 </div>
             </li>`;
@@ -453,8 +489,7 @@
                 ${data.company ? `<div class="case-company"><strong>Company:</strong> ${data.company}</div>` : ''}
                 ${data.product_name ? `<div class="case-product"><strong>Product:</strong> ${data.product_name}</div>` : ''}
                 <ul class="timeline" style="margin-top:10px;">${timelineHTML}</ul>
-            </div>
-        `;
+            </div>`;
     }
 
     async function submitRMA() {
@@ -476,16 +511,14 @@
         btn.disabled = true;
         btn.textContent = 'Submitting...';
 
-        const caseNumber = generateCaseNumber();
+        const caseNumber = await generateCaseNumber();
         let filePath = null;
 
-        const fileInput = document.getElementById('file-input');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            const ext = file.name.split('.').pop();
+        if (selectedFile) {
+            const ext = selectedFile.name.split('.').pop();
             const { error: uploadError } = await supabaseClient.storage
                 .from('rma-documents')
-                .upload(`${caseNumber}.${ext}`, file);
+                .upload(`${caseNumber}.${ext}`, selectedFile);
             if (!uploadError) filePath = `${caseNumber}.${ext}`;
         }
 
@@ -515,10 +548,29 @@
             document.getElementById('case-number-display').textContent = caseNumber;
             document.getElementById('success-box').style.display = 'block';
             btn.style.display = 'none';
+
+            // Auto-populate case lookup
             const shortNum = caseNumber.split('-').pop();
             document.getElementById('case-lookup-input').value = shortNum;
+
+            // Auto-send RMA confirmation email
+            autoSendRMAEmail(caseNumber, contact_name, email, product_name, selectedIssue);
+
             window.scrollTo(0, document.body.scrollHeight);
         }
+    }
+
+    function autoSendRMAEmail(caseNumber, contactName, email, product, issue) {
+        const saved = localStorage.getItem('email_template_rma');
+        const tpl = saved ? JSON.parse(saved) : null;
+
+        const subject = tpl ? tpl.subject : `RMA Case ${caseNumber} — Received`;
+        const body = tpl ? tpl.body : `Dear ${contactName},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number ${caseNumber}.\n\nProduct: ${product}\nIssue: ${issue}\n\nWe will be in touch shortly.\n\nBinmaster Support`;
+
+        const filledSubject = subject.replace(/{case_number}/g, caseNumber).replace(/{contact_name}/g, contactName).replace(/{product_name}/g, product).replace(/{issue_type}/g, issue);
+        const filledBody = body.replace(/{case_number}/g, caseNumber).replace(/{contact_name}/g, contactName).replace(/{product_name}/g, product).replace(/{issue_type}/g, issue);
+
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(filledSubject)}&body=${encodeURIComponent(filledBody)}`;
     }
 
     loadProducts();
