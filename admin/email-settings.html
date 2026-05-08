@@ -39,52 +39,24 @@
         .container { max-width: 900px; margin: 30px auto; padding: 0 20px 60px; }
         .page-title { font-size: 20px; font-weight: 700; color: #800000; margin-bottom: 4px; }
         .page-sub { font-size: 13px; color: #666; margin-bottom: 28px; }
-
-        .section-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-        }
-        .section-card h2 {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #800000;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        /* Data section */
+        .section-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
+        .section-card h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
         .io-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .io-btn {
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            background: white;
-            color: #333;
-            transition: all 0.15s;
-        }
+        .io-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: white; color: #333; transition: all 0.15s; }
         .io-btn:hover { border-color: #800000; color: #800000; }
         .io-btn.primary { background: #800000; color: white; border-color: #800000; }
         .io-btn.primary:hover { background: #600000; }
+        .io-btn.danger { color: #dc2626; border-color: #dc2626; }
+        .io-btn.danger:hover { background: #dc2626; color: white; }
+        .io-btn.small { padding: 4px 10px; font-size: 11px; }
         .io-divider { width: 1px; height: 24px; background: #e0e0e0; }
         .io-status { font-size: 12px; color: #666; }
         .io-status.success { color: #16a34a; }
         .io-status.error { color: #dc2626; }
         #upload-input { display: none; }
-
-        /* Sender */
-        .sender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .field-group { display: flex; flex-direction: column; gap: 4px; }
+        .field-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
         .field-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
-        input[type=text], input[type=email], textarea, select {
+        input[type=text], input[type=email], input[type=url], textarea, select {
             width: 100%;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -96,83 +68,76 @@
         }
         input:focus, textarea:focus, select:focus { outline: none; border-color: #800000; }
         textarea { resize: vertical; }
+        .sender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-        /* Variables */
-        .vars-box {
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 14px 16px;
+        /* Product Manager */
+        .product-manager-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
             margin-bottom: 20px;
         }
+        .pm-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        .pm-item img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .pm-img-placeholder {
+            width: 56px;
+            height: 56px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .pm-name { font-size: 13px; font-weight: 600; color: #222; text-align: center; }
+        .pm-link { font-size: 11px; color: #1d4ed8; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+        .pm-actions { display: flex; gap: 6px; }
+        .pm-inactive { opacity: 0.4; }
+
+        /* Add/Edit form */
+        .add-form {
+            border: 1.5px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        .add-form h4 { font-size: 13px; font-weight: 700; color: #800000; margin-bottom: 14px; }
+        .add-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* Email templates */
+        .vars-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
         .vars-box h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 10px; }
         .vars-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .var-pill {
-            background: #800000;
-            color: white;
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-family: monospace;
-            user-select: none;
-        }
+        .var-pill { background: #800000; color: white; font-size: 11px; padding: 3px 10px; border-radius: 12px; cursor: pointer; font-family: monospace; user-select: none; }
         .var-pill:hover { background: #600000; }
         .var-hint { font-size: 11px; color: #aaa; margin-top: 6px; }
-
-        /* Tabs */
-        .tabs { display: flex; gap: 0; border-bottom: 2px solid #800000; margin-bottom: 0; }
-        .tab {
-            padding: 8px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-bottom: none;
-            color: #666;
-            border-radius: 6px 6px 0 0;
-            margin-right: 4px;
-            transition: all 0.15s;
-        }
+        .tabs { display: flex; gap: 0; border-bottom: 2px solid #800000; }
+        .tab { padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; background: white; border: 1px solid #e0e0e0; border-bottom: none; color: #666; border-radius: 6px 6px 0 0; margin-right: 4px; transition: all 0.15s; }
         .tab.active { background: #800000; color: white; border-color: #800000; }
         .tab:hover:not(.active) { background: #f9f9f9; color: #800000; }
-        .template-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-        }
-
-        /* Action buttons */
+        .template-card { background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; padding: 20px 24px; margin-bottom: 20px; }
         .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
-        .save-btn {
-            padding: 8px 22px;
-            font-size: 13px;
-            font-weight: 700;
-            background: #800000;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+        .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: none; border-radius: 6px; cursor: pointer; }
         .save-btn:hover { background: #600000; }
-        .reset-btn {
-            padding: 8px 14px;
-            font-size: 13px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            color: #555;
-        }
+        .reset-btn { padding: 8px 14px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; color: #555; }
         .reset-btn:hover { border-color: #800000; color: #800000; }
         .tpl-status { font-size: 13px; }
         .tpl-status.success { color: #16a34a; }
-
-        /* Preview */
         .preview-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
         .preview-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 14px; }
         .preview-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
@@ -212,9 +177,9 @@
 
 <div class="container">
     <div class="page-title">Settings</div>
-    <p class="page-sub">Manage data import/export, email templates, and sender configuration.</p>
+    <p class="page-sub">Manage data import/export, product reference, email templates, and sender configuration.</p>
 
-    <!-- Data Section -->
+    <!-- Data -->
     <div class="section-card">
         <h2>Data — Import &amp; Export</h2>
         <div class="io-row">
@@ -227,7 +192,45 @@
         </div>
     </div>
 
-    <!-- Sender Defaults -->
+    <!-- Product Reference Manager -->
+    <div class="section-card">
+        <h2>Product Reference</h2>
+        <p style="font-size:12px;color:#666;margin-bottom:16px;">These products appear in the sidebar of the customer RMA form. Click a product to select it in the form. If a link is provided, clicking opens the link instead.</p>
+
+        <div class="product-manager-grid" id="pm-grid">
+            <div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">Loading...</div>
+        </div>
+
+        <div class="add-form" id="add-form">
+            <h4 id="add-form-title">Add New Product</h4>
+            <input type="hidden" id="edit-id" />
+            <div class="add-form-grid">
+                <div class="field-group" style="margin:0;">
+                    <label>Product Name *</label>
+                    <input type="text" id="pm-name" placeholder="e.g. SmartBob" />
+                </div>
+                <div class="field-group" style="margin:0;">
+                    <label>Image URL</label>
+                    <input type="url" id="pm-image" placeholder="https://..." />
+                </div>
+                <div class="field-group" style="margin:0;">
+                    <label>Link URL (optional)</label>
+                    <input type="url" id="pm-link" placeholder="https://binmaster.com/product/..." />
+                </div>
+                <div class="field-group" style="margin:0;">
+                    <label>Display Order</label>
+                    <input type="text" id="pm-order" placeholder="1" />
+                </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
+                <button class="io-btn primary" onclick="saveProduct()">Save Product</button>
+                <button class="io-btn" onclick="cancelEdit()">Cancel</button>
+                <span class="io-status" id="pm-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sender -->
     <div class="section-card">
         <h2>Sender Defaults</h2>
         <div class="sender-grid">
@@ -246,7 +249,7 @@
         </div>
     </div>
 
-    <!-- Variable Reference -->
+    <!-- Variables -->
     <div class="vars-box">
         <h4>Available Variables — click to copy</h4>
         <div class="vars-grid">
@@ -273,17 +276,17 @@
         <div class="tab" id="tab-cs" onclick="switchTab('cs')">CS Email</div>
     </div>
     <div class="template-card">
-        <div class="field-group" style="margin-bottom:12px;">
+        <div class="field-group">
             <label>Template Name</label>
             <input type="text" id="tpl-title" placeholder="e.g. RMA Received" />
         </div>
-        <div class="field-group" style="margin-bottom:12px;">
+        <div class="field-group">
             <label>Subject Line</label>
-            <input type="text" id="tpl-subject" placeholder="e.g. RMA Case {case_number} — Received" />
+            <input type="text" id="tpl-subject" />
         </div>
         <div class="field-group">
             <label>Email Body</label>
-            <textarea id="tpl-body" rows="10" placeholder="Write your email here. Use {variable} placeholders."></textarea>
+            <textarea id="tpl-body" rows="10"></textarea>
         </div>
         <div class="action-row">
             <button class="save-btn" onclick="saveTemplate()">Save Template</button>
@@ -293,7 +296,6 @@
         </div>
     </div>
 
-    <!-- Preview -->
     <div class="preview-card" id="preview-card" style="display:none;">
         <h3>Preview (with sample data)</h3>
         <div class="preview-label">Subject</div>
@@ -304,7 +306,7 @@
 
 </div>
 
-<!-- Upload Preview Modal -->
+<!-- Upload Modal -->
 <div class="modal-overlay" id="upload-modal">
     <div class="modal">
         <h3>Upload Preview</h3>
@@ -332,6 +334,7 @@
     let allCases = [];
     let pendingUploadRows = [];
     let currentTab = 'rma';
+    let editingId = null;
 
     const DB_COLUMNS = [
         'case_number','contact_name','email','company','address','city','state','zip',
@@ -348,13 +351,103 @@
     };
 
     const SAMPLE = {
-        case_number: 'CASE-26-1001', contact_name: 'John Smith', company: 'Acme Industries',
+        case_number: 'CASE-26-2001', contact_name: 'John Smith', company: 'Acme Industries',
         email: 'john@acme.com', product_name: 'SmartBob', issue_type: 'Stopped working',
         status: 'Evaluation', repair_amount: '125.00', credit_amount: '250.00',
         credit_type: 'WARRANTY', document_number: 'INV-10042'
     };
 
-    // ── Data Import / Export ────────────────────────────────────────
+    // ── Product Reference Manager ───────────────────────────────────
+    async function loadProductManager() {
+        const { data, error } = await supabaseClient.from('product_reference').select('*').order('display_order');
+        const grid = document.getElementById('pm-grid');
+        if (error || !data || data.length === 0) {
+            grid.innerHTML = '<div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">No products yet. Add one below.</div>';
+            return;
+        }
+        grid.innerHTML = data.map(p => `
+            <div class="pm-item ${p.active ? '' : 'pm-inactive'}">
+                ${p.image_url
+                    ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'" />`
+                    : `<div class="pm-img-placeholder">📦</div>`}
+                <div class="pm-name">${p.name}</div>
+                ${p.link_url ? `<div class="pm-link">🔗 ${p.link_url.replace('https://','')}</div>` : '<div style="font-size:11px;color:#ccc;">no link</div>'}
+                <div style="font-size:11px;color:#888;">order: ${p.display_order}</div>
+                <div class="pm-actions">
+                    <button class="io-btn small" onclick="editProduct('${p.id}','${escapeAttr(p.name)}','${escapeAttr(p.image_url||'')}','${escapeAttr(p.link_url||'')}','${p.display_order}')">Edit</button>
+                    <button class="io-btn small" onclick="toggleProduct('${p.id}',${p.active})">${p.active ? 'Hide' : 'Show'}</button>
+                    <button class="io-btn small danger" onclick="deleteProduct('${p.id}')">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function escapeAttr(s) { return s.replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+
+    function editProduct(id, name, image, link, order) {
+        editingId = id;
+        document.getElementById('edit-id').value = id;
+        document.getElementById('pm-name').value = name;
+        document.getElementById('pm-image').value = image;
+        document.getElementById('pm-link').value = link;
+        document.getElementById('pm-order').value = order;
+        document.getElementById('add-form-title').textContent = 'Edit Product';
+        document.getElementById('pm-name').focus();
+        document.getElementById('add-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+        editingId = null;
+        document.getElementById('pm-name').value = '';
+        document.getElementById('pm-image').value = '';
+        document.getElementById('pm-link').value = '';
+        document.getElementById('pm-order').value = '';
+        document.getElementById('add-form-title').textContent = 'Add New Product';
+        document.getElementById('pm-status').textContent = '';
+    }
+
+    async function saveProduct() {
+        const name = document.getElementById('pm-name').value.trim();
+        const image_url = document.getElementById('pm-image').value.trim() || null;
+        const link_url = document.getElementById('pm-link').value.trim() || null;
+        const display_order = parseInt(document.getElementById('pm-order').value) || 99;
+        const statusEl = document.getElementById('pm-status');
+
+        if (!name) { statusEl.textContent = 'Name is required.'; statusEl.className = 'io-status error'; return; }
+
+        const payload = { name, image_url, link_url, display_order, active: true };
+        let error;
+
+        if (editingId) {
+            ({ error } = await supabaseClient.from('product_reference').update(payload).eq('id', editingId));
+        } else {
+            ({ error } = await supabaseClient.from('product_reference').insert([payload]));
+        }
+
+        if (error) {
+            statusEl.textContent = 'Error: ' + error.message;
+            statusEl.className = 'io-status error';
+        } else {
+            statusEl.textContent = editingId ? 'Updated!' : 'Added!';
+            statusEl.className = 'io-status success';
+            cancelEdit();
+            loadProductManager();
+            setTimeout(() => statusEl.textContent = '', 2500);
+        }
+    }
+
+    async function toggleProduct(id, currentActive) {
+        await supabaseClient.from('product_reference').update({ active: !currentActive }).eq('id', id);
+        loadProductManager();
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Delete this product?')) return;
+        await supabaseClient.from('product_reference').delete().eq('id', id);
+        loadProductManager();
+    }
+
+    // ── Data Import/Export ──────────────────────────────────────────
     async function loadAllCases() {
         const { data } = await supabaseClient.from('rma_cases').select('*').order('date_created', { ascending: false });
         allCases = data || [];
@@ -403,31 +496,22 @@
         const existing = new Set(allCases.map(c => c.case_number));
         const newRows = rows.filter(r => !existing.has(r.case_number));
         const dupRows = rows.filter(r => existing.has(r.case_number));
-
         const summaryEl = document.getElementById('upload-summary');
         summaryEl.className = 'upload-summary' + (dupRows.length > 0 ? ' warning' : '');
-        summaryEl.innerHTML = `<strong>${rows.length}</strong> rows &nbsp;·&nbsp; <strong style="color:#16a34a">${newRows.length}</strong> new (will import) &nbsp;·&nbsp; <strong style="color:#854d0e">${dupRows.length}</strong> duplicates (will skip)`;
-
+        summaryEl.innerHTML = `<strong>${rows.length}</strong> rows &nbsp;·&nbsp; <strong style="color:#16a34a">${newRows.length}</strong> new &nbsp;·&nbsp; <strong style="color:#854d0e">${dupRows.length}</strong> duplicates (skipped)`;
         const errEl = document.getElementById('upload-errors');
-        if (missingCols.length > 0) {
-            errEl.style.display = 'block';
-            errEl.innerHTML = `<strong>Missing columns</strong> (will be blank): ${missingCols.join(', ')}`;
-        } else { errEl.style.display = 'none'; }
-
+        if (missingCols.length > 0) { errEl.style.display = 'block'; errEl.innerHTML = `<strong>Missing columns:</strong> ${missingCols.join(', ')}`; }
+        else errEl.style.display = 'none';
         const previewCols = DB_COLUMNS.filter(c => Object.keys(rows[0]).includes(c));
         document.getElementById('preview-head').innerHTML = `<tr>${previewCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
-        document.getElementById('preview-body').innerHTML = rows.slice(0, 10).map(r =>
-            `<tr>${previewCols.map(c => `<td>${String(r[c]||'').substring(0,40)}</td>`).join('')}</tr>`
-        ).join('');
-
+        document.getElementById('preview-body').innerHTML = rows.slice(0, 10).map(r => `<tr>${previewCols.map(c => `<td>${String(r[c]||'').substring(0,40)}</td>`).join('')}</tr>`).join('');
         document.getElementById('confirm-upload-btn').disabled = newRows.length === 0;
         document.getElementById('upload-modal').classList.add('open');
     }
 
     async function confirmUpload() {
         const btn = document.getElementById('confirm-upload-btn');
-        btn.disabled = true;
-        btn.textContent = 'Importing...';
+        btn.disabled = true; btn.textContent = 'Importing...';
         const existing = new Set(allCases.map(c => c.case_number));
         const newRows = pendingUploadRows.filter(r => !existing.has(r.case_number)).map(r => {
             const row = {};
@@ -440,33 +524,23 @@
             if (!row.status) row.status = 'Submitted';
             return row;
         });
-
         let imported = 0, errors = 0;
         for (let i = 0; i < newRows.length; i += 50) {
             const { error } = await supabaseClient.from('rma_cases').insert(newRows.slice(i, i + 50));
-            if (error) { errors += Math.min(50, newRows.length - i); console.error(error); }
+            if (error) { errors += Math.min(50, newRows.length - i); }
             else imported += Math.min(50, newRows.length - i);
         }
-        closeUploadModal();
-        btn.textContent = 'Import Cases';
-        btn.disabled = false;
+        closeUploadModal(); btn.textContent = 'Import Cases'; btn.disabled = false;
         setIOStatus(errors > 0 ? `Imported ${imported}, ${errors} failed.` : `Successfully imported ${imported} cases.`, errors > 0 ? 'error' : 'success');
         await loadAllCases();
     }
 
-    function closeUploadModal() {
-        document.getElementById('upload-modal').classList.remove('open');
-        pendingUploadRows = [];
-    }
-
-    document.getElementById('upload-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeUploadModal();
-    });
+    function closeUploadModal() { document.getElementById('upload-modal').classList.remove('open'); pendingUploadRows = []; }
+    document.getElementById('upload-modal').addEventListener('click', function(e) { if (e.target === this) closeUploadModal(); });
 
     function setIOStatus(msg, type) {
         const el = document.getElementById('io-status');
-        el.textContent = msg;
-        el.className = 'io-status' + (type ? ' ' + type : '');
+        el.textContent = msg; el.className = 'io-status' + (type ? ' ' + type : '');
         setTimeout(() => el.textContent = '', 5000);
     }
 
@@ -478,7 +552,6 @@
         s.textContent = 'Saved!'; s.className = 'tpl-status success';
         setTimeout(() => s.textContent = '', 2500);
     }
-
     function loadSender() {
         document.getElementById('sender-name').value = localStorage.getItem('sender_name') || '';
         document.getElementById('sender-email').value = localStorage.getItem('sender_email') || '';
@@ -502,11 +575,7 @@
     }
 
     function saveTemplate() {
-        const tpl = {
-            title: document.getElementById('tpl-title').value.trim(),
-            subject: document.getElementById('tpl-subject').value.trim(),
-            body: document.getElementById('tpl-body').value
-        };
+        const tpl = { title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value };
         localStorage.setItem(`email_template_${currentTab}`, JSON.stringify(tpl));
         const s = document.getElementById('tpl-status');
         s.textContent = 'Saved!'; s.className = 'tpl-status success';
@@ -522,9 +591,7 @@
         setTimeout(() => s.textContent = '', 2500);
     }
 
-    function fillSample(text) {
-        return text.replace(/\{(\w+)\}/g, (match, key) => SAMPLE[key] || match);
-    }
+    function fillSample(text) { return text.replace(/\{(\w+)\}/g, (match, key) => SAMPLE[key] || match); }
 
     function updatePreview() {
         document.getElementById('preview-subject').textContent = fillSample(document.getElementById('tpl-subject').value);
@@ -543,6 +610,7 @@
     loadSender();
     loadTemplate(currentTab);
     loadAllCases();
+    loadProductManager();
 </script>
 </body>
 </html>
