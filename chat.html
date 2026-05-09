@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Live Chat — Binmaster Support</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            color: #222;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            background: #800000;
+            color: white;
+            padding: 14px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .top-bar .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .top-bar .status-text { font-size: 12px; font-weight: normal; opacity: 0.9; }
+
+        /* Name entry screen */
+        .name-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .name-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px 28px;
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .name-card h2 { font-size: 18px; color: #800000; margin-bottom: 8px; }
+        .name-card p { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+        .name-card input {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .name-card input:focus { border-color: #800000; }
+        .name-card button {
+            width: 100%;
+            padding: 12px;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .name-card button:hover { background: #600000; }
+
+        /* Chat screen */
+        .chat-screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-screen.active { display: flex; }
+
+        .chat-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .chat-header strong { color: #800000; }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .msg { display: flex; flex-direction: column; max-width: 78%; }
+        .msg.customer { align-self: flex-end; align-items: flex-end; }
+        .msg.agent { align-self: flex-start; align-items: flex-start; }
+        .msg.system { align-self: center; align-items: center; max-width: 100%; }
+
+        .msg-name {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 3px;
+            padding: 0 4px;
+        }
+        .msg-bubble {
+            padding: 9px 13px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .msg.customer .msg-bubble {
+            background: #800000;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .msg.agent .msg-bubble {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+        .msg.system .msg-bubble {
+            background: #f0f0f0;
+            color: #888;
+            font-size: 12px;
+            border-radius: 8px;
+            padding: 5px 12px;
+        }
+        .msg-time {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 3px;
+            padding: 0 4px;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #888;
+        }
+        .typing-indicator.visible { display: block; }
+
+        /* Input bar */
+        .input-bar {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 12px;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+        .input-bar textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 9px 14px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            resize: none;
+            outline: none;
+            max-height: 100px;
+            overflow-y: auto;
+            line-height: 1.4;
+            -webkit-appearance: none;
+        }
+        .input-bar textarea:focus { border-color: #800000; }
+        .send-btn {
+            width: 40px; height: 40px;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .send-btn:hover { background: #600000; }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <span>Binmaster Support Chat</span>
+    <span><span class="status-dot"></span><span class="status-text">Support Online</span></span>
+</div>
+
+<!-- Name Entry -->
+<div class="name-screen" id="name-screen">
+    <div class="name-card">
+        <h2>Start a Conversation</h2>
+        <p>Enter your name and company to connect with a Binmaster support agent.</p>
+        <input type="text" id="customer-name" placeholder="Your name *" maxlength="40" />
+        <input type="text" id="customer-company" placeholder="Company name (optional)" maxlength="60" style="margin-bottom:20px;" />
+        <button onclick="startChat()">Start Chat</button>
+    </div>
+</div>
+
+<!-- Chat -->
+<div class="chat-screen" id="chat-screen">
+    <div class="chat-header">
+        Chatting as <strong id="display-name"></strong> — a support agent will be with you shortly.
+    </div>
+    <div class="messages" id="messages">
+        <div class="msg system">
+            <div class="msg-bubble">Welcome! A support agent will join shortly.</div>
+        </div>
+    </div>
+    <div class="typing-indicator" id="typing-indicator">Agent is typing...</div>
+    <div class="input-bar">
+        <textarea id="msg-input" placeholder="Type a message..." rows="1"
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsenB5cmNza2N2bHNkdGd3ZmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NDY1ODIsImV4cCI6MjA5MzQyMjU4Mn0.kOPX8Wbu0XdRVSc81NpIS2TdwIzaJOMRX_9BeSdbQWI';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let sessionId = null;
+    let customerName = '';
+    let subscription = null;
+
+    function generateSessionId() {
+        return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function startChat() {
+        const name = document.getElementById('customer-name').value.trim();
+        const company = document.getElementById('customer-company').value.trim();
+        if (!name) { document.getElementById('customer-name').focus(); return; }
+
+        customerName = name + (company ? ` (${company})` : '');
+        sessionId = generateSessionId();
+
+        document.getElementById('display-name').textContent = name;
+        document.getElementById('name-screen').style.display = 'none';
+        document.getElementById('chat-screen').classList.add('active');
+        document.getElementById('msg-input').focus();
+
+        subscribeToMessages();
+        loadRecentMessages();
+    }
+
+    async function loadRecentMessages() {
+        const { data } = await supabaseClient
+            .from('chat_messages')
+            .select('*')
+            .eq('session_id', sessionId)
+            .order('created_at', { ascending: true })
+            .limit(100);
+        if (data) data.forEach(appendMessage);
+    }
+
+    function subscribeToMessages() {
+        subscription = supabaseClient
+            .channel(`chat_${sessionId}`)
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'chat_messages',
+                filter: `session_id=eq.${sessionId}`
+            }, payload => {
+                appendMessage(payload.new);
+            })
+            .subscribe();
+    }
+
+    function appendMessage(msg) {
+        const container = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.className = `msg ${msg.sender_type}`;
+
+        const time = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        const nameHtml = msg.sender_type === 'agent'
+            ? `<div class="msg-name" style="color:${msg.agent_color||'#800000'}">${msg.sender_name}</div>`
+            : '';
+
+        div.innerHTML = `
+            ${nameHtml}
+            <div class="msg-bubble" ${msg.sender_type === 'agent' ? `style="border-left:3px solid ${msg.agent_color||'#800000'}"` : ''}>${escapeHtml(msg.message)}</div>
+            <div class="msg-time">${time}</div>
+        `;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const text = input.value.trim();
+        if (!text || !sessionId) return;
+
+        input.value = '';
+        autoResize(input);
+
+        const { error } = await supabaseClient.from('chat_messages').insert([{
+            sender_type: 'customer',
+            sender_name: customerName,
+            message: text,
+            session_id: sessionId,
+            agent_color: null
+        }]);
+
+        if (error) console.error('Send error:', error);
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    }
+</script>
+</body>
+</html>
