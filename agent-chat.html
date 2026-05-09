@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Agent Chat — Binmaster</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #222; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .top-bar {
+            background: #800000;
+            color: white;
+            padding: 0 24px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 52px;
+            flex-shrink: 0;
+        }
+        .top-nav { display: flex; align-items: center; gap: 4px; height: 100%; }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 0 14px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            opacity: 0.85;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+        }
+        .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+        .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
+
+        /* Login screen */
+        .login-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px 28px;
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid #e0e0e0;
+        }
+        .login-card h2 { font-size: 18px; color: #800000; margin-bottom: 16px; }
+        .login-card input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+        .login-card input:focus { border-color: #800000; }
+        .login-card button {
+            width: 100%;
+            padding: 11px;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .login-card button:hover { background: #600000; }
+        .color-row { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+        .color-row label { font-size: 12px; color: #666; margin-right: 4px; }
+        .color-swatch {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s;
+        }
+        .color-swatch.selected { border-color: #222; transform: scale(1.2); }
+
+        /* Main chat layout */
+        .chat-layout {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+        }
+        .chat-layout.active { display: flex; }
+
+        /* Sessions sidebar */
+        .sessions-panel {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .sessions-header {
+            padding: 12px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sessions-list { flex: 1; overflow-y: auto; }
+        .session-item {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .session-item:hover { background: #fdf8f8; }
+        .session-item.active { background: #fff0f0; border-left: 3px solid #800000; }
+        .session-item.unread { font-weight: 700; }
+        .session-name { font-size: 13px; color: #222; margin-bottom: 2px; }
+        .session-preview { font-size: 11px; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .session-time { font-size: 10px; color: #aaa; margin-top: 2px; }
+        .unread-badge {
+            display: inline-block;
+            background: #800000;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .no-sessions { padding: 20px 14px; font-size: 13px; color: #aaa; text-align: center; }
+
+        /* Chat panel */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-panel-header {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #800000;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .agent-badge {
+            font-size: 11px;
+            background: #f0f0f0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .agent-color-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .msg { display: flex; flex-direction: column; max-width: 75%; }
+        .msg.customer { align-self: flex-start; align-items: flex-start; }
+        .msg.agent { align-self: flex-end; align-items: flex-end; }
+        .msg.system { align-self: center; align-items: center; max-width: 100%; }
+        .msg-name { font-size: 11px; color: #888; margin-bottom: 3px; padding: 0 4px; }
+        .msg-bubble {
+            padding: 9px 13px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .msg.customer .msg-bubble { background: #f0f0f0; border-bottom-left-radius: 4px; }
+        .msg.agent .msg-bubble { color: white; border-bottom-right-radius: 4px; }
+        .msg.system .msg-bubble { background: #f0f0f0; color: #888; font-size: 12px; border-radius: 8px; padding: 5px 12px; }
+        .msg-time { font-size: 10px; color: #aaa; margin-top: 3px; padding: 0 4px; }
+
+        .no-chat-selected {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .input-bar {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 12px;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+        .input-bar textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 9px 14px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            resize: none;
+            outline: none;
+            max-height: 100px;
+            overflow-y: auto;
+            line-height: 1.4;
+        }
+        .input-bar textarea:focus { border-color: #800000; }
+        .send-btn {
+            width: 40px; height: 40px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .send-btn:hover { opacity: 0.85; }
+
+        @media (max-width: 600px) {
+            .sessions-panel { width: 100%; position: absolute; top: 52px; bottom: 0; left: 0; z-index: 10; transform: translateX(-100%); transition: transform 0.25s; }
+            .sessions-panel.mobile-open { transform: translateX(0); }
+            .mobile-back { display: flex; }
+            .chat-panel-header .mobile-menu-btn { display: flex; }
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #800000;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    Binmaster Support Platform
+    <nav class="top-nav">
+        <a class="nav-link" href="/index.html">Home</a>
+        <a class="nav-link" href="/admin/rma-table.html">RMA Cases</a>
+        <a class="nav-link" href="/rma.html" target="_blank">Submit RMA</a>
+        <a class="nav-link" href="/admin/email-settings.html">Settings</a>
+        <a class="nav-link active" href="/admin/agent-chat.html">Chat</a>
+    </nav>
+</div>
+
+<!-- Agent Login -->
+<div class="login-screen" id="login-screen">
+    <div class="login-card">
+        <h2>Join Support Chat</h2>
+        <input type="text" id="agent-name" placeholder="Your first name *" maxlength="30" />
+        <div class="color-row">
+            <label>Your color:</label>
+            <div class="color-swatch selected" style="background:#800000;" data-color="#800000" onclick="selectColor(this)"></div>
+            <div class="color-swatch" style="background:#1d4ed8;" data-color="#1d4ed8" onclick="selectColor(this)"></div>
+            <div class="color-swatch" style="background:#16a34a;" data-color="#16a34a" onclick="selectColor(this)"></div>
+            <div class="color-swatch" style="background:#7c3aed;" data-color="#7c3aed" onclick="selectColor(this)"></div>
+            <div class="color-swatch" style="background:#ea580c;" data-color="#ea580c" onclick="selectColor(this)"></div>
+            <div class="color-swatch" style="background:#0891b2;" data-color="#0891b2" onclick="selectColor(this)"></div>
+        </div>
+        <button onclick="joinChat()">Join Chat</button>
+    </div>
+</div>
+
+<!-- Chat Layout -->
+<div class="chat-layout" id="chat-layout">
+
+    <!-- Sessions Sidebar -->
+    <div class="sessions-panel" id="sessions-panel">
+        <div class="sessions-header">
+            Active Chats
+            <span id="session-count" style="font-size:12px;color:#800000;font-weight:700;"></span>
+        </div>
+        <div class="sessions-list" id="sessions-list">
+            <div class="no-sessions">No active chats yet.<br>Waiting for customers...</div>
+        </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel" id="chat-panel">
+        <div class="no-chat-selected" id="no-chat-msg">
+            ← Select a customer chat to respond
+        </div>
+
+        <div id="active-chat" style="display:none;flex:1;flex-direction:column;overflow:hidden;display:none;">
+            <div class="chat-panel-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                    <span id="active-customer-name">—</span>
+                </div>
+                <div class="agent-badge">
+                    <div class="agent-color-dot" id="agent-color-dot"></div>
+                    <span id="agent-name-display"></span>
+                </div>
+            </div>
+            <div class="messages" id="messages"></div>
+            <div class="input-bar">
+                <textarea id="msg-input" placeholder="Reply to customer..." rows="1"
+                    onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsenB5cmNza2N2bHNkdGd3ZmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NDY1ODIsImV4cCI6MjA5MzQyMjU4Mn0.kOPX8Wbu0XdRVSc81NpIS2TdwIzaJOMRX_9BeSdbQWI';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let agentName = '';
+    let agentColor = '#800000';
+    let activeSessionId = null;
+    let sessions = {};
+    let unreadCounts = {};
+    let globalSubscription = null;
+
+    function selectColor(el) {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+        agentColor = el.dataset.color;
+    }
+
+    function joinChat() {
+        const name = document.getElementById('agent-name').value.trim();
+        if (!name) { document.getElementById('agent-name').focus(); return; }
+        agentName = name;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('chat-layout').classList.add('active');
+        document.getElementById('agent-name-display').textContent = agentName;
+        document.getElementById('agent-color-dot').style.background = agentColor;
+        document.getElementById('send-btn').style.background = agentColor;
+        subscribeToAll();
+        loadAllSessions();
+    }
+
+    async function loadAllSessions() {
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { data } = await supabaseClient
+            .from('chat_messages')
+            .select('*')
+            .gte('created_at', since)
+            .order('created_at', { ascending: true });
+
+        if (!data) return;
+        sessions = {};
+        data.forEach(msg => {
+            if (!sessions[msg.session_id]) sessions[msg.session_id] = { messages: [], customerName: '' };
+            sessions[msg.session_id].messages.push(msg);
+            if (msg.sender_type === 'customer') sessions[msg.session_id].customerName = msg.sender_name;
+        });
+        renderSessionList();
+    }
+
+    function subscribeToAll() {
+        globalSubscription = supabaseClient
+            .channel('all_chats')
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'chat_messages'
+            }, payload => {
+                const msg = payload.new;
+                if (!sessions[msg.session_id]) sessions[msg.session_id] = { messages: [], customerName: '' };
+                sessions[msg.session_id].messages.push(msg);
+                if (msg.sender_type === 'customer') sessions[msg.session_id].customerName = msg.sender_name;
+
+                if (msg.session_id === activeSessionId) {
+                    appendMessage(msg);
+                } else if (msg.sender_type === 'customer') {
+                    unreadCounts[msg.session_id] = (unreadCounts[msg.session_id] || 0) + 1;
+                }
+                renderSessionList();
+            })
+            .subscribe();
+    }
+
+    function renderSessionList() {
+        const list = document.getElementById('sessions-list');
+        const keys = Object.keys(sessions);
+        document.getElementById('session-count').textContent = keys.length > 0 ? `${keys.length}` : '';
+
+        if (keys.length === 0) {
+            list.innerHTML = '<div class="no-sessions">No active chats yet.<br>Waiting for customers...</div>';
+            return;
+        }
+
+        list.innerHTML = keys.map(sid => {
+            const s = sessions[sid];
+            const lastMsg = s.messages[s.messages.length - 1];
+            const unread = unreadCounts[sid] || 0;
+            const time = lastMsg ? new Date(lastMsg.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+            return `<div class="session-item ${sid === activeSessionId ? 'active' : ''} ${unread > 0 ? 'unread' : ''}" onclick="selectSession('${sid}')">
+                <div class="session-name">${s.customerName || 'Unknown'} ${unread > 0 ? `<span class="unread-badge">${unread}</span>` : ''}</div>
+                <div class="session-preview">${escapeHtml(lastMsg ? lastMsg.message.substring(0,50) : '')}</div>
+                <div class="session-time">${time}</div>
+            </div>`;
+        }).join('');
+    }
+
+    function selectSession(sid) {
+        activeSessionId = sid;
+        unreadCounts[sid] = 0;
+        const s = sessions[sid];
+
+        document.getElementById('active-customer-name').textContent = s.customerName || 'Customer';
+        document.getElementById('no-chat-msg').style.display = 'none';
+
+        const activeChat = document.getElementById('active-chat');
+        activeChat.style.display = 'flex';
+        activeChat.style.flexDirection = 'column';
+        activeChat.style.overflow = 'hidden';
+        activeChat.style.flex = '1';
+
+        const msgContainer = document.getElementById('messages');
+        msgContainer.innerHTML = '';
+        s.messages.forEach(appendMessage);
+
+        renderSessionList();
+        document.getElementById('msg-input').focus();
+
+        // Mobile: close sidebar
+        document.getElementById('sessions-panel').classList.remove('mobile-open');
+    }
+
+    function appendMessage(msg) {
+        const container = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.className = `msg ${msg.sender_type}`;
+        const time = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+        let nameHtml = '';
+        if (msg.sender_type === 'customer') {
+            nameHtml = `<div class="msg-name">${msg.sender_name}</div>`;
+        } else if (msg.sender_type === 'agent') {
+            nameHtml = `<div class="msg-name" style="color:${msg.agent_color||'#800000'}">${msg.sender_name}</div>`;
+        }
+
+        let bubbleStyle = '';
+        if (msg.sender_type === 'agent') {
+            bubbleStyle = `background:${msg.agent_color||'#800000'};`;
+        }
+
+        div.innerHTML = `
+            ${nameHtml}
+            <div class="msg-bubble" style="${bubbleStyle}">${escapeHtml(msg.message)}</div>
+            <div class="msg-time">${time}</div>
+        `;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const text = input.value.trim();
+        if (!text || !activeSessionId) return;
+
+        input.value = '';
+        autoResize(input);
+
+        await supabaseClient.from('chat_messages').insert([{
+            sender_type: 'agent',
+            sender_name: agentName,
+            message: text,
+            session_id: activeSessionId,
+            agent_color: agentColor
+        }]);
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sessions-panel').classList.toggle('mobile-open');
+    }
+
+    function escapeHtml(text) {
+        return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    }
+</script>
+</body>
+</html>
