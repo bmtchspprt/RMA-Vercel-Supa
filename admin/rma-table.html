@@ -120,11 +120,11 @@
 <div class="container">
 
     <div class="charts-toggle" onclick="toggleCharts()">
-        <span class="toggle-arrow open" id="toggle-arrow">▼</span>
-        <span id="toggle-label">Hide Charts</span>
+        <span class="toggle-arrow" id="toggle-arrow">▼</span>
+        <span id="toggle-label">Show Charts</span>
     </div>
 
-    <div class="charts-row" id="charts-row">
+    <div class="charts-row collapsed" id="charts-row">
         <div class="stats-box">
             <h3>Case Summary</h3>
             <div class="stats-grid">
@@ -210,7 +210,8 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let allCases = [];
-    let chartsOpen = true;
+    let chartsOpen = false;
+    let chartsBuilt = false;
     let currentView = 'default';
     let resizing = null;
 
@@ -244,7 +245,6 @@
         'product_name','issue_type','status','document_number','attached_documents'
     ];
     let customColumns = [...DEFAULT_COLUMNS];
-
     const COLORS = ['#800000','#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'];
 
     function toggleCharts() {
@@ -252,6 +252,12 @@
         document.getElementById('charts-row').classList.toggle('collapsed', !chartsOpen);
         document.getElementById('toggle-arrow').classList.toggle('open', chartsOpen);
         document.getElementById('toggle-label').textContent = chartsOpen ? 'Hide Charts' : 'Show Charts';
+        // Build charts on first open
+        if (chartsOpen && !chartsBuilt && allCases.length > 0) {
+            buildPieChart(allCases.filter(c => c.status !== 'Completed'));
+            buildLineChart(allCases);
+            chartsBuilt = true;
+        }
     }
 
     function switchView(view) {
@@ -327,8 +333,6 @@
         }
         allCases = data;
         computeMetrics(data.filter(c => c.status !== 'Completed'));
-        buildPieChart(data.filter(c => c.status !== 'Completed'));
-        buildLineChart(data);
         buildHeaders();
         filterTables();
     }
@@ -363,7 +367,7 @@
         cases.forEach(c => {
             if (!c.date_created) return;
             const d = new Date(c.date_created);
-            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'00')}`;
             monthly[key] = (monthly[key] || 0) + 1;
         });
         const sorted = Object.keys(monthly).sort();
