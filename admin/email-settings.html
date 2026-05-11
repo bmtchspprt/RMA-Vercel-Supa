@@ -38,15 +38,11 @@
         .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
         .container { max-width: 1000px; margin: 30px auto; padding: 0 20px 60px; }
         .page-title { font-size: 20px; font-weight: 700; color: #800000; margin-bottom: 4px; }
-        .page-sub { font-size: 13px; color: #666; margin-bottom: 28px; }
+        .page-sub { font-size: 13px; color: #666; margin-bottom: 24px; }
 
-        .section-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
-        .section-card h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
-
-        /* Tabs for Settings sections */
         .settings-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
         .settings-tab {
-            padding: 8px 18px;
+            padding: 8px 16px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -55,13 +51,17 @@
             color: #666;
             border-radius: 6px;
             transition: all 0.15s;
+            white-space: nowrap;
         }
         .settings-tab.active { background: #800000; color: white; border-color: #800000; }
         .settings-tab:hover:not(.active) { border-color: #800000; color: #800000; }
         .settings-section { display: none; }
         .settings-section.active { display: block; }
 
-        /* IO buttons */
+        .section-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
+        .section-card h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+        .section-card p.desc { font-size: 12px; color: #666; margin-bottom: 16px; }
+
         .io-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .io-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; border: 1px solid #ccc; background: white; color: #333; transition: all 0.15s; }
         .io-btn:hover { border-color: #800000; color: #800000; }
@@ -76,7 +76,6 @@
         .io-status.error { color: #dc2626; }
         #upload-input { display: none; }
 
-        /* Fields */
         .field-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
         .field-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
         input[type=text], input[type=email], input[type=url], input[type=number], textarea, select {
@@ -94,91 +93,38 @@
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-        /* Media Library */
+        .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+        .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .save-btn:hover { background: #600000; }
+        .reset-btn { padding: 8px 14px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; color: #555; }
+        .reset-btn:hover { border-color: #800000; color: #800000; }
+        .tpl-status { font-size: 13px; }
+        .tpl-status.success { color: #16a34a; }
+
+        /* Media */
         .media-upload-zone {
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-            background: #fafafa;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 16px;
+            border: 2px dashed #ccc; border-radius: 8px; padding: 24px; text-align: center;
+            background: #fafafa; cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
         }
         .media-upload-zone:hover, .media-upload-zone.dragover { border-color: #800000; background: #fff5f5; }
         .media-upload-zone p { font-size: 13px; color: #888; margin-bottom: 6px; }
         .media-upload-zone .upload-hint { font-size: 11px; color: #aaa; }
         #media-file-input { display: none; }
-        .media-upload-btn {
-            display: inline-block;
-            padding: 8px 20px;
-            background: #800000;
-            color: white;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-            margin-top: 8px;
-        }
-        .media-item {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-            position: relative;
-            cursor: pointer;
-            transition: border-color 0.15s;
-        }
+        .media-upload-btn { display: inline-block; padding: 8px 20px; background: #800000; color: white; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 8px; }
+        .media-item { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: white; cursor: pointer; transition: border-color 0.15s; }
         .media-item:hover { border-color: #800000; }
-        .media-item.selected { border-color: #800000; border-width: 2px; }
-        .media-item img {
-            width: 100%;
-            height: 100px;
-            object-fit: contain;
-            background: #f9f9f9;
-            display: block;
-        }
-        .media-item-footer {
-            padding: 6px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 4px;
-        }
-        .media-item-name {
-            font-size: 10px;
-            color: #555;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-        }
-        .media-item-delete {
-            font-size: 12px;
-            color: #ccc;
-            cursor: pointer;
-            flex-shrink: 0;
-            padding: 2px;
-        }
-        .media-item-delete:hover { color: #dc2626; }
-        .media-item-copy {
-            font-size: 10px;
-            color: #800000;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-weight: 600;
-        }
+        .media-item img { width: 100%; height: 100px; object-fit: contain; background: #f9f9f9; display: block; }
+        .media-item-footer { padding: 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+        .media-item-name { font-size: 10px; color: #555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+        .media-item-copy { font-size: 10px; color: #800000; cursor: pointer; flex-shrink: 0; font-weight: 600; }
         .media-item-copy:hover { text-decoration: underline; }
+        .media-item-delete { font-size: 12px; color: #ccc; cursor: pointer; flex-shrink: 0; padding: 2px; }
+        .media-item-delete:hover { color: #dc2626; }
         .media-empty { font-size: 13px; color: #aaa; text-align: center; padding: 20px; }
         .media-progress { font-size: 12px; color: #800000; margin-top: 8px; }
 
-        /* Product Manager */
+        /* Products */
         .product-manager-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .pm-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; background: #fafafa; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .pm-item img { width: 56px; height: 56px; object-fit: contain; border-radius: 4px; }
@@ -187,29 +133,17 @@
         .pm-link { font-size: 11px; color: #1d4ed8; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
         .pm-actions { display: flex; gap: 6px; }
         .pm-inactive { opacity: 0.4; }
-
-        /* Image picker for product form */
         .img-picker-row { display: flex; gap: 10px; align-items: flex-end; }
         .img-picker-row input { flex: 1; }
-        .img-picker-btn {
-            padding: 7px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
-            cursor: pointer;
-            white-space: nowrap;
-            color: #555;
-            flex-shrink: 0;
-        }
+        .img-picker-btn { padding: 7px 12px; font-size: 12px; font-weight: 600; border: 1px solid #ccc; border-radius: 5px; background: white; cursor: pointer; white-space: nowrap; color: #555; flex-shrink: 0; }
         .img-picker-btn:hover { border-color: #800000; color: #800000; }
         .img-preview { width: 50px; height: 50px; object-fit: contain; border: 1px solid #e0e0e0; border-radius: 4px; background: #f9f9f9; flex-shrink: 0; }
-
-        /* Add product form */
         .add-form { border: 1.5px dashed #ccc; border-radius: 8px; padding: 20px; background: #fafafa; }
         .add-form h4 { font-size: 13px; font-weight: 700; color: #800000; margin-bottom: 14px; }
         .add-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* FedEx */
+        .fedex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
         /* Email templates */
         .vars-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
@@ -217,31 +151,112 @@
         .vars-grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .var-pill { background: #800000; color: white; font-size: 11px; padding: 3px 10px; border-radius: 12px; cursor: pointer; font-family: monospace; user-select: none; }
         .var-pill:hover { background: #600000; }
-        .var-hint { font-size: 11px; color: #aaa; margin-top: 6px; }
+        .var-hint { font-size: 11px; color: #aaa; margin-top: 8px; }
         .email-tabs { display: flex; gap: 0; border-bottom: 2px solid #800000; }
         .email-tab { padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; background: white; border: 1px solid #e0e0e0; border-bottom: none; color: #666; border-radius: 6px 6px 0 0; margin-right: 4px; transition: all 0.15s; }
         .email-tab.active { background: #800000; color: white; border-color: #800000; }
         .email-tab:hover:not(.active) { background: #f9f9f9; color: #800000; }
         .template-card { background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; padding: 20px 24px; margin-bottom: 20px; }
-        .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
-        .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        .save-btn:hover { background: #600000; }
-        .reset-btn { padding: 8px 14px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; color: #555; }
-        .reset-btn:hover { border-color: #800000; color: #800000; }
-        .tpl-status { font-size: 13px; }
-        .tpl-status.success { color: #16a34a; }
         .preview-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 16px; }
         .preview-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 14px; }
         .preview-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
         .preview-value { font-size: 13px; color: #222; padding: 8px 10px; background: #f9f9f9; border-radius: 5px; margin-bottom: 12px; white-space: pre-wrap; line-height: 1.6; }
 
-        /* FedEx Settings */
-        .fedex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        /* Agents */
+        .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .agent-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .agent-card.inactive { opacity: 0.5; }
+        .agent-card-top { display: flex; align-items: center; gap: 10px; }
+        .agent-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .agent-name { font-size: 14px; font-weight: 700; color: #222; }
+        .agent-role { font-size: 11px; color: #888; }
+        .agent-email { font-size: 12px; color: #555; }
+        .agent-actions { display: flex; gap: 6px; margin-top: 4px; }
+        .role-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .role-admin { background: #fee2e2; color: #991b1b; }
+        .role-agent { background: #dbeafe; color: #1e40af; }
+        .role-regional { background: #dcfce7; color: #166534; }
+        .role-readonly { background: #f3f4f6; color: #6b7280; }
+        .add-agent-form { border: 1.5px dashed #ccc; border-radius: 8px; padding: 20px; background: #fafafa; }
+        .add-agent-form h4 { font-size: 13px; font-weight: 700; color: #800000; margin-bottom: 14px; }
+        .agent-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .security-notice {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .security-notice .notice-icon { font-size: 18px; flex-shrink: 0; }
+        .security-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #ccc;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            left: 3px; bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: #800000; }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+        .toggle-label { font-size: 13px; color: #333; }
+        .toggle-label strong { color: #800000; }
 
-        /* Follow-up Settings */
-        .followup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-
-        /* Upload Modal */
+        /* Modals */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
         .modal-overlay.open { display: flex; }
         .modal { background: white; border-radius: 10px; padding: 24px; width: 800px; max-width: 95vw; max-height: 85vh; overflow-y: auto; }
@@ -263,13 +278,7 @@
         .media-picker-modal { background: white; border-radius: 10px; padding: 24px; width: 700px; max-width: 95vw; max-height: 80vh; overflow-y: auto; }
         .media-picker-modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
         .media-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
-        .media-picker-item {
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: border-color 0.15s;
-        }
+        .media-picker-item { border: 2px solid #e0e0e0; border-radius: 6px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
         .media-picker-item:hover { border-color: #800000; }
         .media-picker-item.selected { border-color: #800000; }
         .media-picker-item img { width: 100%; height: 80px; object-fit: contain; background: #f9f9f9; display: block; }
@@ -285,7 +294,7 @@
         <a class="nav-link" href="/admin/rma-table.html">RMA Cases</a>
         <a class="nav-link" href="/rma.html" target="_blank">Submit RMA</a>
         <a class="nav-link active" href="/admin/email-settings.html">Settings</a>
-        <a class="nav-link" href="/agents.html">Agents</a>
+        <a class="nav-link" href="/admin/agent-chat.html">Chat</a>
     </nav>
 </div>
 
@@ -293,18 +302,17 @@
     <div class="page-title">Settings</div>
     <p class="page-sub">Manage all platform settings from one place.</p>
 
-    <!-- Settings Tabs -->
     <div class="settings-tabs">
-        <div class="settings-tab active" onclick="switchSettingsTab('data')">📊 Data</div>
-        <div class="settings-tab" onclick="switchSettingsTab('media')">🖼 Media Library</div>
-        <div class="settings-tab" onclick="switchSettingsTab('products')">📦 Product Reference</div>
-        <div class="settings-tab" onclick="switchSettingsTab('fedex')">📫 FedEx</div>
-        <div class="settings-tab" onclick="switchSettingsTab('followup')">⏰ Follow-up</div>
-        <div class="settings-tab" onclick="switchSettingsTab('sender')">✉️ Email Sender</div>
-        <div class="settings-tab" onclick="switchSettingsTab('templates')">📝 Email Templates</div>
+        <div class="settings-tab active" onclick="switchTab('data')">📊 Data</div>
+        <div class="settings-tab" onclick="switchTab('media')">🖼 Media Library</div>
+        <div class="settings-tab" onclick="switchTab('products')">📦 Product Reference</div>
+        <div class="settings-tab" onclick="switchTab('fedex')">📫 FedEx</div>
+        <div class="settings-tab" onclick="switchTab('email')">✉️ Email</div>
+        <div class="settings-tab" onclick="switchTab('templates')">📝 Email Templates</div>
+        <div class="settings-tab" onclick="switchTab('agents')">👤 Agents</div>
     </div>
 
-    <!-- Data -->
+    <!-- DATA -->
     <div class="settings-section active" id="section-data">
         <div class="section-card">
             <h2>Import &amp; Export</h2>
@@ -319,12 +327,11 @@
         </div>
     </div>
 
-    <!-- Media Library -->
+    <!-- MEDIA LIBRARY -->
     <div class="settings-section" id="section-media">
         <div class="section-card">
             <h2>Media Library</h2>
-            <p style="font-size:12px;color:#666;margin-bottom:16px;">Upload images and files for use across the platform. Click any item to copy its URL.</p>
-
+            <p class="desc">Upload images for use across the platform. Click any image to copy its URL.</p>
             <div class="media-upload-zone" id="media-upload-zone">
                 <p>Drag images here or click to upload</p>
                 <p class="upload-hint">PNG, JPG, GIF, SVG, WebP — max 5MB each</p>
@@ -332,23 +339,20 @@
                 <input type="file" id="media-file-input" multiple accept="image/*,.svg,.gif,.webp" onchange="uploadMediaFiles(event)" />
                 <div class="media-progress" id="media-progress"></div>
             </div>
-
             <div class="media-grid" id="media-grid">
                 <div class="media-empty">Loading media...</div>
             </div>
         </div>
     </div>
 
-    <!-- Product Reference -->
+    <!-- PRODUCT REFERENCE -->
     <div class="settings-section" id="section-products">
         <div class="section-card">
             <h2>Product Reference</h2>
-            <p style="font-size:12px;color:#666;margin-bottom:16px;">These products appear in the sidebar of the customer RMA form. Click a product to select it in the form. If a link is provided, clicking opens the link instead.</p>
-
+            <p class="desc">These products appear in the sidebar of the customer RMA form. If a link is set, clicking opens the link instead of selecting the product.</p>
             <div class="product-manager-grid" id="pm-grid">
                 <div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">Loading...</div>
             </div>
-
             <div class="add-form" id="add-form">
                 <h4 id="add-form-title">Add New Product</h4>
                 <input type="hidden" id="edit-id" />
@@ -364,13 +368,13 @@
                     <div class="field-group" style="margin:0;grid-column:1/-1;">
                         <label>Product Image</label>
                         <div class="img-picker-row">
-                            <input type="text" id="pm-image" placeholder="Choose from media library or paste URL..." readonly />
+                            <input type="text" id="pm-image" placeholder="Choose from media library or paste URL..." />
                             <button class="img-picker-btn" onclick="openMediaPicker('pm-image','pm-img-preview')">📁 Browse Media</button>
                             <img id="pm-img-preview" class="img-preview" src="" style="display:none;" />
                         </div>
                     </div>
                     <div class="field-group" style="margin:0;grid-column:1/-1;">
-                        <label>Link URL (optional — if set, clicking opens this link)</label>
+                        <label>Link URL (optional)</label>
                         <input type="url" id="pm-link" placeholder="https://binmaster.com/product/..." />
                     </div>
                 </div>
@@ -383,11 +387,11 @@
         </div>
     </div>
 
-    <!-- FedEx -->
+    <!-- FEDEX -->
     <div class="settings-section" id="section-fedex">
         <div class="section-card">
             <h2>FedEx Setup</h2>
-            <p style="font-size:12px;color:#666;margin-bottom:16px;">Configure your FedEx account details. These are used to pre-fill label requests on case detail pages.</p>
+            <p class="desc">Configure your FedEx account details. These pre-fill label requests on case detail pages.</p>
             <div class="fedex-grid">
                 <div class="field-group">
                     <label>FedEx Account Number</label>
@@ -423,7 +427,7 @@
                     </select>
                 </div>
                 <div class="field-group">
-                    <label>FedEx Contact Email (for label requests)</label>
+                    <label>FedEx Contact Email</label>
                     <input type="email" id="fedex-email" placeholder="shipping@binmaster.com" />
                 </div>
             </div>
@@ -434,12 +438,30 @@
         </div>
     </div>
 
-    <!-- Follow-up -->
-    <div class="settings-section" id="section-followup">
+    <!-- EMAIL (Sender + Follow-up combined) -->
+    <div class="settings-section" id="section-email">
         <div class="section-card">
-            <h2>Automated Follow-up Email</h2>
-            <p style="font-size:12px;color:#666;margin-bottom:16px;">Configure the follow-up reminder that appears on case detail pages when a case reaches the specified age.</p>
-            <div class="followup-grid">
+            <h2>Sender Defaults</h2>
+            <div class="two-col">
+                <div class="field-group">
+                    <label>Default From Name</label>
+                    <input type="text" id="sender-name" placeholder="Binmaster Support" />
+                </div>
+                <div class="field-group">
+                    <label>Default Reply-To Email</label>
+                    <input type="email" id="sender-email" placeholder="support@binmaster.com" />
+                </div>
+            </div>
+            <div class="action-row">
+                <button class="save-btn" onclick="saveSender()">Save Sender</button>
+                <span class="tpl-status" id="sender-status"></span>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>Automated Follow-up</h2>
+            <p class="desc">Configure the follow-up reminder shown on case detail pages. When a case reaches the set age, a warning appears with a pre-filled email button.</p>
+            <div class="two-col" style="margin-bottom:12px;">
                 <div class="field-group">
                     <label>Follow-up After (days)</label>
                     <input type="number" id="followup-days" placeholder="30" min="1" max="365" />
@@ -455,7 +477,7 @@
             </div>
             <div class="field-group">
                 <label>Follow-up Email Body</label>
-                <textarea id="followup-body" rows="8" placeholder="Dear {contact_name},&#10;&#10;We wanted to follow up on your RMA case {case_number}..."></textarea>
+                <textarea id="followup-body" rows="8"></textarea>
             </div>
             <div class="action-row">
                 <button class="save-btn" onclick="saveFollowUp()">Save Follow-up Settings</button>
@@ -464,28 +486,7 @@
         </div>
     </div>
 
-    <!-- Sender -->
-    <div class="settings-section" id="section-sender">
-        <div class="section-card">
-            <h2>Sender Defaults</h2>
-            <div class="two-col">
-                <div class="field-group">
-                    <label>Default From Name</label>
-                    <input type="text" id="sender-name" placeholder="Binmaster Support" />
-                </div>
-                <div class="field-group">
-                    <label>Default Reply-To Email</label>
-                    <input type="email" id="sender-email" placeholder="support@binmaster.com" />
-                </div>
-            </div>
-            <div class="action-row">
-                <button class="save-btn" onclick="saveSender()">Save</button>
-                <span class="tpl-status" id="sender-status"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Email Templates -->
+    <!-- EMAIL TEMPLATES -->
     <div class="settings-section" id="section-templates">
         <div class="vars-box">
             <h4>Available Variables — click to copy</h4>
@@ -496,13 +497,24 @@
                 <span class="var-pill" onclick="copyVar('{email}')">{email}</span>
                 <span class="var-pill" onclick="copyVar('{product_name}')">{product_name}</span>
                 <span class="var-pill" onclick="copyVar('{issue_type}')">{issue_type}</span>
+                <span class="var-pill" onclick="copyVar('{issue_notes}')">{issue_notes}</span>
                 <span class="var-pill" onclick="copyVar('{status}')">{status}</span>
                 <span class="var-pill" onclick="copyVar('{repair_amount}')">{repair_amount}</span>
                 <span class="var-pill" onclick="copyVar('{credit_amount}')">{credit_amount}</span>
                 <span class="var-pill" onclick="copyVar('{credit_type}')">{credit_type}</span>
                 <span class="var-pill" onclick="copyVar('{document_number}')">{document_number}</span>
+                <span class="var-pill" onclick="copyVar('{received_description}')">{received_description}</span>
+                <span class="var-pill" onclick="copyVar('{evaluation_notes}')">{evaluation_notes}</span>
+                <span class="var-pill" onclick="copyVar('{case_notes}')">{case_notes}</span>
+                <span class="var-pill" onclick="copyVar('{fedex_tracking}')">{fedex_tracking}</span>
+                <span class="var-pill" onclick="copyVar('{ship_date}')">{ship_date}</span>
+                <span class="var-pill" onclick="copyVar('{replacement_sent}')">{replacement_sent}</span>
+                <span class="var-pill" onclick="copyVar('{address}')">{address}</span>
+                <span class="var-pill" onclick="copyVar('{city}')">{city}</span>
+                <span class="var-pill" onclick="copyVar('{state}')">{state}</span>
+                <span class="var-pill" onclick="copyVar('{zip}')">{zip}</span>
             </div>
-            <p class="var-hint">Variables are replaced with case data when an email is opened from a case detail page.</p>
+            <p class="var-hint">Variables are replaced with live case data when an email is opened from a case detail page.</p>
         </div>
 
         <div class="email-tabs">
@@ -537,6 +549,114 @@
             <div class="preview-value" id="preview-subject"></div>
             <div class="preview-label">Body</div>
             <div class="preview-value" id="preview-body"></div>
+        </div>
+    </div>
+
+    <!-- AGENTS -->
+    <div class="settings-section" id="section-agents">
+        <div class="section-card">
+            <h2>Security &amp; Access</h2>
+            <div class="security-notice">
+                <span class="notice-icon">🔒</span>
+                <div>
+                    <strong>Security is currently disabled.</strong> All pages are publicly accessible.
+                    When you are ready to activate login requirements, flip the toggle below.
+                    The master admin account (davezelnio@gmail.com) always has full access.
+                </div>
+            </div>
+            <div class="security-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="security-enabled" onchange="toggleSecurity(this)" />
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label" id="security-label">Security is <strong>OFF</strong> — login not required</span>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>Agent Accounts</h2>
+            <p class="desc">Manage who has access to the platform. Agents must log in every 14 days. Password changes are self-service from the login page.</p>
+
+            <div class="agents-grid" id="agents-grid">
+                <!-- Master admin always shown -->
+                <div class="agent-card">
+                    <div class="agent-card-top">
+                        <div class="agent-avatar" style="background:#800000;">D</div>
+                        <div>
+                            <div class="agent-name">Dave Zelnio</div>
+                            <div class="agent-role"><span class="role-badge role-admin">Admin</span></div>
+                        </div>
+                    </div>
+                    <div class="agent-email">davezelnio@gmail.com</div>
+                    <div style="font-size:11px;color:#aaa;">Master account — cannot be removed</div>
+                </div>
+            </div>
+
+            <div class="add-agent-form" id="add-agent-form">
+                <h4 id="add-agent-title">Add New Agent</h4>
+                <input type="hidden" id="edit-agent-id" />
+                <div class="agent-form-grid">
+                    <div class="field-group" style="margin:0;">
+                        <label>First Name *</label>
+                        <input type="text" id="agent-fname" placeholder="Jane" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Last Name *</label>
+                        <input type="text" id="agent-lname" placeholder="Smith" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Email / Username *</label>
+                        <input type="email" id="agent-email" placeholder="jane@binmaster.com" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Temporary Password *</label>
+                        <input type="text" id="agent-password" placeholder="They can change after first login" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Role</label>
+                        <select id="agent-role">
+                            <option value="agent">Agent — full RMA access</option>
+                            <option value="regional">Regional Manager — view only, state-filtered</option>
+                            <option value="readonly">Read Only — view only, all states</option>
+                            <option value="admin">Admin — full access + settings</option>
+                        </select>
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Chat Color</label>
+                        <select id="agent-color">
+                            <option value="#800000">Maroon</option>
+                            <option value="#1d4ed8">Blue</option>
+                            <option value="#16a34a">Green</option>
+                            <option value="#7c3aed">Purple</option>
+                            <option value="#ea580c">Orange</option>
+                            <option value="#0891b2">Teal</option>
+                        </select>
+                    </div>
+                    <div class="field-group" style="margin:0;grid-column:1/-1;" id="states-row" style="display:none;">
+                        <label>Assigned States (Regional Manager only — comma separated)</label>
+                        <input type="text" id="agent-states" placeholder="FL, SC, MS" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Chat Access</label>
+                        <select id="agent-chat">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Notifications</label>
+                        <select id="agent-notif">
+                            <option value="yes">Yes — receive chat &amp; case alerts</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top:14px;display:flex;gap:10px;align-items:center;">
+                    <button class="io-btn primary" onclick="saveAgent()">Save Agent</button>
+                    <button class="io-btn" onclick="cancelAgentEdit()">Cancel</button>
+                    <span class="io-status" id="agent-status"></span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -585,7 +705,7 @@
     let pendingUploadRows = [];
     let currentEmailTab = 'rma';
     let editingId = null;
-    let mediaFiles = [];
+    let editingAgentId = null;
     let pickerTargetInput = null;
     let pickerTargetPreview = null;
     let pickerSelectedUrl = null;
@@ -597,69 +717,73 @@
         'received_description','evaluation_notes','case_notes','replacement_sent'
     ];
 
-    // ── Settings Tabs ───────────────────────────────────────────────
-    function switchSettingsTab(tab) {
-        document.querySelectorAll('.settings-tab').forEach((t, i) => {
-            const ids = ['data','media','products','fedex','followup','sender','templates'];
-            t.classList.toggle('active', ids[i] === tab);
-        });
+    const EMAIL_DEFAULTS = {
+        rma:   { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote: { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit:{ title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:    { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+    };
+
+    const SAMPLE = {
+        case_number:'CASE-26-2001', contact_name:'John Smith', company:'Acme Industries',
+        email:'john@acme.com', product_name:'SmartBob', issue_type:'Stopped working',
+        issue_notes:'Unit stopped powering on after 2 years of use.',
+        status:'Evaluation', repair_amount:'125.00', credit_amount:'250.00',
+        credit_type:'WARRANTY', document_number:'INV-10042',
+        received_description:'Unit received in original box, minor denting.',
+        evaluation_notes:'Capacitor failure. Repair is possible.',
+        case_notes:'Customer very responsive. Prefers email.',
+        fedex_tracking:'7489234892348923', ship_date:'May 10, 2026',
+        replacement_sent:'No', address:'123 Main St', city:'Lincoln', state:'NE', zip:'68501'
+    };
+
+    // ── Tab switching ───────────────────────────────────────────────
+    const TAB_IDS = ['data','media','products','fedex','email','templates','agents'];
+    function switchTab(tab) {
+        document.querySelectorAll('.settings-tab').forEach((t, i) => t.classList.toggle('active', TAB_IDS[i] === tab));
         document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
         document.getElementById(`section-${tab}`).classList.add('active');
         if (tab === 'media') loadMediaLibrary();
         if (tab === 'products') loadProductManager();
+        if (tab === 'agents') loadAgents();
     }
 
     // ── Media Library ───────────────────────────────────────────────
-    const mediaUploadZone = document.getElementById('media-upload-zone');
-    mediaUploadZone.addEventListener('dragover', e => { e.preventDefault(); mediaUploadZone.classList.add('dragover'); });
-    mediaUploadZone.addEventListener('dragleave', () => mediaUploadZone.classList.remove('dragover'));
-    mediaUploadZone.addEventListener('drop', e => {
-        e.preventDefault();
-        mediaUploadZone.classList.remove('dragover');
-        uploadMediaFileList(e.dataTransfer.files);
-    });
+    const mediaZone = document.getElementById('media-upload-zone');
+    mediaZone.addEventListener('dragover', e => { e.preventDefault(); mediaZone.classList.add('dragover'); });
+    mediaZone.addEventListener('dragleave', () => mediaZone.classList.remove('dragover'));
+    mediaZone.addEventListener('drop', e => { e.preventDefault(); mediaZone.classList.remove('dragover'); uploadMediaFileList(e.dataTransfer.files); });
 
-    async function uploadMediaFiles(event) {
-        await uploadMediaFileList(event.target.files);
-        event.target.value = '';
-    }
+    async function uploadMediaFiles(event) { await uploadMediaFileList(event.target.files); event.target.value = ''; }
 
     async function uploadMediaFileList(files) {
         if (!files || files.length === 0) return;
-        const progressEl = document.getElementById('media-progress');
+        const prog = document.getElementById('media-progress');
         let uploaded = 0;
-        progressEl.textContent = `Uploading 0 of ${files.length}...`;
-
+        prog.textContent = `Uploading 0 of ${files.length}...`;
         for (const file of files) {
-            if (file.size > 5 * 1024 * 1024) { alert(`${file.name} is too large (max 5MB)`); continue; }
-            const ext = file.name.split('.').pop().toLowerCase();
+            if (file.size > 5 * 1024 * 1024) { alert(`${file.name} too large (max 5MB)`); continue; }
             const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
             const { error } = await supabaseClient.storage.from('media').upload(filename, file, { contentType: file.type });
-            if (!error) { uploaded++; progressEl.textContent = `Uploaded ${uploaded} of ${files.length}...`; }
-            else { console.error('Upload error:', error); }
+            if (!error) { uploaded++; prog.textContent = `Uploaded ${uploaded} of ${files.length}...`; }
         }
-
-        progressEl.textContent = `Done. ${uploaded} file${uploaded !== 1 ? 's' : ''} uploaded.`;
-        setTimeout(() => progressEl.textContent = '', 3000);
+        prog.textContent = `Done — ${uploaded} file${uploaded !== 1 ? 's' : ''} uploaded.`;
+        setTimeout(() => prog.textContent = '', 3000);
         loadMediaLibrary();
     }
 
     async function loadMediaLibrary() {
         const grid = document.getElementById('media-grid');
-        const { data, error } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-        if (error || !data || data.length === 0) {
-            grid.innerHTML = '<div class="media-empty">No media uploaded yet. Drag images above to get started.</div>';
-            mediaFiles = [];
-            return;
-        }
-        mediaFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
-        grid.innerHTML = mediaFiles.map(f => {
+        const { data } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+        if (files.length === 0) { grid.innerHTML = '<div class="media-empty">No media yet. Drag images above to get started.</div>'; return; }
+        grid.innerHTML = files.map(f => {
             const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
-            return `<div class="media-item" onclick="copyMediaUrl('${url}', this)" title="Click to copy URL">
-                <img src="${url}" alt="${f.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect fill=%22%23f0f0f0%22 width=%2260%22 height=%2260%22/><text x=%2230%22 y=%2235%22 text-anchor=%22middle%22 font-size=%2220%22>📄</text></svg>'" />
+            return `<div class="media-item" onclick="copyMediaUrl('${url}',this)">
+                <img src="${url}" alt="${f.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect fill=%22%23f0f0f0%22 width=%2260%22 height=%2260%22/><text x=%2230%22 y=%2238%22 text-anchor=%22middle%22 font-size=%2222%22>📄</text></svg>'" />
                 <div class="media-item-footer">
-                    <span class="media-item-name" title="${f.name}">${f.name.replace(/^\d+_/, '')}</span>
-                    <span class="media-item-copy" onclick="event.stopPropagation();copyMediaUrl('${url}', null)">Copy</span>
+                    <span class="media-item-name">${f.name.replace(/^\d+_/,'')}</span>
+                    <span class="media-item-copy" onclick="event.stopPropagation();copyMediaUrl('${url}',null)">Copy</span>
                     <span class="media-item-delete" onclick="event.stopPropagation();deleteMedia('${f.name}')">✕</span>
                 </div>
             </div>`;
@@ -668,24 +792,19 @@
 
     function copyMediaUrl(url, el) {
         navigator.clipboard.writeText(url).then(() => {
-            if (el) {
-                el.style.borderColor = '#16a34a';
-                setTimeout(() => el.style.borderColor = '', 1000);
-            }
-            // Brief feedback
-            const toast = document.createElement('div');
-            toast.textContent = 'URL copied!';
-            toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#222;color:white;padding:8px 16px;border-radius:6px;font-size:13px;z-index:999;';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
+            if (el) { el.style.borderColor = '#16a34a'; setTimeout(() => el.style.borderColor = '', 1200); }
+            const t = document.createElement('div');
+            t.textContent = 'URL copied!';
+            t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#222;color:white;padding:8px 16px;border-radius:6px;font-size:13px;z-index:999;';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
         });
     }
 
     async function deleteMedia(filename) {
-        if (!confirm(`Delete "${filename.replace(/^\d+_/, '')}"?`)) return;
-        const { error } = await supabaseClient.storage.from('media').remove([filename]);
-        if (!error) loadMediaLibrary();
-        else alert('Delete failed: ' + error.message);
+        if (!confirm(`Delete "${filename.replace(/^\d+_/,'')}"?`)) return;
+        await supabaseClient.storage.from('media').remove([filename]);
+        loadMediaLibrary();
     }
 
     // ── Media Picker ────────────────────────────────────────────────
@@ -702,15 +821,12 @@
         grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">Loading...</div>';
         const { data } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
         const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
-        if (files.length === 0) {
-            grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">No media yet. Upload images in the Media Library tab first.</div>';
-            return;
-        }
+        if (files.length === 0) { grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">No media yet. Upload images in the Media Library tab first.</div>'; return; }
         grid.innerHTML = files.map(f => {
             const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
-            return `<div class="media-picker-item" onclick="selectPickerItem('${url}', this)">
+            return `<div class="media-picker-item" onclick="selectPickerItem('${url}',this)">
                 <img src="${url}" alt="${f.name}" />
-                <div class="media-picker-item-name">${f.name.replace(/^\d+_/, '')}</div>
+                <div class="media-picker-item-name">${f.name.replace(/^\d+_/,'')}</div>
             </div>`;
         }).join('');
     }
@@ -722,34 +838,24 @@
     }
 
     function confirmMediaPick() {
-        if (!pickerSelectedUrl) { alert('Please select an image first.'); return; }
+        if (!pickerSelectedUrl) { alert('Select an image first.'); return; }
         if (pickerTargetInput) pickerTargetInput.value = pickerSelectedUrl;
-        if (pickerTargetPreview) {
-            pickerTargetPreview.src = pickerSelectedUrl;
-            pickerTargetPreview.style.display = 'block';
-        }
+        if (pickerTargetPreview) { pickerTargetPreview.src = pickerSelectedUrl; pickerTargetPreview.style.display = 'block'; }
         closeMediaPicker();
     }
 
     function closeMediaPicker() {
         document.getElementById('media-picker-modal').classList.remove('open');
-        pickerTargetInput = null;
-        pickerTargetPreview = null;
-        pickerSelectedUrl = null;
+        pickerTargetInput = pickerTargetPreview = pickerSelectedUrl = null;
     }
 
-    document.getElementById('media-picker-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeMediaPicker();
-    });
+    document.getElementById('media-picker-modal').addEventListener('click', function(e) { if (e.target === this) closeMediaPicker(); });
 
-    // ── Product Reference Manager ───────────────────────────────────
+    // ── Product Manager ─────────────────────────────────────────────
     async function loadProductManager() {
         const { data } = await supabaseClient.from('product_reference').select('*').order('display_order');
         const grid = document.getElementById('pm-grid');
-        if (!data || data.length === 0) {
-            grid.innerHTML = '<div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">No products yet.</div>';
-            return;
-        }
+        if (!data || data.length === 0) { grid.innerHTML = '<div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">No products yet.</div>'; return; }
         grid.innerHTML = data.map(p => `
             <div class="pm-item ${p.active ? '' : 'pm-inactive'}">
                 ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'" />` : `<div class="pm-img-placeholder">📦</div>`}
@@ -773,8 +879,8 @@
         document.getElementById('pm-link').value = link;
         document.getElementById('pm-order').value = order;
         document.getElementById('add-form-title').textContent = 'Edit Product';
-        if (image) { document.getElementById('pm-img-preview').src = image; document.getElementById('pm-img-preview').style.display = 'block'; }
-        else document.getElementById('pm-img-preview').style.display = 'none';
+        const prev = document.getElementById('pm-img-preview');
+        if (image) { prev.src = image; prev.style.display = 'block'; } else prev.style.display = 'none';
         document.getElementById('add-form').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -801,33 +907,14 @@
         else { statusEl.textContent = editingId ? 'Updated!' : 'Added!'; statusEl.className = 'io-status success'; cancelEdit(); loadProductManager(); setTimeout(() => statusEl.textContent = '', 2500); }
     }
 
-    async function toggleProduct(id, active) {
-        await supabaseClient.from('product_reference').update({ active: !active }).eq('id', id);
-        loadProductManager();
-    }
+    async function toggleProduct(id, active) { await supabaseClient.from('product_reference').update({ active: !active }).eq('id', id); loadProductManager(); }
+    async function deleteProduct(id) { if (!confirm('Delete this product?')) return; await supabaseClient.from('product_reference').delete().eq('id', id); loadProductManager(); }
 
-    async function deleteProduct(id) {
-        if (!confirm('Delete this product?')) return;
-        await supabaseClient.from('product_reference').delete().eq('id', id);
-        loadProductManager();
-    }
-
-    // ── FedEx Settings ──────────────────────────────────────────────
+    // ── FedEx ───────────────────────────────────────────────────────
     function saveFedEx() {
-        const settings = {
-            account_number: document.getElementById('fedex-account').value.trim(),
-            meter_number: document.getElementById('fedex-meter').value.trim(),
-            company: document.getElementById('fedex-company').value.trim(),
-            contact: document.getElementById('fedex-contact').value.trim(),
-            ship_from: document.getElementById('fedex-address').value.trim(),
-            phone: document.getElementById('fedex-phone').value.trim(),
-            service: document.getElementById('fedex-service').value,
-            contact_email: document.getElementById('fedex-email').value.trim(),
-        };
-        localStorage.setItem('fedex_settings', JSON.stringify(settings));
-        const s = document.getElementById('fedex-status');
-        s.textContent = 'Saved!'; s.className = 'tpl-status success';
-        setTimeout(() => s.textContent = '', 2500);
+        const s = { account_number: document.getElementById('fedex-account').value.trim(), meter_number: document.getElementById('fedex-meter').value.trim(), company: document.getElementById('fedex-company').value.trim(), contact: document.getElementById('fedex-contact').value.trim(), ship_from: document.getElementById('fedex-address').value.trim(), phone: document.getElementById('fedex-phone').value.trim(), service: document.getElementById('fedex-service').value, contact_email: document.getElementById('fedex-email').value.trim() };
+        localStorage.setItem('fedex_settings', JSON.stringify(s));
+        flash('fedex-status', 'Saved!');
     }
 
     function loadFedEx() {
@@ -842,35 +929,11 @@
         if (s.contact_email) document.getElementById('fedex-email').value = s.contact_email;
     }
 
-    // ── Follow-up Settings ──────────────────────────────────────────
-    function saveFollowUp() {
-        localStorage.setItem('followup_days', document.getElementById('followup-days').value || '30');
-        localStorage.setItem('followup_warning', document.getElementById('followup-warning').value || '7');
-        const tpl = {
-            subject: document.getElementById('followup-subject').value,
-            body: document.getElementById('followup-body').value
-        };
-        localStorage.setItem('email_template_followup', JSON.stringify(tpl));
-        const s = document.getElementById('followup-status');
-        s.textContent = 'Saved!'; s.className = 'tpl-status success';
-        setTimeout(() => s.textContent = '', 2500);
-    }
-
-    function loadFollowUp() {
-        document.getElementById('followup-days').value = localStorage.getItem('followup_days') || '30';
-        document.getElementById('followup-warning').value = localStorage.getItem('followup_warning') || '7';
-        const tpl = JSON.parse(localStorage.getItem('email_template_followup') || '{}');
-        document.getElementById('followup-subject').value = tpl.subject || 'Follow-up on RMA Case {case_number}';
-        document.getElementById('followup-body').value = tpl.body || 'Dear {contact_name},\n\nWe wanted to follow up on your RMA case {case_number}.\n\nCurrent Status: {status}\nProduct: {product_name}\n\nPlease don\'t hesitate to reach out if you have any questions.\n\nBinmaster Support';
-    }
-
-    // ── Sender ──────────────────────────────────────────────────────
+    // ── Email (sender + follow-up) ──────────────────────────────────
     function saveSender() {
         localStorage.setItem('sender_name', document.getElementById('sender-name').value.trim());
         localStorage.setItem('sender_email', document.getElementById('sender-email').value.trim());
-        const s = document.getElementById('sender-status');
-        s.textContent = 'Saved!'; s.className = 'tpl-status success';
-        setTimeout(() => s.textContent = '', 2500);
+        flash('sender-status', 'Saved!');
     }
 
     function loadSender() {
@@ -878,16 +941,22 @@
         document.getElementById('sender-email').value = localStorage.getItem('sender_email') || '';
     }
 
+    function saveFollowUp() {
+        localStorage.setItem('followup_days', document.getElementById('followup-days').value || '30');
+        localStorage.setItem('followup_warning', document.getElementById('followup-warning').value || '7');
+        localStorage.setItem('email_template_followup', JSON.stringify({ subject: document.getElementById('followup-subject').value, body: document.getElementById('followup-body').value }));
+        flash('followup-status', 'Saved!');
+    }
+
+    function loadFollowUpSettings() {
+        document.getElementById('followup-days').value = localStorage.getItem('followup_days') || '30';
+        document.getElementById('followup-warning').value = localStorage.getItem('followup_warning') || '7';
+        const tpl = JSON.parse(localStorage.getItem('email_template_followup') || '{}');
+        document.getElementById('followup-subject').value = tpl.subject || 'Follow-up on RMA Case {case_number}';
+        document.getElementById('followup-body').value = tpl.body || 'Dear {contact_name},\n\nWe wanted to follow up on your RMA case {case_number}.\n\nCurrent Status: {status}\nProduct: {product_name}\n\nPlease don\'t hesitate to reach out if you have any questions.\n\nBinmaster Support';
+    }
+
     // ── Email Templates ─────────────────────────────────────────────
-    const EMAIL_DEFAULTS = {
-        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
-    };
-
-    const SAMPLE = { case_number: 'CASE-26-2001', contact_name: 'John Smith', company: 'Acme Industries', email: 'john@acme.com', product_name: 'SmartBob', issue_type: 'Stopped working', status: 'Evaluation', repair_amount: '125.00', credit_amount: '250.00', credit_type: 'WARRANTY', document_number: 'INV-10042' };
-
     function switchEmailTab(tab) {
         currentEmailTab = tab;
         ['rma','quote','credit','cs'].forEach(t => document.getElementById(`tab-${t}`).classList.toggle('active', t === tab));
@@ -905,11 +974,8 @@
     }
 
     function saveTemplate() {
-        const tpl = { title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value };
-        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify(tpl));
-        const s = document.getElementById('tpl-status');
-        s.textContent = 'Saved!'; s.className = 'tpl-status success';
-        setTimeout(() => s.textContent = '', 2500);
+        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify({ title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value }));
+        flash('tpl-status', 'Saved!');
     }
 
     function resetTemplate() {
@@ -932,6 +998,148 @@
             event.target.style.background = '#16a34a';
             setTimeout(() => event.target.style.background = '', 600);
         });
+    }
+
+    // ── Agents ──────────────────────────────────────────────────────
+    function loadAgents() {
+        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+        const grid = document.getElementById('agents-grid');
+        const masterCard = `
+            <div class="agent-card">
+                <div class="agent-card-top">
+                    <div class="agent-avatar" style="background:#800000;">D</div>
+                    <div>
+                        <div class="agent-name">Dave Zelnio</div>
+                        <div class="agent-role"><span class="role-badge role-admin">Admin</span></div>
+                    </div>
+                </div>
+                <div class="agent-email">davezelnio@gmail.com</div>
+                <div style="font-size:11px;color:#aaa;">Master account — cannot be removed</div>
+            </div>`;
+
+        const agentCards = agents.map(a => {
+            const initials = `${a.fname[0] || ''}${a.lname[0] || ''}`.toUpperCase();
+            return `<div class="agent-card ${a.active === false ? 'inactive' : ''}">
+                <div class="agent-card-top">
+                    <div class="agent-avatar" style="background:${a.color || '#555'};">${initials}</div>
+                    <div>
+                        <div class="agent-name">${a.fname} ${a.lname}</div>
+                        <div class="agent-role"><span class="role-badge role-${a.role}">${a.role}</span></div>
+                    </div>
+                </div>
+                <div class="agent-email">${a.email}</div>
+                ${a.states ? `<div style="font-size:11px;color:#888;">States: ${a.states}</div>` : ''}
+                <div style="font-size:11px;color:#888;">Chat: ${a.chat} · Notifications: ${a.notif}</div>
+                <div class="agent-actions">
+                    <button class="io-btn small" onclick="editAgent('${a.id}')">Edit</button>
+                    <button class="io-btn small" onclick="toggleAgent('${a.id}')">${a.active === false ? 'Enable' : 'Disable'}</button>
+                    <button class="io-btn small danger" onclick="deleteAgent('${a.id}')">Remove</button>
+                </div>
+            </div>`;
+        }).join('');
+
+        grid.innerHTML = masterCard + agentCards;
+    }
+
+    document.getElementById('agent-role').addEventListener('change', function() {
+        document.getElementById('states-row').style.display = this.value === 'regional' ? 'flex' : 'none';
+    });
+
+    function saveAgent() {
+        const fname = document.getElementById('agent-fname').value.trim();
+        const lname = document.getElementById('agent-lname').value.trim();
+        const email = document.getElementById('agent-email').value.trim();
+        const password = document.getElementById('agent-password').value.trim();
+        const statusEl = document.getElementById('agent-status');
+
+        if (!fname || !lname || !email) { statusEl.textContent = 'Name and email required.'; statusEl.className = 'io-status error'; return; }
+        if (!editingAgentId && !password) { statusEl.textContent = 'Password required for new agent.'; statusEl.className = 'io-status error'; return; }
+
+        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+        const agentData = {
+            fname, lname, email,
+            role: document.getElementById('agent-role').value,
+            color: document.getElementById('agent-color').value,
+            states: document.getElementById('agent-states').value.trim(),
+            chat: document.getElementById('agent-chat').value,
+            notif: document.getElementById('agent-notif').value,
+            active: true
+        };
+
+        if (editingAgentId) {
+            const idx = agents.findIndex(a => a.id === editingAgentId);
+            if (idx >= 0) { agents[idx] = { ...agents[idx], ...agentData }; if (password) agents[idx].password = password; }
+        } else {
+            agentData.id = 'agent_' + Date.now();
+            agentData.password = password;
+            agentData.created_at = new Date().toISOString();
+            agents.push(agentData);
+        }
+
+        localStorage.setItem('agents', JSON.stringify(agents));
+        statusEl.textContent = editingAgentId ? 'Updated!' : 'Agent added!';
+        statusEl.className = 'io-status success';
+        cancelAgentEdit();
+        loadAgents();
+        setTimeout(() => statusEl.textContent = '', 2500);
+    }
+
+    function editAgent(id) {
+        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+        const a = agents.find(ag => ag.id === id);
+        if (!a) return;
+        editingAgentId = id;
+        document.getElementById('agent-fname').value = a.fname;
+        document.getElementById('agent-lname').value = a.lname;
+        document.getElementById('agent-email').value = a.email;
+        document.getElementById('agent-password').value = '';
+        document.getElementById('agent-role').value = a.role;
+        document.getElementById('agent-color').value = a.color || '#800000';
+        document.getElementById('agent-states').value = a.states || '';
+        document.getElementById('agent-chat').value = a.chat || 'yes';
+        document.getElementById('agent-notif').value = a.notif || 'yes';
+        document.getElementById('states-row').style.display = a.role === 'regional' ? 'flex' : 'none';
+        document.getElementById('add-agent-title').textContent = 'Edit Agent';
+        document.getElementById('add-agent-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelAgentEdit() {
+        editingAgentId = null;
+        ['agent-fname','agent-lname','agent-email','agent-password','agent-states'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('agent-role').value = 'agent';
+        document.getElementById('agent-color').value = '#800000';
+        document.getElementById('agent-chat').value = 'yes';
+        document.getElementById('agent-notif').value = 'yes';
+        document.getElementById('states-row').style.display = 'none';
+        document.getElementById('add-agent-title').textContent = 'Add New Agent';
+        document.getElementById('agent-status').textContent = '';
+    }
+
+    function toggleAgent(id) {
+        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+        const idx = agents.findIndex(a => a.id === id);
+        if (idx >= 0) { agents[idx].active = agents[idx].active === false ? true : false; localStorage.setItem('agents', JSON.stringify(agents)); loadAgents(); }
+    }
+
+    function deleteAgent(id) {
+        if (!confirm('Remove this agent?')) return;
+        const agents = JSON.parse(localStorage.getItem('agents') || '[]').filter(a => a.id !== id);
+        localStorage.setItem('agents', JSON.stringify(agents));
+        loadAgents();
+    }
+
+    function toggleSecurity(el) {
+        const label = document.getElementById('security-label');
+        localStorage.setItem('security_enabled', el.checked ? 'true' : 'false');
+        label.innerHTML = el.checked ? 'Security is <strong style="color:#16a34a;">ON</strong> — login required' : 'Security is <strong>OFF</strong> — login not required';
+    }
+
+    function loadSecurityState() {
+        const enabled = localStorage.getItem('security_enabled') === 'true';
+        document.getElementById('security-enabled').checked = enabled;
+        document.getElementById('security-label').innerHTML = enabled
+            ? 'Security is <strong style="color:#16a34a;">ON</strong> — login required'
+            : 'Security is <strong>OFF</strong> — login not required';
     }
 
     // ── Data Import/Export ──────────────────────────────────────────
@@ -1031,11 +1239,19 @@
         setTimeout(() => el.textContent = '', 5000);
     }
 
+    // ── Helpers ─────────────────────────────────────────────────────
+    function flash(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg; el.className = 'tpl-status success';
+        setTimeout(() => el.textContent = '', 2500);
+    }
+
     // ── Init ────────────────────────────────────────────────────────
     loadSender();
     loadFedEx();
-    loadFollowUp();
+    loadFollowUpSettings();
     loadTemplate(currentEmailTab);
+    loadSecurityState();
     loadAllCases();
 </script>
 </body>
