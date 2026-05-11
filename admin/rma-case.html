@@ -35,7 +35,27 @@
         }
         .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.1); }
         .nav-link.active { opacity: 1; border-bottom: 3px solid white; }
-        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px 80px; }
+
+        /* Two column layout */
+        .page-wrap {
+            display: flex;
+            gap: 16px;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px 80px;
+            align-items: flex-start;
+        }
+        .main-col { flex: 1; min-width: 0; }
+        .copilot-col {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: sticky;
+            top: 20px;
+        }
+
         .card {
             background: white;
             border: 1px solid #e0e0e0;
@@ -186,6 +206,98 @@
         .save-status { font-size: 13px; }
         .save-status.success { color: #16a34a; }
         .save-status.error { color: #dc2626; }
+
+        /* Copilot sidebar */
+        .copilot-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .copilot-card h4 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #800000;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copilot-section { margin-bottom: 14px; }
+        .copilot-section:last-child { margin-bottom: 0; }
+        .copilot-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .copilot-match {
+            background: #f9f9f9;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .copilot-match .match-name { font-weight: 700; color: #222; margin-bottom: 2px; }
+        .copilot-match .match-field { color: #555; }
+        .copilot-match .match-field span { color: #800000; font-weight: 600; }
+        .copilot-suggest {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #555;
+            margin-top: 8px;
+        }
+        .copilot-suggest strong { color: #800000; }
+        .fill-btn {
+            margin-top: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #800000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .fill-btn:hover { background: #600000; }
+        .case-history-item {
+            padding: 7px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+        }
+        .case-history-item:last-child { border-bottom: none; }
+        .case-history-item a { color: #800000; text-decoration: none; font-weight: 600; }
+        .case-history-item a:hover { text-decoration: underline; }
+        .history-meta { color: #888; font-size: 11px; margin-top: 2px; }
+        .no-match { font-size: 12px; color: #aaa; font-style: italic; }
+        .copilot-loading { font-size: 12px; color: #aaa; }
+
+        /* FedEx row */
+        .fedex-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+        .fedex-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #4d148c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            height: 31px;
+        }
+        .fedex-btn:hover { background: #3a0f6b; }
+
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -213,6 +325,11 @@
         .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
         .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
         .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
+
+        @media (max-width: 900px) {
+            .page-wrap { flex-direction: column; }
+            .copilot-col { width: 100%; position: static; }
+        }
     </style>
 </head>
 <body>
@@ -228,147 +345,195 @@
     </nav>
 </div>
 
-<div class="container">
+<div class="page-wrap">
 
-    <!-- Row 1 -->
-    <div class="card row1">
-        <div class="case-number" id="display-case-number">Loading...</div>
+    <!-- Main Column -->
+    <div class="main-col">
 
-        <div class="field-group">
-            <label>Status</label>
-            <select id="field-status">
-                <option>Submitted</option>
-                <option>Received</option>
-                <option>Evaluation</option>
-                <option>Credited</option>
-                <option>Replaced</option>
-                <option>Completed</option>
-            </select>
-        </div>
-
-        <div class="field-group">
-            <label>Replacement Sent</label>
-            <div class="toggle-group">
-                <div class="toggle-opt" id="toggle-yes" onclick="setReplacement('Yes')">Yes</div>
-                <div class="toggle-opt" id="toggle-no" onclick="setReplacement('No')">No</div>
-            </div>
-        </div>
-
-        <div class="field-group">
-            <label>Credit Type</label>
-            <select id="field-credit-type">
-                <option value="">— Select —</option>
-                <option>SIMP RET</option>
-                <option>CUST ERROR</option>
-                <option>WARRANTY</option>
-                <option>BM ERROR</option>
-                <option>PROD FLAW</option>
-                <option>STRATEGIC</option>
-                <option>MISAPPLIED</option>
-            </select>
-        </div>
-
-        <div class="field-group">
-            <label>Repair $</label>
-            <input type="text" id="field-repair" style="width:80px;" placeholder="0.00" />
-        </div>
-
-        <div class="credit-complete">
-            <label>Credit $</label>
-            <div class="credit-complete-row">
-                <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" oninput="onCreditInput()" />
-                <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Row 2 -->
-    <div class="card row2">
-        <div class="email-buttons">
-            <button class="email-btn" id="ebtn-rma" onclick="openEmailModal('rma')">📧 RMA Email</button>
-            <button class="email-btn" id="ebtn-quote" onclick="openEmailModal('quote')">📧 Quote Email</button>
-            <button class="email-btn" id="ebtn-credit" onclick="openEmailModal('credit')">📧 Credit Email</button>
-            <button class="email-btn" id="ebtn-cs" onclick="openEmailModal('cs')">📧 CS Email</button>
-        </div>
-        <div class="email-field-wrap">
-            <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
-        </div>
-        <div class="contact-block">
-            <div class="company" id="disp-company"></div>
-            <div id="disp-contact-name"></div>
-            <div id="disp-address"></div>
-            <div id="disp-csz"></div>
-        </div>
-        <a class="settings-link" href="/admin/email-settings.html">⚙ Settings</a>
-    </div>
-
-    <!-- Row 3 -->
-    <div class="card">
-        <div class="row3">
+        <!-- Row 1 -->
+        <div class="card row1">
+            <div class="case-number" id="display-case-number">Loading...</div>
             <div class="field-group">
-                <label>Product</label>
-                <select id="field-product">
-                    <option value="">Select...</option>
-                    <option>NCR</option><option>CNCR</option><option>SmartBob</option>
-                    <option>Rotary</option><option>Probe</option><option>Vibrating Rod</option>
-                    <option>Senix</option><option>Gateway</option><option>C100</option>
-                    <option>DPM</option><option>Loadcell</option><option>Other</option>
+                <label>Status</label>
+                <select id="field-status">
+                    <option>Submitted</option>
+                    <option>Received</option>
+                    <option>Evaluation</option>
+                    <option>Credited</option>
+                    <option>Replaced</option>
+                    <option>Completed</option>
                 </select>
             </div>
             <div class="field-group">
-                <label>Issue Type</label>
-                <select id="field-issue-type">
-                    <option value="">Select...</option>
-                    <option>Stopped working</option><option>Works intermittently</option>
-                    <option>Never worked</option><option>Broken parts</option>
-                    <option>Doesn't Power Up</option><option>Simple Return</option>
-                    <option>Order Error</option><option>Warranty Repair</option>
-                    <option>Repair Quote</option><option>Product Flawed</option>
-                    <option>Wrong Application</option>
+                <label>Replacement Sent</label>
+                <div class="toggle-group">
+                    <div class="toggle-opt" id="toggle-yes" onclick="setReplacement('Yes')">Yes</div>
+                    <div class="toggle-opt" id="toggle-no" onclick="setReplacement('No')">No</div>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Credit Type</label>
+                <select id="field-credit-type">
+                    <option value="">— Select —</option>
+                    <option>SIMP RET</option>
+                    <option>CUST ERROR</option>
+                    <option>WARRANTY</option>
+                    <option>BM ERROR</option>
+                    <option>PROD FLAW</option>
+                    <option>STRATEGIC</option>
+                    <option>MISAPPLIED</option>
                 </select>
             </div>
             <div class="field-group">
-                <label>Issue Description</label>
-                <input type="text" id="field-issue-notes" style="width:100%;" />
+                <label>Repair $</label>
+                <input type="text" id="field-repair" style="width:80px;" placeholder="0.00" />
+            </div>
+            <div class="credit-complete">
+                <label>Credit $</label>
+                <div class="credit-complete-row">
+                    <input type="text" id="field-credit" style="width:80px;" placeholder="0.00" oninput="onCreditInput()" />
+                    <button class="complete-btn" onclick="markComplete()">✓ Complete</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Notes -->
-    <div class="notes-grid">
-        <div class="card" style="margin-bottom:0;">
-            <div class="field-group" style="width:100%">
-                <label>Received Notes</label>
-                <textarea id="field-received" rows="4" oninput="onReceivedInput()"></textarea>
+        <!-- Row 2 -->
+        <div class="card row2">
+            <div class="email-buttons">
+                <button class="email-btn" id="ebtn-rma" onclick="openEmailModal('rma')">📧 RMA Email</button>
+                <button class="email-btn" id="ebtn-quote" onclick="openEmailModal('quote')">📧 Quote Email</button>
+                <button class="email-btn" id="ebtn-credit" onclick="openEmailModal('credit')">📧 Credit Email</button>
+                <button class="email-btn" id="ebtn-cs" onclick="openEmailModal('cs')">📧 CS Email</button>
+            </div>
+            <div class="email-field-wrap">
+                <input type="email" id="disp-email" readonly style="background:#f9f9f9;" />
+            </div>
+            <div class="contact-block">
+                <div class="company" id="disp-company"></div>
+                <div id="disp-contact-name"></div>
+                <div id="disp-address"></div>
+                <div id="disp-csz"></div>
+            </div>
+            <a class="settings-link" href="/admin/email-settings.html">⚙ Settings</a>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="card">
+            <div class="row3">
+                <div class="field-group">
+                    <label>Product</label>
+                    <select id="field-product">
+                        <option value="">Select...</option>
+                        <option>NCR</option><option>CNCR</option><option>SmartBob</option>
+                        <option>Rotary</option><option>Probe</option><option>Vibrating Rod</option>
+                        <option>Senix</option><option>Gateway</option><option>C100</option>
+                        <option>DPM</option><option>Loadcell</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Issue Type</label>
+                    <select id="field-issue-type">
+                        <option value="">Select...</option>
+                        <option>Stopped working</option><option>Works intermittently</option>
+                        <option>Never worked</option><option>Broken parts</option>
+                        <option>Doesn't Power Up</option><option>Simple Return</option>
+                        <option>Order Error</option><option>Warranty Repair</option>
+                        <option>Repair Quote</option><option>Product Flawed</option>
+                        <option>Wrong Application</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Issue Description</label>
+                    <input type="text" id="field-issue-notes" style="width:100%;" />
+                </div>
             </div>
         </div>
-        <div class="card" style="margin-bottom:0;">
-            <div class="field-group" style="width:100%">
-                <label>Evaluation Notes</label>
-                <textarea id="field-evaluation" rows="4" oninput="onEvaluationInput()"></textarea>
+
+        <!-- FedEx Row -->
+        <div class="card">
+            <div class="fedex-row">
+                <div class="field-group" style="flex:1;">
+                    <label>FedEx Tracking #</label>
+                    <input type="text" id="field-fedex" placeholder="Enter tracking number..." />
+                </div>
+                <div class="field-group">
+                    <label>Ship Date</label>
+                    <input type="text" id="field-ship-date" placeholder="e.g. May 10, 2026" style="width:140px;" />
+                </div>
+                <button class="fedex-btn" onclick="openFedExLabel()">📦 Create FedEx Label</button>
+                <button class="fedex-btn" style="background:#e0e0e0;color:#555;" onclick="trackFedEx()">🔍 Track</button>
             </div>
         </div>
+
+        <!-- Notes -->
+        <div class="notes-grid">
+            <div class="card" style="margin-bottom:0;">
+                <div class="field-group" style="width:100%">
+                    <label>Received Notes</label>
+                    <textarea id="field-received" rows="4" oninput="onReceivedInput()"></textarea>
+                </div>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+                <div class="field-group" style="width:100%">
+                    <label>Evaluation Notes</label>
+                    <textarea id="field-evaluation" rows="4" oninput="onEvaluationInput()"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Notes -->
+        <div class="case-notes-card">
+            <div class="case-notes-header">
+                <label>Case Notes</label>
+            </div>
+            <div id="case-notes-display"></div>
+            <div class="new-note-row">
+                <div id="new-note-input" contenteditable="true"
+                    data-placeholder="Type a note and press Enter to add. Paste images directly."></div>
+            </div>
+        </div>
+
+        <!-- Save Bar -->
+        <div class="save-bar">
+            <button class="save-btn" onclick="saveCase()">Save Changes</button>
+            <span class="save-status" id="save-status"></span>
+        </div>
+
     </div>
 
-    <!-- Case Notes -->
-    <div class="case-notes-card">
-        <div class="case-notes-header">
-            <label>Case Notes</label>
-        </div>
-        <div id="case-notes-display"></div>
-        <div class="new-note-row">
-            <div
-                id="new-note-input"
-                contenteditable="true"
-                data-placeholder="Type a note and press Enter to add. Paste images directly."
-            ></div>
-        </div>
-    </div>
+    <!-- Copilot Column -->
+    <div class="copilot-col">
 
-    <!-- Save Bar -->
-    <div class="save-bar">
-        <button class="save-btn" onclick="saveCase()">Save Changes</button>
-        <span class="save-status" id="save-status"></span>
+        <!-- Contact Match -->
+        <div class="copilot-card">
+            <h4>🤖 Copilot</h4>
+            <div class="copilot-section">
+                <div class="copilot-label">Contact Match</div>
+                <div id="copilot-contact"><div class="copilot-loading">Loading...</div></div>
+            </div>
+            <div class="copilot-section" id="copilot-suggest-section" style="display:none;">
+                <div class="copilot-label">Suggested Info</div>
+                <div id="copilot-suggest"></div>
+            </div>
+        </div>
+
+        <!-- Case History -->
+        <div class="copilot-card">
+            <h4>📋 Case History</h4>
+            <div class="copilot-section">
+                <div class="copilot-label">Previous Cases — Same Contact</div>
+                <div id="copilot-history"><div class="copilot-loading">Loading...</div></div>
+            </div>
+        </div>
+
+        <!-- Follow-up Reminder -->
+        <div class="copilot-card">
+            <h4>⏰ Follow-up</h4>
+            <div id="copilot-followup" class="copilot-section">
+                <div class="copilot-loading">Loading...</div>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -457,6 +622,190 @@
         await saveCase();
     }
 
+    // ── FedEx ───────────────────────────────────────────────────────
+    function openFedExLabel() {
+        const fedexSettings = JSON.parse(localStorage.getItem('fedex_settings') || '{}');
+        if (!fedexSettings.account_number) {
+            alert('FedEx is not configured yet. Go to Settings → FedEx Setup to add your account details.');
+            return;
+        }
+        const shipTo = [
+            caseData.contact_name || '',
+            caseData.company || '',
+            caseData.address || '',
+            [caseData.city, caseData.state, caseData.zip].filter(Boolean).join(', ')
+        ].filter(Boolean).join('\n');
+
+        const body = `FedEx Label Request\n\nShip To:\n${shipTo}\n\nCase: ${caseData.case_number}\nProduct: ${caseData.product_name || ''}\n\nAccount: ${fedexSettings.account_number}\nShip From: ${fedexSettings.ship_from || 'Binmaster, Lincoln NE'}`;
+        window.location.href = `mailto:${fedexSettings.contact_email || ''}?subject=FedEx Label — ${caseData.case_number}&body=${encodeURIComponent(body)}`;
+    }
+
+    function trackFedEx() {
+        const tracking = document.getElementById('field-fedex').value.trim();
+        if (!tracking) { alert('Enter a FedEx tracking number first.'); return; }
+        window.open(`https://www.fedex.com/fedextrack/?trknbr=${tracking}`, '_blank');
+    }
+
+    // ── Copilot ─────────────────────────────────────────────────────
+    async function loadCopilot(d) {
+        await Promise.all([
+            loadContactMatch(d),
+            loadCaseHistory(d),
+            loadFollowUp(d)
+        ]);
+    }
+
+    async function loadContactMatch(d) {
+        const el = document.getElementById('copilot-contact');
+        const suggestSection = document.getElementById('copilot-suggest-section');
+        const suggestEl = document.getElementById('copilot-suggest');
+
+        if (!d.email && !d.company) {
+            el.innerHTML = '<div class="no-match">No email or company to match.</div>';
+            return;
+        }
+
+        // Search contacts by email first, then company
+        let match = null;
+        if (d.email) {
+            const { data } = await supabaseClient.from('contacts').select('*').ilike('email', d.email).limit(1);
+            if (data && data.length > 0) match = data[0];
+        }
+        if (!match && d.company) {
+            const { data } = await supabaseClient.from('contacts').select('*').ilike('company', `%${d.company}%`).limit(1);
+            if (data && data.length > 0) match = data[0];
+        }
+
+        if (!match) {
+            el.innerHTML = '<div class="no-match">No contact match found.</div>';
+            suggestSection.style.display = 'none';
+            return;
+        }
+
+        el.innerHTML = `
+            <div class="copilot-match">
+                <div class="match-name">${match.name || '—'}</div>
+                <div class="match-field">${match.company || ''}</div>
+                <div class="match-field">${match.email || ''}</div>
+                ${match.phone ? `<div class="match-field">📞 <span>${match.phone}</span></div>` : ''}
+                ${match.address ? `<div class="match-field">${match.address}</div>` : ''}
+                ${match.city || match.state ? `<div class="match-field">${[match.city, match.state, match.zip].filter(Boolean).join(', ')}</div>` : ''}
+            </div>`;
+
+        // Check for missing fields and suggest fills
+        const suggestions = [];
+        if (!d.address && match.address) suggestions.push({ field: 'Address', value: match.address, key: 'address' });
+        if (!d.city && match.city) suggestions.push({ field: 'City', value: match.city, key: 'city' });
+        if (!d.state && match.state) suggestions.push({ field: 'State', value: match.state, key: 'state' });
+        if (!d.zip && match.zip) suggestions.push({ field: 'Zip', value: match.zip, key: 'zip' });
+        if (!d.company && match.company) suggestions.push({ field: 'Company', value: match.company, key: 'company' });
+
+        if (suggestions.length > 0) {
+            suggestSection.style.display = 'block';
+            suggestEl.innerHTML = suggestions.map(s => `
+                <div class="copilot-suggest">
+                    <strong>${s.field}:</strong> ${s.value}
+                    <br><button class="fill-btn" onclick="fillField('${s.key}', '${s.value.replace(/'/g,"\\'")}')">Fill In</button>
+                </div>`).join('');
+        } else {
+            suggestSection.style.display = 'none';
+        }
+    }
+
+    function fillField(key, value) {
+        // Update caseData and display
+        caseData[key] = value;
+        const fieldMap = {
+            address: 'disp-address',
+            city: null,
+            state: null,
+            zip: null,
+            company: 'disp-company'
+        };
+        if (key === 'address') document.getElementById('disp-address').textContent = value;
+        if (key === 'company') document.getElementById('disp-company').textContent = value;
+        if (key === 'city' || key === 'state' || key === 'zip') {
+            caseData[key] = value;
+            const csz = [caseData.city, caseData.state, caseData.zip].filter(Boolean).join(', ');
+            document.getElementById('disp-csz').textContent = csz;
+        }
+        // Mark as needing save
+        document.getElementById('save-status').textContent = 'Unsaved changes';
+        document.getElementById('save-status').className = 'save-status';
+    }
+
+    async function loadCaseHistory(d) {
+        const el = document.getElementById('copilot-history');
+        if (!d.email && !d.company) {
+            el.innerHTML = '<div class="no-match">No email or company to search.</div>';
+            return;
+        }
+
+        let query = supabaseClient.from('rma_cases').select('id,case_number,status,product_name,date_created,issue_type').neq('id', caseId).order('date_created', { ascending: false }).limit(5);
+
+        if (d.email) query = query.ilike('email', d.email);
+        else if (d.company) query = query.ilike('company', `%${d.company}%`);
+
+        const { data } = await query;
+
+        if (!data || data.length === 0) {
+            el.innerHTML = '<div class="no-match">No previous cases found.</div>';
+            return;
+        }
+
+        el.innerHTML = data.map(c => `
+            <div class="case-history-item">
+                <a href="/admin/rma-case.html?id=${c.id}">${c.case_number}</a>
+                <span style="margin-left:6px;font-size:11px;background:#f0f0f0;padding:1px 6px;border-radius:8px;">${c.status}</span>
+                <div class="history-meta">${c.product_name || '—'} · ${c.issue_type || '—'}</div>
+                <div class="history-meta">${c.date_created ? new Date(c.date_created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''}</div>
+            </div>`).join('');
+    }
+
+    function loadFollowUp(d) {
+        const el = document.getElementById('copilot-followup');
+        if (!d.date_created) { el.innerHTML = '<div class="no-match">No date available.</div>'; return; }
+
+        const created = new Date(d.date_created);
+        const now = new Date();
+        const daysSince = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+
+        // Get follow-up settings from localStorage
+        const followUpDays = parseInt(localStorage.getItem('followup_days') || '30');
+        const daysUntil = followUpDays - daysSince;
+        const followUpSent = d.follow_up_sent;
+
+        let html = `<div class="match-field" style="margin-bottom:6px;">Case age: <strong>${daysSince} day${daysSince !== 1 ? 's' : ''}</strong></div>`;
+
+        if (followUpSent) {
+            html += `<div style="color:#16a34a;font-size:12px;">✓ Follow-up email sent</div>`;
+        } else if (daysUntil <= 0) {
+            html += `<div style="color:#dc2626;font-size:12px;font-weight:600;">⚠ Follow-up overdue by ${Math.abs(daysUntil)} days</div>`;
+            html += `<button class="fill-btn" style="margin-top:6px;" onclick="sendFollowUp()">Send Follow-up Email</button>`;
+        } else if (daysUntil <= 7) {
+            html += `<div style="color:#f59e0b;font-size:12px;font-weight:600;">⏰ Follow-up due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}</div>`;
+            html += `<button class="fill-btn" style="margin-top:6px;background:#f59e0b;" onclick="sendFollowUp()">Send Now</button>`;
+        } else {
+            html += `<div style="color:#888;font-size:12px;">Follow-up due in ${daysUntil} days</div>`;
+        }
+
+        el.innerHTML = html;
+    }
+
+    function sendFollowUp() {
+        const saved = localStorage.getItem('email_template_followup');
+        const subject = saved ? JSON.parse(saved).subject : `Follow-up on RMA Case ${caseData.case_number}`;
+        const body = saved ? JSON.parse(saved).body : `Dear ${caseData.contact_name || 'Customer'},\n\nWe wanted to follow up on your RMA case ${caseData.case_number}.\n\nCurrent Status: ${caseData.status}\nProduct: ${caseData.product_name || ''}\n\nPlease don't hesitate to reach out if you have any questions.\n\nBinmaster Support`;
+
+        window.location.href = `mailto:${caseData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Mark follow-up as sent
+        supabaseClient.from('rma_cases').update({ follow_up_sent: true, follow_up_date: new Date().toISOString() }).eq('id', caseId).then(() => {
+            loadFollowUp({ ...caseData, follow_up_sent: true });
+        });
+    }
+
+    // ── Load case ───────────────────────────────────────────────────
     async function loadCase() {
         if (!caseId) { document.getElementById('display-case-number').textContent = 'No case ID'; return; }
         const { data, error } = await supabaseClient.from('rma_cases').select('*').eq('id', caseId).single();
@@ -464,6 +813,7 @@
         caseData = data;
         populateFields(data);
         loadEmailButtonStates();
+        loadCopilot(data);
     }
 
     function populateFields(d) {
@@ -473,24 +823,22 @@
         document.getElementById('field-repair').value = d.repair_amount || '';
         document.getElementById('field-credit').value = d.credit_amount || '';
         setReplacement(d.replacement_sent || 'No');
-
         document.getElementById('disp-email').value = d.email || '';
         document.getElementById('disp-company').textContent = d.company || '';
         document.getElementById('disp-contact-name').textContent = d.contact_name || '';
         document.getElementById('disp-address').textContent = d.address || '';
         const csz = [d.city, d.state, d.zip].filter(Boolean).join(', ');
         document.getElementById('disp-csz').textContent = csz || '';
-
         document.getElementById('field-product').value = d.product_name || '';
         document.getElementById('field-issue-type').value = d.issue_type || '';
         document.getElementById('field-issue-notes').value = d.issue_notes || '';
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
-
+        document.getElementById('field-fedex').value = d.fedex_tracking || '';
+        document.getElementById('field-ship-date').value = d.ship_date ? new Date(d.ship_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
         if (d.received_description) receivedNoteAdded = true;
         if (d.evaluation_notes) evaluationNoteAdded = true;
         if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
-
         try {
             caseNotes = d.case_notes ? JSON.parse(d.case_notes) : [];
         } catch(e) {
@@ -576,6 +924,13 @@
             evaluation_notes: document.getElementById('field-evaluation').value.trim(),
             case_notes: JSON.stringify(caseNotes),
             replacement_sent: replacementValue,
+            fedex_tracking: document.getElementById('field-fedex').value.trim() || null,
+            // Save any copilot-filled fields
+            address: caseData.address || null,
+            city: caseData.city || null,
+            state: caseData.state || null,
+            zip: caseData.zip || null,
+            company: caseData.company || null,
         };
 
         const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
@@ -588,10 +943,36 @@
             statusEl.textContent = 'Saved successfully.';
             statusEl.className = 'save-status success';
             saveEmailButtonStates();
+
+            // Update contact record with latest info
+            upsertContact();
             setTimeout(() => statusEl.textContent = '', 3000);
         }
     }
 
+    async function upsertContact() {
+        if (!caseData.email) return;
+        const payload = {
+            name: caseData.contact_name || null,
+            company: caseData.company || null,
+            email: caseData.email,
+            address: caseData.address || null,
+            city: caseData.city || null,
+            state: caseData.state || null,
+            zip: caseData.zip || null,
+            source: 'rma',
+            updated_at: new Date().toISOString()
+        };
+        // Check if contact exists
+        const { data } = await supabaseClient.from('contacts').select('id').ilike('email', caseData.email).limit(1);
+        if (data && data.length > 0) {
+            await supabaseClient.from('contacts').update(payload).eq('id', data[0].id);
+        } else {
+            await supabaseClient.from('contacts').insert([payload]);
+        }
+    }
+
+    // ── Email ───────────────────────────────────────────────────────
     function emailStateKey(type) { return `email_sent_${caseId}_${type}`; }
 
     function loadEmailButtonStates() {
@@ -605,9 +986,7 @@
     function saveEmailButtonStates() {
         ['rma','quote','credit','cs'].forEach(type => {
             const btn = document.getElementById(`ebtn-${type}`);
-            if (btn.classList.contains('sent')) {
-                localStorage.setItem(emailStateKey(type), 'sent');
-            }
+            if (btn.classList.contains('sent')) localStorage.setItem(emailStateKey(type), 'sent');
         });
     }
 
