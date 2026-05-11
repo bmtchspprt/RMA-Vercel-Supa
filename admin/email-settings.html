@@ -224,4 +224,819 @@
         .email-tab:hover:not(.active) { background: #f9f9f9; color: #800000; }
         .template-card { background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; padding: 20px 24px; margin-bottom: 20px; }
         .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
-        .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: n
+        .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .save-btn:hover { background: #600000; }
+        .reset-btn { padding: 8px 14px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; color: #555; }
+        .reset-btn:hover { border-color: #800000; color: #800000; }
+        .tpl-status { font-size: 13px; }
+        .tpl-status.success { color: #16a34a; }
+        .preview-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 16px; }
+        .preview-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 14px; }
+        .preview-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+        .preview-value { font-size: 13px; color: #222; padding: 8px 10px; background: #f9f9f9; border-radius: 5px; margin-bottom: 12px; white-space: pre-wrap; line-height: 1.6; }
+
+        /* FedEx Settings */
+        .fedex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* Follow-up Settings */
+        .followup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+        /* Upload Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: white; border-radius: 10px; padding: 24px; width: 800px; max-width: 95vw; max-height: 85vh; overflow-y: auto; }
+        .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 8px; }
+        .modal p { font-size: 13px; color: #666; margin-bottom: 16px; }
+        .preview-table-wrap { overflow-x: auto; max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 16px; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .preview-table th { background: #800000; color: white; padding: 8px 10px; text-align: left; white-space: nowrap; }
+        .preview-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+        .preview-table tr:last-child td { border-bottom: none; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-footer button { padding: 8px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
+        .modal-footer .btn-primary { background: #800000; color: white; border-color: #800000; }
+        .upload-summary { background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 12px 16px; font-size: 13px; margin-bottom: 16px; }
+        .upload-summary.warning { background: #fefce8; border-color: #fde047; }
+        .upload-errors { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #dc2626; margin-bottom: 16px; display: none; }
+
+        /* Media picker modal */
+        .media-picker-modal { background: white; border-radius: 10px; padding: 24px; width: 700px; max-width: 95vw; max-height: 80vh; overflow-y: auto; }
+        .media-picker-modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
+        .media-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .media-picker-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .media-picker-item:hover { border-color: #800000; }
+        .media-picker-item.selected { border-color: #800000; }
+        .media-picker-item img { width: 100%; height: 80px; object-fit: contain; background: #f9f9f9; display: block; }
+        .media-picker-item-name { font-size: 10px; color: #555; padding: 4px 6px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    Binmaster Support Platform
+    <nav class="top-nav">
+        <a class="nav-link" href="/index.html">Home</a>
+        <a class="nav-link" href="/admin/rma-table.html">RMA Cases</a>
+        <a class="nav-link" href="/rma.html" target="_blank">Submit RMA</a>
+        <a class="nav-link active" href="/admin/email-settings.html">Settings</a>
+        <a class="nav-link" href="/agents.html">Agents</a>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="page-title">Settings</div>
+    <p class="page-sub">Manage all platform settings from one place.</p>
+
+    <!-- Settings Tabs -->
+    <div class="settings-tabs">
+        <div class="settings-tab active" onclick="switchSettingsTab('data')">📊 Data</div>
+        <div class="settings-tab" onclick="switchSettingsTab('media')">🖼 Media Library</div>
+        <div class="settings-tab" onclick="switchSettingsTab('products')">📦 Product Reference</div>
+        <div class="settings-tab" onclick="switchSettingsTab('fedex')">📫 FedEx</div>
+        <div class="settings-tab" onclick="switchSettingsTab('followup')">⏰ Follow-up</div>
+        <div class="settings-tab" onclick="switchSettingsTab('sender')">✉️ Email Sender</div>
+        <div class="settings-tab" onclick="switchSettingsTab('templates')">📝 Email Templates</div>
+    </div>
+
+    <!-- Data -->
+    <div class="settings-section active" id="section-data">
+        <div class="section-card">
+            <h2>Import &amp; Export</h2>
+            <div class="io-row">
+                <button class="io-btn primary" onclick="downloadExcel()">⬇ Download All Cases (.xlsx)</button>
+                <button class="io-btn" onclick="downloadTemplate()">⬇ Download Empty Template</button>
+                <div class="io-divider"></div>
+                <button class="io-btn" onclick="document.getElementById('upload-input').click()">⬆ Upload Cases (.xlsx)</button>
+                <input type="file" id="upload-input" accept=".xlsx,.xls,.csv" onchange="handleUpload(event)" />
+                <span class="io-status" id="io-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Library -->
+    <div class="settings-section" id="section-media">
+        <div class="section-card">
+            <h2>Media Library</h2>
+            <p style="font-size:12px;color:#666;margin-bottom:16px;">Upload images and files for use across the platform. Click any item to copy its URL.</p>
+
+            <div class="media-upload-zone" id="media-upload-zone">
+                <p>Drag images here or click to upload</p>
+                <p class="upload-hint">PNG, JPG, GIF, SVG, WebP — max 5MB each</p>
+                <div class="media-upload-btn" onclick="document.getElementById('media-file-input').click()">Choose Files</div>
+                <input type="file" id="media-file-input" multiple accept="image/*,.svg,.gif,.webp" onchange="uploadMediaFiles(event)" />
+                <div class="media-progress" id="media-progress"></div>
+            </div>
+
+            <div class="media-grid" id="media-grid">
+                <div class="media-empty">Loading media...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Reference -->
+    <div class="settings-section" id="section-products">
+        <div class="section-card">
+            <h2>Product Reference</h2>
+            <p style="font-size:12px;color:#666;margin-bottom:16px;">These products appear in the sidebar of the customer RMA form. Click a product to select it in the form. If a link is provided, clicking opens the link instead.</p>
+
+            <div class="product-manager-grid" id="pm-grid">
+                <div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">Loading...</div>
+            </div>
+
+            <div class="add-form" id="add-form">
+                <h4 id="add-form-title">Add New Product</h4>
+                <input type="hidden" id="edit-id" />
+                <div class="add-form-grid">
+                    <div class="field-group" style="margin:0;">
+                        <label>Product Name *</label>
+                        <input type="text" id="pm-name" placeholder="e.g. SmartBob" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Display Order</label>
+                        <input type="number" id="pm-order" placeholder="1" />
+                    </div>
+                    <div class="field-group" style="margin:0;grid-column:1/-1;">
+                        <label>Product Image</label>
+                        <div class="img-picker-row">
+                            <input type="text" id="pm-image" placeholder="Choose from media library or paste URL..." readonly />
+                            <button class="img-picker-btn" onclick="openMediaPicker('pm-image','pm-img-preview')">📁 Browse Media</button>
+                            <img id="pm-img-preview" class="img-preview" src="" style="display:none;" />
+                        </div>
+                    </div>
+                    <div class="field-group" style="margin:0;grid-column:1/-1;">
+                        <label>Link URL (optional — if set, clicking opens this link)</label>
+                        <input type="url" id="pm-link" placeholder="https://binmaster.com/product/..." />
+                    </div>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
+                    <button class="io-btn primary" onclick="saveProduct()">Save Product</button>
+                    <button class="io-btn" onclick="cancelEdit()">Cancel</button>
+                    <span class="io-status" id="pm-status"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FedEx -->
+    <div class="settings-section" id="section-fedex">
+        <div class="section-card">
+            <h2>FedEx Setup</h2>
+            <p style="font-size:12px;color:#666;margin-bottom:16px;">Configure your FedEx account details. These are used to pre-fill label requests on case detail pages.</p>
+            <div class="fedex-grid">
+                <div class="field-group">
+                    <label>FedEx Account Number</label>
+                    <input type="text" id="fedex-account" placeholder="123456789" />
+                </div>
+                <div class="field-group">
+                    <label>Meter Number</label>
+                    <input type="text" id="fedex-meter" placeholder="Optional" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — Company</label>
+                    <input type="text" id="fedex-company" placeholder="Binmaster" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — Contact</label>
+                    <input type="text" id="fedex-contact" placeholder="Support Team" />
+                </div>
+                <div class="field-group" style="grid-column:1/-1;">
+                    <label>Ship From — Address</label>
+                    <input type="text" id="fedex-address" placeholder="7201 N 98th St, Lincoln, NE 68507" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — Phone</label>
+                    <input type="text" id="fedex-phone" placeholder="800-278-4241" />
+                </div>
+                <div class="field-group">
+                    <label>Default Service Type</label>
+                    <select id="fedex-service">
+                        <option value="FEDEX_GROUND">FedEx Ground</option>
+                        <option value="FEDEX_2_DAY">FedEx 2Day</option>
+                        <option value="PRIORITY_OVERNIGHT">Priority Overnight</option>
+                        <option value="STANDARD_OVERNIGHT">Standard Overnight</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>FedEx Contact Email (for label requests)</label>
+                    <input type="email" id="fedex-email" placeholder="shipping@binmaster.com" />
+                </div>
+            </div>
+            <div class="action-row">
+                <button class="save-btn" onclick="saveFedEx()">Save FedEx Settings</button>
+                <span class="tpl-status" id="fedex-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Follow-up -->
+    <div class="settings-section" id="section-followup">
+        <div class="section-card">
+            <h2>Automated Follow-up Email</h2>
+            <p style="font-size:12px;color:#666;margin-bottom:16px;">Configure the follow-up reminder that appears on case detail pages when a case reaches the specified age.</p>
+            <div class="followup-grid">
+                <div class="field-group">
+                    <label>Follow-up After (days)</label>
+                    <input type="number" id="followup-days" placeholder="30" min="1" max="365" />
+                </div>
+                <div class="field-group">
+                    <label>Warning Window (days before due)</label>
+                    <input type="number" id="followup-warning" placeholder="7" min="1" max="30" />
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Follow-up Email Subject</label>
+                <input type="text" id="followup-subject" placeholder="Follow-up on RMA Case {case_number}" />
+            </div>
+            <div class="field-group">
+                <label>Follow-up Email Body</label>
+                <textarea id="followup-body" rows="8" placeholder="Dear {contact_name},&#10;&#10;We wanted to follow up on your RMA case {case_number}..."></textarea>
+            </div>
+            <div class="action-row">
+                <button class="save-btn" onclick="saveFollowUp()">Save Follow-up Settings</button>
+                <span class="tpl-status" id="followup-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sender -->
+    <div class="settings-section" id="section-sender">
+        <div class="section-card">
+            <h2>Sender Defaults</h2>
+            <div class="two-col">
+                <div class="field-group">
+                    <label>Default From Name</label>
+                    <input type="text" id="sender-name" placeholder="Binmaster Support" />
+                </div>
+                <div class="field-group">
+                    <label>Default Reply-To Email</label>
+                    <input type="email" id="sender-email" placeholder="support@binmaster.com" />
+                </div>
+            </div>
+            <div class="action-row">
+                <button class="save-btn" onclick="saveSender()">Save</button>
+                <span class="tpl-status" id="sender-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Templates -->
+    <div class="settings-section" id="section-templates">
+        <div class="vars-box">
+            <h4>Available Variables — click to copy</h4>
+            <div class="vars-grid">
+                <span class="var-pill" onclick="copyVar('{case_number}')">{case_number}</span>
+                <span class="var-pill" onclick="copyVar('{contact_name}')">{contact_name}</span>
+                <span class="var-pill" onclick="copyVar('{company}')">{company}</span>
+                <span class="var-pill" onclick="copyVar('{email}')">{email}</span>
+                <span class="var-pill" onclick="copyVar('{product_name}')">{product_name}</span>
+                <span class="var-pill" onclick="copyVar('{issue_type}')">{issue_type}</span>
+                <span class="var-pill" onclick="copyVar('{status}')">{status}</span>
+                <span class="var-pill" onclick="copyVar('{repair_amount}')">{repair_amount}</span>
+                <span class="var-pill" onclick="copyVar('{credit_amount}')">{credit_amount}</span>
+                <span class="var-pill" onclick="copyVar('{credit_type}')">{credit_type}</span>
+                <span class="var-pill" onclick="copyVar('{document_number}')">{document_number}</span>
+            </div>
+            <p class="var-hint">Variables are replaced with case data when an email is opened from a case detail page.</p>
+        </div>
+
+        <div class="email-tabs">
+            <div class="email-tab active" id="tab-rma" onclick="switchEmailTab('rma')">RMA Email</div>
+            <div class="email-tab" id="tab-quote" onclick="switchEmailTab('quote')">Quote Email</div>
+            <div class="email-tab" id="tab-credit" onclick="switchEmailTab('credit')">Credit Email</div>
+            <div class="email-tab" id="tab-cs" onclick="switchEmailTab('cs')">CS Email</div>
+        </div>
+        <div class="template-card">
+            <div class="field-group">
+                <label>Template Name</label>
+                <input type="text" id="tpl-title" />
+            </div>
+            <div class="field-group">
+                <label>Subject Line</label>
+                <input type="text" id="tpl-subject" />
+            </div>
+            <div class="field-group">
+                <label>Email Body</label>
+                <textarea id="tpl-body" rows="10"></textarea>
+            </div>
+            <div class="action-row">
+                <button class="save-btn" onclick="saveTemplate()">Save Template</button>
+                <button class="reset-btn" onclick="resetTemplate()">Reset to Default</button>
+                <button class="reset-btn" onclick="updatePreview()">Preview</button>
+                <span class="tpl-status" id="tpl-status"></span>
+            </div>
+        </div>
+        <div class="preview-card" id="preview-card" style="display:none;">
+            <h3>Preview (with sample data)</h3>
+            <div class="preview-label">Subject</div>
+            <div class="preview-value" id="preview-subject"></div>
+            <div class="preview-label">Body</div>
+            <div class="preview-value" id="preview-body"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Case Upload Modal -->
+<div class="modal-overlay" id="upload-modal">
+    <div class="modal">
+        <h3>Upload Preview</h3>
+        <p>Review the data below before importing. Existing cases with matching case numbers will be skipped.</p>
+        <div id="upload-summary"></div>
+        <div class="upload-errors" id="upload-errors"></div>
+        <div class="preview-table-wrap">
+            <table class="preview-table">
+                <thead id="preview-head"></thead>
+                <tbody id="preview-body"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeUploadModal()">Cancel</button>
+            <button class="btn-primary" id="confirm-upload-btn" onclick="confirmUpload()">Import Cases</button>
+        </div>
+    </div>
+</div>
+
+<!-- Media Picker Modal -->
+<div class="modal-overlay" id="media-picker-modal">
+    <div class="media-picker-modal">
+        <h3>Choose from Media Library</h3>
+        <div class="media-picker-grid" id="media-picker-grid">
+            <div style="font-size:13px;color:#aaa;">Loading...</div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeMediaPicker()">Cancel</button>
+            <button class="btn-primary" onclick="confirmMediaPick()">Use Selected</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://dlzpyrcskcvlsdtgwfko.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsenB5cmNza2N2bHNkdGd3ZmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NDY1ODIsImV4cCI6MjA5MzQyMjU4Mn0.kOPX8Wbu0XdRVSc81NpIS2TdwIzaJOMRX_9BeSdbQWI';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allCases = [];
+    let pendingUploadRows = [];
+    let currentEmailTab = 'rma';
+    let editingId = null;
+    let mediaFiles = [];
+    let pickerTargetInput = null;
+    let pickerTargetPreview = null;
+    let pickerSelectedUrl = null;
+
+    const DB_COLUMNS = [
+        'case_number','contact_name','email','company','address','city','state','zip',
+        'product_name','issue_type','issue_notes','document_number','attached_documents',
+        'date_created','status','credit_type','repair_amount','credit_amount',
+        'received_description','evaluation_notes','case_notes','replacement_sent'
+    ];
+
+    // ── Settings Tabs ───────────────────────────────────────────────
+    function switchSettingsTab(tab) {
+        document.querySelectorAll('.settings-tab').forEach((t, i) => {
+            const ids = ['data','media','products','fedex','followup','sender','templates'];
+            t.classList.toggle('active', ids[i] === tab);
+        });
+        document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${tab}`).classList.add('active');
+        if (tab === 'media') loadMediaLibrary();
+        if (tab === 'products') loadProductManager();
+    }
+
+    // ── Media Library ───────────────────────────────────────────────
+    const mediaUploadZone = document.getElementById('media-upload-zone');
+    mediaUploadZone.addEventListener('dragover', e => { e.preventDefault(); mediaUploadZone.classList.add('dragover'); });
+    mediaUploadZone.addEventListener('dragleave', () => mediaUploadZone.classList.remove('dragover'));
+    mediaUploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        mediaUploadZone.classList.remove('dragover');
+        uploadMediaFileList(e.dataTransfer.files);
+    });
+
+    async function uploadMediaFiles(event) {
+        await uploadMediaFileList(event.target.files);
+        event.target.value = '';
+    }
+
+    async function uploadMediaFileList(files) {
+        if (!files || files.length === 0) return;
+        const progressEl = document.getElementById('media-progress');
+        let uploaded = 0;
+        progressEl.textContent = `Uploading 0 of ${files.length}...`;
+
+        for (const file of files) {
+            if (file.size > 5 * 1024 * 1024) { alert(`${file.name} is too large (max 5MB)`); continue; }
+            const ext = file.name.split('.').pop().toLowerCase();
+            const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+            const { error } = await supabaseClient.storage.from('media').upload(filename, file, { contentType: file.type });
+            if (!error) { uploaded++; progressEl.textContent = `Uploaded ${uploaded} of ${files.length}...`; }
+            else { console.error('Upload error:', error); }
+        }
+
+        progressEl.textContent = `Done. ${uploaded} file${uploaded !== 1 ? 's' : ''} uploaded.`;
+        setTimeout(() => progressEl.textContent = '', 3000);
+        loadMediaLibrary();
+    }
+
+    async function loadMediaLibrary() {
+        const grid = document.getElementById('media-grid');
+        const { data, error } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+        if (error || !data || data.length === 0) {
+            grid.innerHTML = '<div class="media-empty">No media uploaded yet. Drag images above to get started.</div>';
+            mediaFiles = [];
+            return;
+        }
+        mediaFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder');
+        grid.innerHTML = mediaFiles.map(f => {
+            const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
+            return `<div class="media-item" onclick="copyMediaUrl('${url}', this)" title="Click to copy URL">
+                <img src="${url}" alt="${f.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect fill=%22%23f0f0f0%22 width=%2260%22 height=%2260%22/><text x=%2230%22 y=%2235%22 text-anchor=%22middle%22 font-size=%2220%22>📄</text></svg>'" />
+                <div class="media-item-footer">
+                    <span class="media-item-name" title="${f.name}">${f.name.replace(/^\d+_/, '')}</span>
+                    <span class="media-item-copy" onclick="event.stopPropagation();copyMediaUrl('${url}', null)">Copy</span>
+                    <span class="media-item-delete" onclick="event.stopPropagation();deleteMedia('${f.name}')">✕</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function copyMediaUrl(url, el) {
+        navigator.clipboard.writeText(url).then(() => {
+            if (el) {
+                el.style.borderColor = '#16a34a';
+                setTimeout(() => el.style.borderColor = '', 1000);
+            }
+            // Brief feedback
+            const toast = document.createElement('div');
+            toast.textContent = 'URL copied!';
+            toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#222;color:white;padding:8px 16px;border-radius:6px;font-size:13px;z-index:999;';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        });
+    }
+
+    async function deleteMedia(filename) {
+        if (!confirm(`Delete "${filename.replace(/^\d+_/, '')}"?`)) return;
+        const { error } = await supabaseClient.storage.from('media').remove([filename]);
+        if (!error) loadMediaLibrary();
+        else alert('Delete failed: ' + error.message);
+    }
+
+    // ── Media Picker ────────────────────────────────────────────────
+    function openMediaPicker(inputId, previewId) {
+        pickerTargetInput = document.getElementById(inputId);
+        pickerTargetPreview = previewId ? document.getElementById(previewId) : null;
+        pickerSelectedUrl = null;
+        loadMediaPickerGrid();
+        document.getElementById('media-picker-modal').classList.add('open');
+    }
+
+    async function loadMediaPickerGrid() {
+        const grid = document.getElementById('media-picker-grid');
+        grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">Loading...</div>';
+        const { data } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+        if (files.length === 0) {
+            grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">No media yet. Upload images in the Media Library tab first.</div>';
+            return;
+        }
+        grid.innerHTML = files.map(f => {
+            const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
+            return `<div class="media-picker-item" onclick="selectPickerItem('${url}', this)">
+                <img src="${url}" alt="${f.name}" />
+                <div class="media-picker-item-name">${f.name.replace(/^\d+_/, '')}</div>
+            </div>`;
+        }).join('');
+    }
+
+    function selectPickerItem(url, el) {
+        document.querySelectorAll('.media-picker-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        pickerSelectedUrl = url;
+    }
+
+    function confirmMediaPick() {
+        if (!pickerSelectedUrl) { alert('Please select an image first.'); return; }
+        if (pickerTargetInput) pickerTargetInput.value = pickerSelectedUrl;
+        if (pickerTargetPreview) {
+            pickerTargetPreview.src = pickerSelectedUrl;
+            pickerTargetPreview.style.display = 'block';
+        }
+        closeMediaPicker();
+    }
+
+    function closeMediaPicker() {
+        document.getElementById('media-picker-modal').classList.remove('open');
+        pickerTargetInput = null;
+        pickerTargetPreview = null;
+        pickerSelectedUrl = null;
+    }
+
+    document.getElementById('media-picker-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeMediaPicker();
+    });
+
+    // ── Product Reference Manager ───────────────────────────────────
+    async function loadProductManager() {
+        const { data } = await supabaseClient.from('product_reference').select('*').order('display_order');
+        const grid = document.getElementById('pm-grid');
+        if (!data || data.length === 0) {
+            grid.innerHTML = '<div style="font-size:12px;color:#aaa;grid-column:1/-1;padding:10px;">No products yet.</div>';
+            return;
+        }
+        grid.innerHTML = data.map(p => `
+            <div class="pm-item ${p.active ? '' : 'pm-inactive'}">
+                ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'" />` : `<div class="pm-img-placeholder">📦</div>`}
+                <div class="pm-name">${p.name}</div>
+                ${p.link_url ? `<div class="pm-link">🔗 ${p.link_url.replace('https://','')}</div>` : ''}
+                <div style="font-size:11px;color:#aaa;">order: ${p.display_order}</div>
+                <div class="pm-actions">
+                    <button class="io-btn small" onclick="editProduct('${p.id}','${esc(p.name)}','${esc(p.image_url||'')}','${esc(p.link_url||'')}','${p.display_order}')">Edit</button>
+                    <button class="io-btn small" onclick="toggleProduct('${p.id}',${p.active})">${p.active ? 'Hide' : 'Show'}</button>
+                    <button class="io-btn small danger" onclick="deleteProduct('${p.id}')">✕</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function esc(s) { return String(s).replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
+
+    function editProduct(id, name, image, link, order) {
+        editingId = id;
+        document.getElementById('pm-name').value = name;
+        document.getElementById('pm-image').value = image;
+        document.getElementById('pm-link').value = link;
+        document.getElementById('pm-order').value = order;
+        document.getElementById('add-form-title').textContent = 'Edit Product';
+        if (image) { document.getElementById('pm-img-preview').src = image; document.getElementById('pm-img-preview').style.display = 'block'; }
+        else document.getElementById('pm-img-preview').style.display = 'none';
+        document.getElementById('add-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+        editingId = null;
+        ['pm-name','pm-image','pm-link','pm-order'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('pm-img-preview').style.display = 'none';
+        document.getElementById('add-form-title').textContent = 'Add New Product';
+        document.getElementById('pm-status').textContent = '';
+    }
+
+    async function saveProduct() {
+        const name = document.getElementById('pm-name').value.trim();
+        const image_url = document.getElementById('pm-image').value.trim() || null;
+        const link_url = document.getElementById('pm-link').value.trim() || null;
+        const display_order = parseInt(document.getElementById('pm-order').value) || 99;
+        const statusEl = document.getElementById('pm-status');
+        if (!name) { statusEl.textContent = 'Name required.'; statusEl.className = 'io-status error'; return; }
+        const payload = { name, image_url, link_url, display_order, active: true };
+        let error;
+        if (editingId) ({ error } = await supabaseClient.from('product_reference').update(payload).eq('id', editingId));
+        else ({ error } = await supabaseClient.from('product_reference').insert([payload]));
+        if (error) { statusEl.textContent = 'Error: ' + error.message; statusEl.className = 'io-status error'; }
+        else { statusEl.textContent = editingId ? 'Updated!' : 'Added!'; statusEl.className = 'io-status success'; cancelEdit(); loadProductManager(); setTimeout(() => statusEl.textContent = '', 2500); }
+    }
+
+    async function toggleProduct(id, active) {
+        await supabaseClient.from('product_reference').update({ active: !active }).eq('id', id);
+        loadProductManager();
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Delete this product?')) return;
+        await supabaseClient.from('product_reference').delete().eq('id', id);
+        loadProductManager();
+    }
+
+    // ── FedEx Settings ──────────────────────────────────────────────
+    function saveFedEx() {
+        const settings = {
+            account_number: document.getElementById('fedex-account').value.trim(),
+            meter_number: document.getElementById('fedex-meter').value.trim(),
+            company: document.getElementById('fedex-company').value.trim(),
+            contact: document.getElementById('fedex-contact').value.trim(),
+            ship_from: document.getElementById('fedex-address').value.trim(),
+            phone: document.getElementById('fedex-phone').value.trim(),
+            service: document.getElementById('fedex-service').value,
+            contact_email: document.getElementById('fedex-email').value.trim(),
+        };
+        localStorage.setItem('fedex_settings', JSON.stringify(settings));
+        const s = document.getElementById('fedex-status');
+        s.textContent = 'Saved!'; s.className = 'tpl-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function loadFedEx() {
+        const s = JSON.parse(localStorage.getItem('fedex_settings') || '{}');
+        if (s.account_number) document.getElementById('fedex-account').value = s.account_number;
+        if (s.meter_number) document.getElementById('fedex-meter').value = s.meter_number;
+        if (s.company) document.getElementById('fedex-company').value = s.company;
+        if (s.contact) document.getElementById('fedex-contact').value = s.contact;
+        if (s.ship_from) document.getElementById('fedex-address').value = s.ship_from;
+        if (s.phone) document.getElementById('fedex-phone').value = s.phone;
+        if (s.service) document.getElementById('fedex-service').value = s.service;
+        if (s.contact_email) document.getElementById('fedex-email').value = s.contact_email;
+    }
+
+    // ── Follow-up Settings ──────────────────────────────────────────
+    function saveFollowUp() {
+        localStorage.setItem('followup_days', document.getElementById('followup-days').value || '30');
+        localStorage.setItem('followup_warning', document.getElementById('followup-warning').value || '7');
+        const tpl = {
+            subject: document.getElementById('followup-subject').value,
+            body: document.getElementById('followup-body').value
+        };
+        localStorage.setItem('email_template_followup', JSON.stringify(tpl));
+        const s = document.getElementById('followup-status');
+        s.textContent = 'Saved!'; s.className = 'tpl-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function loadFollowUp() {
+        document.getElementById('followup-days').value = localStorage.getItem('followup_days') || '30';
+        document.getElementById('followup-warning').value = localStorage.getItem('followup_warning') || '7';
+        const tpl = JSON.parse(localStorage.getItem('email_template_followup') || '{}');
+        document.getElementById('followup-subject').value = tpl.subject || 'Follow-up on RMA Case {case_number}';
+        document.getElementById('followup-body').value = tpl.body || 'Dear {contact_name},\n\nWe wanted to follow up on your RMA case {case_number}.\n\nCurrent Status: {status}\nProduct: {product_name}\n\nPlease don\'t hesitate to reach out if you have any questions.\n\nBinmaster Support';
+    }
+
+    // ── Sender ──────────────────────────────────────────────────────
+    function saveSender() {
+        localStorage.setItem('sender_name', document.getElementById('sender-name').value.trim());
+        localStorage.setItem('sender_email', document.getElementById('sender-email').value.trim());
+        const s = document.getElementById('sender-status');
+        s.textContent = 'Saved!'; s.className = 'tpl-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function loadSender() {
+        document.getElementById('sender-name').value = localStorage.getItem('sender_name') || '';
+        document.getElementById('sender-email').value = localStorage.getItem('sender_email') || '';
+    }
+
+    // ── Email Templates ─────────────────────────────────────────────
+    const EMAIL_DEFAULTS = {
+        rma:    { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote:  { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit: { title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:     { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+    };
+
+    const SAMPLE = { case_number: 'CASE-26-2001', contact_name: 'John Smith', company: 'Acme Industries', email: 'john@acme.com', product_name: 'SmartBob', issue_type: 'Stopped working', status: 'Evaluation', repair_amount: '125.00', credit_amount: '250.00', credit_type: 'WARRANTY', document_number: 'INV-10042' };
+
+    function switchEmailTab(tab) {
+        currentEmailTab = tab;
+        ['rma','quote','credit','cs'].forEach(t => document.getElementById(`tab-${t}`).classList.toggle('active', t === tab));
+        loadTemplate(tab);
+        document.getElementById('preview-card').style.display = 'none';
+        document.getElementById('tpl-status').textContent = '';
+    }
+
+    function loadTemplate(tab) {
+        const saved = localStorage.getItem(`email_template_${tab}`);
+        const tpl = saved ? JSON.parse(saved) : EMAIL_DEFAULTS[tab];
+        document.getElementById('tpl-title').value = tpl.title || EMAIL_DEFAULTS[tab].title;
+        document.getElementById('tpl-subject').value = tpl.subject || EMAIL_DEFAULTS[tab].subject;
+        document.getElementById('tpl-body').value = tpl.body || EMAIL_DEFAULTS[tab].body;
+    }
+
+    function saveTemplate() {
+        const tpl = { title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value };
+        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify(tpl));
+        const s = document.getElementById('tpl-status');
+        s.textContent = 'Saved!'; s.className = 'tpl-status success';
+        setTimeout(() => s.textContent = '', 2500);
+    }
+
+    function resetTemplate() {
+        if (!confirm('Reset to default?')) return;
+        localStorage.removeItem(`email_template_${currentEmailTab}`);
+        loadTemplate(currentEmailTab);
+    }
+
+    function fillSample(text) { return text.replace(/\{(\w+)\}/g, (m, k) => SAMPLE[k] || m); }
+
+    function updatePreview() {
+        document.getElementById('preview-subject').textContent = fillSample(document.getElementById('tpl-subject').value);
+        document.getElementById('preview-body').textContent = fillSample(document.getElementById('tpl-body').value);
+        document.getElementById('preview-card').style.display = 'block';
+        document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyVar(v) {
+        navigator.clipboard.writeText(v).then(() => {
+            event.target.style.background = '#16a34a';
+            setTimeout(() => event.target.style.background = '', 600);
+        });
+    }
+
+    // ── Data Import/Export ──────────────────────────────────────────
+    async function loadAllCases() {
+        const { data } = await supabaseClient.from('rma_cases').select('*').order('date_created', { ascending: false });
+        allCases = data || [];
+    }
+
+    function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+    function downloadExcel() {
+        if (allCases.length === 0) { alert('No cases to download.'); return; }
+        const rows = allCases.map(c => { const row = {}; DB_COLUMNS.forEach(col => { row[col] = c[col] ?? ''; }); return row; });
+        const ws = XLSX.utils.json_to_sheet(rows, { header: DB_COLUMNS });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'RMA Cases');
+        XLSX.writeFile(wb, `binmaster_rma_cases_${todayStr()}.xlsx`);
+        setIOStatus('Downloaded.', 'success');
+    }
+
+    function downloadTemplate() {
+        const ws = XLSX.utils.json_to_sheet([{}], { header: DB_COLUMNS });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'RMA Template');
+        XLSX.writeFile(wb, 'binmaster_rma_template.xlsx');
+        setIOStatus('Template downloaded.', 'success');
+    }
+
+    function handleUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        event.target.value = '';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+                if (rows.length === 0) { setIOStatus('File is empty.', 'error'); return; }
+                const missing = DB_COLUMNS.filter(c => c !== 'date_created' && c !== 'attached_documents' && !Object.keys(rows[0]).includes(c));
+                pendingUploadRows = rows;
+                showUploadPreview(rows, missing);
+            } catch(err) { setIOStatus('Error: ' + err.message, 'error'); }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function showUploadPreview(rows, missingCols) {
+        const existing = new Set(allCases.map(c => c.case_number));
+        const newRows = rows.filter(r => !existing.has(r.case_number));
+        const dupRows = rows.filter(r => existing.has(r.case_number));
+        const summaryEl = document.getElementById('upload-summary');
+        summaryEl.className = 'upload-summary' + (dupRows.length > 0 ? ' warning' : '');
+        summaryEl.innerHTML = `<strong>${rows.length}</strong> rows &nbsp;·&nbsp; <strong style="color:#16a34a">${newRows.length}</strong> new &nbsp;·&nbsp; <strong style="color:#854d0e">${dupRows.length}</strong> duplicates (skipped)`;
+        const errEl = document.getElementById('upload-errors');
+        if (missingCols.length > 0) { errEl.style.display = 'block'; errEl.innerHTML = `<strong>Missing columns:</strong> ${missingCols.join(', ')}`; }
+        else errEl.style.display = 'none';
+        const previewCols = DB_COLUMNS.filter(c => Object.keys(rows[0]).includes(c));
+        document.getElementById('preview-head').innerHTML = `<tr>${previewCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
+        document.getElementById('preview-body').innerHTML = rows.slice(0, 10).map(r => `<tr>${previewCols.map(c => `<td>${String(r[c]||'').substring(0,40)}</td>`).join('')}</tr>`).join('');
+        document.getElementById('confirm-upload-btn').disabled = newRows.length === 0;
+        document.getElementById('upload-modal').classList.add('open');
+    }
+
+    async function confirmUpload() {
+        const btn = document.getElementById('confirm-upload-btn');
+        btn.disabled = true; btn.textContent = 'Importing...';
+        const existing = new Set(allCases.map(c => c.case_number));
+        const newRows = pendingUploadRows.filter(r => !existing.has(r.case_number)).map(r => {
+            const row = {};
+            DB_COLUMNS.forEach(col => {
+                const val = r[col];
+                if (col === 'repair_amount' || col === 'credit_amount') row[col] = val !== '' ? parseFloat(val) || null : null;
+                else if (col === 'date_created') row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
+                else row[col] = val !== undefined ? String(val) : null;
+            });
+            if (!row.status) row.status = 'Submitted';
+            return row;
+        });
+        let imported = 0, errors = 0;
+        for (let i = 0; i < newRows.length; i += 50) {
+            const { error } = await supabaseClient.from('rma_cases').insert(newRows.slice(i, i + 50));
+            if (error) errors += Math.min(50, newRows.length - i);
+            else imported += Math.min(50, newRows.length - i);
+        }
+        closeUploadModal(); btn.textContent = 'Import Cases'; btn.disabled = false;
+        setIOStatus(errors > 0 ? `Imported ${imported}, ${errors} failed.` : `Imported ${imported} cases.`, errors > 0 ? 'error' : 'success');
+        await loadAllCases();
+    }
+
+    function closeUploadModal() { document.getElementById('upload-modal').classList.remove('open'); pendingUploadRows = []; }
+    document.getElementById('upload-modal').addEventListener('click', function(e) { if (e.target === this) closeUploadModal(); });
+
+    function setIOStatus(msg, type) {
+        const el = document.getElementById('io-status');
+        el.textContent = msg; el.className = 'io-status' + (type ? ' ' + type : '');
+        setTimeout(() => el.textContent = '', 5000);
+    }
+
+    // ── Init ────────────────────────────────────────────────────────
+    loadSender();
+    loadFedEx();
+    loadFollowUp();
+    loadTemplate(currentEmailTab);
+    loadAllCases();
+</script>
+</body>
+</html>
