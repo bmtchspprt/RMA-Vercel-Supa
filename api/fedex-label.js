@@ -1,9 +1,14 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { apiKey, secretKey, accountNumber, shipTo, shipFrom, serviceType, caseNumber, weight } = req.body;
+    const {
+        apiKey, secretKey, accountNumber,
+        shipFrom, shipTo, serviceType,
+        caseNumber, packagePreset,
+        supabaseUrl, supabaseKey
+    } = req.body;
 
-    // Step 1: Get OAuth token
+    // ── Step 1: Auth ────────────────────────────────────────────────
     let token;
     try {
         const authRes = await fetch('https://apis.fedex.com/oauth/token', {
@@ -18,15 +23,15 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Auth request failed', detail: e.message });
     }
 
-    // Step 2: Create shipment
+    // ── Step 2: Create shipment ─────────────────────────────────────
     const payload = {
-        labelResponseOptions: 'URL_ONLY',
+        labelResponseOptions: 'LABEL',
         requestedShipment: {
             shipper: {
                 contact: {
-                    personName: shipFrom.contact,
-                    phoneNumber: shipFrom.phone.replace(/\D/g,''),
-                    companyName: shipFrom.company
+                    personName: shipFrom.name,
+                    phoneNumber: (shipFrom.phone || '4025550000').replace(/\D/g,''),
+                    companyName: shipFrom.company || ''
                 },
                 address: {
                     streetLines: [shipFrom.address],
@@ -38,9 +43,9 @@ export default async function handler(req, res) {
             },
             recipients: [{
                 contact: {
-                    personName: shipTo.name,
-                    phoneNumber: (shipTo.phone || '4025550000').replace(/\D/g,''),
-                    companyName: shipTo.company || ''
+                    personName: shipTo.contact,
+                    phoneNumber: (shipTo.phone || '8002784241').replace(/\D/g,''),
+                    companyName: shipTo.company
                 },
                 address: {
                     streetLines: [shipTo.address],
@@ -70,7 +75,13 @@ export default async function handler(req, res) {
             requestedPackageLineItems: [{
                 weight: {
                     units: 'LB',
-                    value: weight || 2
+                    value: packagePreset.weight || 2
+                },
+                dimensions: {
+                    length: packagePreset.length || 12,
+                    width: packagePreset.width || 10,
+                    height: packagePreset.height || 6,
+                    units: 'IN'
                 },
                 customerReferences: [{
                     customerReferenceType: 'CUSTOMER_REFERENCE',
@@ -81,6 +92,7 @@ export default async function handler(req, res) {
         accountNumber: { value: accountNumber }
     };
 
+    let shipData;
     try {
         const shipRes = await fetch('https://apis.fedex.com/ship/v1/shipments', {
             method: 'POST',
@@ -91,18 +103,48 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify(payload)
         });
-        const shipData = await shipRes.json();
-
-        if (shipData.errors) return res.status(400).json({ error: 'FedEx error', detail: shipData.errors });
-
-        const output = shipData.output?.transactionShipments?.[0];
-        const labelUrl = output?.pieceResponses?.[0]?.packageDocuments?.[0]?.url;
-        const trackingNumber = output?.pieceResponses?.[0]?.trackingNumber;
-
-        if (!labelUrl && !trackingNumber) return res.status(400).json({ error: 'No label returned', detail: shipData });
-
-        return res.status(200).json({ labelUrl, trackingNumber });
+        shipData = await shipRes.json();
     } catch(e) {
         return res.status(500).json({ error: 'Shipment request failed', detail: e.message });
     }
+
+    if (shipData.errors) return res.status(400).json({ error: 'FedEx error', detail: shipData.errors });
+
+    const output = shipData.output?.transactionShipments?.[0];
+    const trackingNumber = output?.pieceResponses?.[0]?.trackingNumber;
+    const labelBase64 = output?.pieceResponses?.[0]?.packageDocuments?.[0]?.encodedLabel;
+
+    if (!labelBase64) return res.status(400).json({ error: 'No label data returned', detail: shipData });
+
+    // ── Step 3: Upload label PDF to Supabase media/fedex-labels/ ────
+    const today = new Date().toISOString().split('T')[0];
+    const filename = `fedex-labels/${caseNumber}_${today}_${trackingNumber}.pdf`;
+
+    // Convert base64 to binary
+    const pdfBuffer = Buffer.from(labelBase64, 'base64');
+
+    let labelUrl;
+    try {
+        const uploadRes = await fetch(
+            `${supabaseUrl}/storage/v1/object/media/${filename}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'Content-Type': 'application/pdf',
+                    'x-upsert': 'true'
+                },
+                body: pdfBuffer
+            }
+        );
+        if (!uploadRes.ok) {
+            const uploadErr = await uploadRes.text();
+            return res.status(500).json({ error: 'Label upload failed', detail: uploadErr });
+        }
+        labelUrl = `${supabaseUrl}/storage/v1/object/public/media/${filename}`;
+    } catch(e) {
+        return res.status(500).json({ error: 'Upload request failed', detail: e.message });
+    }
+
+    return res.status(200).json({ trackingNumber, labelUrl });
 }
