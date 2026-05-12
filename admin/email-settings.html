@@ -78,7 +78,7 @@
 
         .field-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
         .field-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
-        input[type=text], input[type=email], input[type=url], input[type=number], textarea, select {
+        input[type=text], input[type=email], input[type=url], input[type=number], input[type=password], textarea, select {
             width: 100%;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -91,7 +91,6 @@
         input:focus, textarea:focus, select:focus { outline: none; border-color: #800000; }
         textarea { resize: vertical; }
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
         .action-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
         .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 700; background: #800000; color: white; border: none; border-radius: 6px; cursor: pointer; }
@@ -102,10 +101,7 @@
         .tpl-status.success { color: #16a34a; }
 
         /* Media */
-        .media-upload-zone {
-            border: 2px dashed #ccc; border-radius: 8px; padding: 24px; text-align: center;
-            background: #fafafa; cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
-        }
+        .media-upload-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 24px; text-align: center; background: #fafafa; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
         .media-upload-zone:hover, .media-upload-zone.dragover { border-color: #800000; background: #fff5f5; }
         .media-upload-zone p { font-size: 13px; color: #888; margin-bottom: 6px; }
         .media-upload-zone .upload-hint { font-size: 11px; color: #aaa; }
@@ -144,6 +140,15 @@
 
         /* FedEx */
         .fedex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .fedex-api-notice {
+            background: #f0f4ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: #3730a3;
+            margin-bottom: 16px;
+        }
 
         /* Email templates */
         .vars-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
@@ -164,39 +169,14 @@
 
         /* Agents */
         .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
-        .agent-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 16px;
-            background: #fafafa;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .agent-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; background: #fafafa; display: flex; flex-direction: column; gap: 8px; }
         .agent-card.inactive { opacity: 0.5; }
         .agent-card-top { display: flex; align-items: center; gap: 10px; }
-        .agent-avatar {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
+        .agent-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; flex-shrink: 0; }
         .agent-name { font-size: 14px; font-weight: 700; color: #222; }
-        .agent-role { font-size: 11px; color: #888; }
         .agent-email { font-size: 12px; color: #555; }
         .agent-actions { display: flex; gap: 6px; margin-top: 4px; }
-        .role-badge {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
+        .role-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
         .role-admin { background: #fee2e2; color: #991b1b; }
         .role-agent { background: #dbeafe; color: #1e40af; }
         .role-regional { background: #dcfce7; color: #166534; }
@@ -204,53 +184,13 @@
         .add-agent-form { border: 1.5px dashed #ccc; border-radius: 8px; padding: 20px; background: #fafafa; }
         .add-agent-form h4 { font-size: 13px; font-weight: 700; color: #800000; margin-bottom: 14px; }
         .agent-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .security-notice {
-            background: #fff8e1;
-            border: 1px solid #ffe082;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
+        .security-notice { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #555; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 10px; }
         .security-notice .notice-icon { font-size: 18px; flex-shrink: 0; }
-        .security-toggle {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            margin-bottom: 16px;
-        }
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
+        .security-toggle { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 16px; }
+        .toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background: #ccc;
-            border-radius: 24px;
-            transition: 0.3s;
-        }
-        .toggle-slider:before {
-            content: '';
-            position: absolute;
-            width: 18px; height: 18px;
-            left: 3px; bottom: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: 0.3s;
-        }
+        .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 24px; transition: 0.3s; }
+        .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
         .toggle-switch input:checked + .toggle-slider { background: #800000; }
         .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
         .toggle-label { font-size: 13px; color: #333; }
@@ -273,8 +213,6 @@
         .upload-summary { background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 12px 16px; font-size: 13px; margin-bottom: 16px; }
         .upload-summary.warning { background: #fefce8; border-color: #fde047; }
         .upload-errors { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #dc2626; margin-bottom: 16px; display: none; }
-
-        /* Media picker modal */
         .media-picker-modal { background: white; border-radius: 10px; padding: 24px; width: 700px; max-width: 95vw; max-height: 80vh; overflow-y: auto; }
         .media-picker-modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
         .media-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
@@ -392,14 +330,27 @@
         <div class="section-card">
             <h2>FedEx Setup</h2>
             <p class="desc">Configure your FedEx account details. These pre-fill label requests on case detail pages.</p>
+
+            <div class="fedex-api-notice">
+                🔑 <strong>API Key &amp; Secret Key</strong> are found in your <a href="https://developer.fedex.com" target="_blank" style="color:#3730a3;">FedEx Developer Portal</a> under My Projects → Manage API Projects. These are required for live label generation.
+            </div>
+
             <div class="fedex-grid">
                 <div class="field-group">
                     <label>FedEx Account Number</label>
-                    <input type="text" id="fedex-account" placeholder="123456789" />
+                    <input type="text" id="fedex-account" placeholder="9-digit account number" />
                 </div>
                 <div class="field-group">
-                    <label>Meter Number</label>
-                    <input type="text" id="fedex-meter" placeholder="Optional" />
+                    <label>Meter Number (optional)</label>
+                    <input type="text" id="fedex-meter" placeholder="Leave blank if unsure" />
+                </div>
+                <div class="field-group">
+                    <label>API Key</label>
+                    <input type="text" id="fedex-api-key" placeholder="From FedEx Developer Portal" />
+                </div>
+                <div class="field-group">
+                    <label>Secret Key</label>
+                    <input type="password" id="fedex-secret-key" placeholder="From FedEx Developer Portal" />
                 </div>
                 <div class="field-group">
                     <label>Ship From — Company</label>
@@ -410,8 +361,20 @@
                     <input type="text" id="fedex-contact" placeholder="Support Team" />
                 </div>
                 <div class="field-group" style="grid-column:1/-1;">
-                    <label>Ship From — Address</label>
-                    <input type="text" id="fedex-address" placeholder="7201 N 98th St, Lincoln, NE 68507" />
+                    <label>Ship From — Street Address</label>
+                    <input type="text" id="fedex-street" placeholder="3435 Schworer Dr" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — City</label>
+                    <input type="text" id="fedex-city" placeholder="Lincoln" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — State</label>
+                    <input type="text" id="fedex-state" placeholder="NE" />
+                </div>
+                <div class="field-group">
+                    <label>Ship From — Zip</label>
+                    <input type="text" id="fedex-zip" placeholder="68504" />
                 </div>
                 <div class="field-group">
                     <label>Ship From — Phone</label>
@@ -438,7 +401,7 @@
         </div>
     </div>
 
-    <!-- EMAIL (Sender + Follow-up combined) -->
+    <!-- EMAIL -->
     <div class="settings-section" id="section-email">
         <div class="section-card">
             <h2>Sender Defaults</h2>
@@ -460,7 +423,7 @@
 
         <div class="section-card">
             <h2>Automated Follow-up</h2>
-            <p class="desc">Configure the follow-up reminder shown on case detail pages. When a case reaches the set age, a warning appears with a pre-filled email button.</p>
+            <p class="desc">Configure the follow-up reminder shown on case detail pages. When a case reaches the set age a warning appears with a pre-filled email button.</p>
             <div class="two-col" style="margin-bottom:12px;">
                 <div class="field-group">
                     <label>Follow-up After (days)</label>
@@ -576,15 +539,13 @@
         <div class="section-card">
             <h2>Agent Accounts</h2>
             <p class="desc">Manage who has access to the platform. Agents must log in every 14 days. Password changes are self-service from the login page.</p>
-
             <div class="agents-grid" id="agents-grid">
-                <!-- Master admin always shown -->
                 <div class="agent-card">
                     <div class="agent-card-top">
                         <div class="agent-avatar" style="background:#800000;">D</div>
                         <div>
                             <div class="agent-name">Dave Zelnio</div>
-                            <div class="agent-role"><span class="role-badge role-admin">Admin</span></div>
+                            <div><span class="role-badge role-admin">Admin</span></div>
                         </div>
                     </div>
                     <div class="agent-email">davezelnio@gmail.com</div>
@@ -614,7 +575,7 @@
                     </div>
                     <div class="field-group" style="margin:0;">
                         <label>Role</label>
-                        <select id="agent-role">
+                        <select id="agent-role" onchange="toggleStatesRow(this)">
                             <option value="agent">Agent — full RMA access</option>
                             <option value="regional">Regional Manager — view only, state-filtered</option>
                             <option value="readonly">Read Only — view only, all states</option>
@@ -632,8 +593,8 @@
                             <option value="#0891b2">Teal</option>
                         </select>
                     </div>
-                    <div class="field-group" style="margin:0;grid-column:1/-1;" id="states-row" style="display:none;">
-                        <label>Assigned States (Regional Manager only — comma separated)</label>
+                    <div class="field-group" style="margin:0;grid-column:1/-1;display:none;" id="states-row">
+                        <label>Assigned States (comma separated)</label>
                         <input type="text" id="agent-states" placeholder="FL, SC, MS" />
                     </div>
                     <div class="field-group" style="margin:0;">
@@ -912,7 +873,21 @@
 
     // ── FedEx ───────────────────────────────────────────────────────
     function saveFedEx() {
-        const s = { account_number: document.getElementById('fedex-account').value.trim(), meter_number: document.getElementById('fedex-meter').value.trim(), company: document.getElementById('fedex-company').value.trim(), contact: document.getElementById('fedex-contact').value.trim(), ship_from: document.getElementById('fedex-address').value.trim(), phone: document.getElementById('fedex-phone').value.trim(), service: document.getElementById('fedex-service').value, contact_email: document.getElementById('fedex-email').value.trim() };
+        const s = {
+            account_number: document.getElementById('fedex-account').value.trim(),
+            meter_number: document.getElementById('fedex-meter').value.trim(),
+            api_key: document.getElementById('fedex-api-key').value.trim(),
+            secret_key: document.getElementById('fedex-secret-key').value.trim(),
+            company: document.getElementById('fedex-company').value.trim(),
+            contact: document.getElementById('fedex-contact').value.trim(),
+            street: document.getElementById('fedex-street').value.trim(),
+            city: document.getElementById('fedex-city').value.trim(),
+            state: document.getElementById('fedex-state').value.trim(),
+            zip: document.getElementById('fedex-zip').value.trim(),
+            phone: document.getElementById('fedex-phone').value.trim(),
+            service: document.getElementById('fedex-service').value,
+            contact_email: document.getElementById('fedex-email').value.trim(),
+        };
         localStorage.setItem('fedex_settings', JSON.stringify(s));
         flash('fedex-status', 'Saved!');
     }
@@ -921,15 +896,20 @@
         const s = JSON.parse(localStorage.getItem('fedex_settings') || '{}');
         if (s.account_number) document.getElementById('fedex-account').value = s.account_number;
         if (s.meter_number) document.getElementById('fedex-meter').value = s.meter_number;
+        if (s.api_key) document.getElementById('fedex-api-key').value = s.api_key;
+        if (s.secret_key) document.getElementById('fedex-secret-key').value = s.secret_key;
         if (s.company) document.getElementById('fedex-company').value = s.company;
         if (s.contact) document.getElementById('fedex-contact').value = s.contact;
-        if (s.ship_from) document.getElementById('fedex-address').value = s.ship_from;
+        if (s.street) document.getElementById('fedex-street').value = s.street;
+        if (s.city) document.getElementById('fedex-city').value = s.city;
+        if (s.state) document.getElementById('fedex-state').value = s.state;
+        if (s.zip) document.getElementById('fedex-zip').value = s.zip;
         if (s.phone) document.getElementById('fedex-phone').value = s.phone;
         if (s.service) document.getElementById('fedex-service').value = s.service;
         if (s.contact_email) document.getElementById('fedex-email').value = s.contact_email;
     }
 
-    // ── Email (sender + follow-up) ──────────────────────────────────
+    // ── Email ───────────────────────────────────────────────────────
     function saveSender() {
         localStorage.setItem('sender_name', document.getElementById('sender-name').value.trim());
         localStorage.setItem('sender_email', document.getElementById('sender-email').value.trim());
@@ -944,7 +924,10 @@
     function saveFollowUp() {
         localStorage.setItem('followup_days', document.getElementById('followup-days').value || '30');
         localStorage.setItem('followup_warning', document.getElementById('followup-warning').value || '7');
-        localStorage.setItem('email_template_followup', JSON.stringify({ subject: document.getElementById('followup-subject').value, body: document.getElementById('followup-body').value }));
+        localStorage.setItem('email_template_followup', JSON.stringify({
+            subject: document.getElementById('followup-subject').value,
+            body: document.getElementById('followup-body').value
+        }));
         flash('followup-status', 'Saved!');
     }
 
@@ -953,7 +936,7 @@
         document.getElementById('followup-warning').value = localStorage.getItem('followup_warning') || '7';
         const tpl = JSON.parse(localStorage.getItem('email_template_followup') || '{}');
         document.getElementById('followup-subject').value = tpl.subject || 'Follow-up on RMA Case {case_number}';
-        document.getElementById('followup-body').value = tpl.body || 'Dear {contact_name},\n\nWe wanted to follow up on your RMA case {case_number}.\n\nCurrent Status: {status}\nProduct: {product_name}\n\nPlease don\'t hesitate to reach out if you have any questions.\n\nBinmaster Support';
+        document.getElementById('followup-body').value = tpl.body || 'Dear {contact_name},\n\nWe wanted to follow up on your RMA case {case_number}.\n\nCurrent Status: {status}\nProduct: {product_name}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support';
     }
 
     // ── Email Templates ─────────────────────────────────────────────
@@ -974,7 +957,11 @@
     }
 
     function saveTemplate() {
-        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify({ title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value }));
+        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify({
+            title: document.getElementById('tpl-title').value.trim(),
+            subject: document.getElementById('tpl-subject').value.trim(),
+            body: document.getElementById('tpl-body').value
+        }));
         flash('tpl-status', 'Saved!');
     }
 
@@ -1001,49 +988,40 @@
     }
 
     // ── Agents ──────────────────────────────────────────────────────
+    function toggleStatesRow(sel) {
+        document.getElementById('states-row').style.display = sel.value === 'regional' ? 'grid' : 'none';
+    }
+
     function loadAgents() {
         const agents = JSON.parse(localStorage.getItem('agents') || '[]');
         const grid = document.getElementById('agents-grid');
-        const masterCard = `
-            <div class="agent-card">
-                <div class="agent-card-top">
-                    <div class="agent-avatar" style="background:#800000;">D</div>
-                    <div>
-                        <div class="agent-name">Dave Zelnio</div>
-                        <div class="agent-role"><span class="role-badge role-admin">Admin</span></div>
-                    </div>
-                </div>
-                <div class="agent-email">davezelnio@gmail.com</div>
-                <div style="font-size:11px;color:#aaa;">Master account — cannot be removed</div>
-            </div>`;
-
+        const masterCard = `<div class="agent-card">
+            <div class="agent-card-top">
+                <div class="agent-avatar" style="background:#800000;">D</div>
+                <div><div class="agent-name">Dave Zelnio</div><div><span class="role-badge role-admin">Admin</span></div></div>
+            </div>
+            <div class="agent-email">davezelnio@gmail.com</div>
+            <div style="font-size:11px;color:#aaa;">Master account — cannot be removed</div>
+        </div>`;
         const agentCards = agents.map(a => {
-            const initials = `${a.fname[0] || ''}${a.lname[0] || ''}`.toUpperCase();
-            return `<div class="agent-card ${a.active === false ? 'inactive' : ''}">
+            const initials = `${(a.fname||'')[0]||''}${(a.lname||'')[0]||''}`.toUpperCase();
+            return `<div class="agent-card ${a.active===false?'inactive':''}">
                 <div class="agent-card-top">
-                    <div class="agent-avatar" style="background:${a.color || '#555'};">${initials}</div>
-                    <div>
-                        <div class="agent-name">${a.fname} ${a.lname}</div>
-                        <div class="agent-role"><span class="role-badge role-${a.role}">${a.role}</span></div>
-                    </div>
+                    <div class="agent-avatar" style="background:${a.color||'#555'};">${initials}</div>
+                    <div><div class="agent-name">${a.fname} ${a.lname}</div><div><span class="role-badge role-${a.role}">${a.role}</span></div></div>
                 </div>
                 <div class="agent-email">${a.email}</div>
                 ${a.states ? `<div style="font-size:11px;color:#888;">States: ${a.states}</div>` : ''}
-                <div style="font-size:11px;color:#888;">Chat: ${a.chat} · Notifications: ${a.notif}</div>
+                <div style="font-size:11px;color:#888;">Chat: ${a.chat} · Notif: ${a.notif}</div>
                 <div class="agent-actions">
                     <button class="io-btn small" onclick="editAgent('${a.id}')">Edit</button>
-                    <button class="io-btn small" onclick="toggleAgent('${a.id}')">${a.active === false ? 'Enable' : 'Disable'}</button>
+                    <button class="io-btn small" onclick="toggleAgent('${a.id}')">${a.active===false?'Enable':'Disable'}</button>
                     <button class="io-btn small danger" onclick="deleteAgent('${a.id}')">Remove</button>
                 </div>
             </div>`;
         }).join('');
-
         grid.innerHTML = masterCard + agentCards;
     }
-
-    document.getElementById('agent-role').addEventListener('change', function() {
-        document.getElementById('states-row').style.display = this.value === 'regional' ? 'flex' : 'none';
-    });
 
     function saveAgent() {
         const fname = document.getElementById('agent-fname').value.trim();
@@ -1051,21 +1029,10 @@
         const email = document.getElementById('agent-email').value.trim();
         const password = document.getElementById('agent-password').value.trim();
         const statusEl = document.getElementById('agent-status');
-
         if (!fname || !lname || !email) { statusEl.textContent = 'Name and email required.'; statusEl.className = 'io-status error'; return; }
         if (!editingAgentId && !password) { statusEl.textContent = 'Password required for new agent.'; statusEl.className = 'io-status error'; return; }
-
         const agents = JSON.parse(localStorage.getItem('agents') || '[]');
-        const agentData = {
-            fname, lname, email,
-            role: document.getElementById('agent-role').value,
-            color: document.getElementById('agent-color').value,
-            states: document.getElementById('agent-states').value.trim(),
-            chat: document.getElementById('agent-chat').value,
-            notif: document.getElementById('agent-notif').value,
-            active: true
-        };
-
+        const agentData = { fname, lname, email, role: document.getElementById('agent-role').value, color: document.getElementById('agent-color').value, states: document.getElementById('agent-states').value.trim(), chat: document.getElementById('agent-chat').value, notif: document.getElementById('agent-notif').value, active: true };
         if (editingAgentId) {
             const idx = agents.findIndex(a => a.id === editingAgentId);
             if (idx >= 0) { agents[idx] = { ...agents[idx], ...agentData }; if (password) agents[idx].password = password; }
@@ -1075,7 +1042,6 @@
             agentData.created_at = new Date().toISOString();
             agents.push(agentData);
         }
-
         localStorage.setItem('agents', JSON.stringify(agents));
         statusEl.textContent = editingAgentId ? 'Updated!' : 'Agent added!';
         statusEl.className = 'io-status success';
@@ -1085,8 +1051,7 @@
     }
 
     function editAgent(id) {
-        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
-        const a = agents.find(ag => ag.id === id);
+        const a = JSON.parse(localStorage.getItem('agents') || '[]').find(ag => ag.id === id);
         if (!a) return;
         editingAgentId = id;
         document.getElementById('agent-fname').value = a.fname;
@@ -1098,7 +1063,7 @@
         document.getElementById('agent-states').value = a.states || '';
         document.getElementById('agent-chat').value = a.chat || 'yes';
         document.getElementById('agent-notif').value = a.notif || 'yes';
-        document.getElementById('states-row').style.display = a.role === 'regional' ? 'flex' : 'none';
+        document.getElementById('states-row').style.display = a.role === 'regional' ? 'grid' : 'none';
         document.getElementById('add-agent-title').textContent = 'Edit Agent';
         document.getElementById('add-agent-form').scrollIntoView({ behavior: 'smooth' });
     }
@@ -1118,20 +1083,20 @@
     function toggleAgent(id) {
         const agents = JSON.parse(localStorage.getItem('agents') || '[]');
         const idx = agents.findIndex(a => a.id === id);
-        if (idx >= 0) { agents[idx].active = agents[idx].active === false ? true : false; localStorage.setItem('agents', JSON.stringify(agents)); loadAgents(); }
+        if (idx >= 0) { agents[idx].active = agents[idx].active === false; localStorage.setItem('agents', JSON.stringify(agents)); loadAgents(); }
     }
 
     function deleteAgent(id) {
         if (!confirm('Remove this agent?')) return;
-        const agents = JSON.parse(localStorage.getItem('agents') || '[]').filter(a => a.id !== id);
-        localStorage.setItem('agents', JSON.stringify(agents));
+        localStorage.setItem('agents', JSON.stringify(JSON.parse(localStorage.getItem('agents') || '[]').filter(a => a.id !== id)));
         loadAgents();
     }
 
     function toggleSecurity(el) {
-        const label = document.getElementById('security-label');
         localStorage.setItem('security_enabled', el.checked ? 'true' : 'false');
-        label.innerHTML = el.checked ? 'Security is <strong style="color:#16a34a;">ON</strong> — login required' : 'Security is <strong>OFF</strong> — login not required';
+        document.getElementById('security-label').innerHTML = el.checked
+            ? 'Security is <strong style="color:#16a34a;">ON</strong> — login required'
+            : 'Security is <strong>OFF</strong> — login not required';
     }
 
     function loadSecurityState() {
@@ -1142,7 +1107,7 @@
             : 'Security is <strong>OFF</strong> — login not required';
     }
 
-    // ── Data Import/Export ──────────────────────────────────────────
+    // ── Data ────────────────────────────────────────────────────────
     async function loadAllCases() {
         const { data } = await supabaseClient.from('rma_cases').select('*').order('date_created', { ascending: false });
         allCases = data || [];
@@ -1239,7 +1204,6 @@
         setTimeout(() => el.textContent = '', 5000);
     }
 
-    // ── Helpers ─────────────────────────────────────────────────────
     function flash(id, msg) {
         const el = document.getElementById(id);
         el.textContent = msg; el.className = 'tpl-status success';
