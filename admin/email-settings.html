@@ -140,15 +140,14 @@
 
         /* FedEx */
         .fedex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .fedex-api-notice {
-            background: #f0f4ff;
-            border: 1px solid #c7d2fe;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-size: 12px;
-            color: #3730a3;
-            margin-bottom: 16px;
-        }
+        .fedex-api-notice { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #3730a3; margin-bottom: 16px; }
+        .section-divider { border-top: 1px solid #f0f0f0; margin-top: 24px; padding-top: 20px; }
+        .section-divider-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #800000; margin-bottom: 4px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+        .presets-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px; }
+        .presets-table th { background: #f9f9f9; padding: 7px 10px; text-align: left; color: #888; font-weight: 600; border-bottom: 1px solid #e0e0e0; }
+        .presets-table td { padding: 8px 10px; border-bottom: 1px solid #f5f5f5; }
+        .presets-table tr:last-child td { border-bottom: none; }
+        .preset-add-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 8px; align-items: end; }
 
         /* Email templates */
         .vars-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
@@ -269,7 +268,7 @@
     <div class="settings-section" id="section-media">
         <div class="section-card">
             <h2>Media Library</h2>
-            <p class="desc">Upload images for use across the platform. Click any image to copy its URL.</p>
+            <p class="desc">Upload images for use across the platform. Click any image to copy its URL. FedEx labels are stored in a separate subfolder automatically.</p>
             <div class="media-upload-zone" id="media-upload-zone">
                 <p>Drag images here or click to upload</p>
                 <p class="upload-hint">PNG, JPG, GIF, SVG, WebP — max 5MB each</p>
@@ -329,10 +328,10 @@
     <div class="settings-section" id="section-fedex">
         <div class="section-card">
             <h2>FedEx Setup</h2>
-            <p class="desc">Configure your FedEx account details. These pre-fill label requests on case detail pages.</p>
+            <p class="desc">Configure your FedEx account. The Ship To address is always Binmaster. The Ship From is pulled from each RMA case (the customer).</p>
 
             <div class="fedex-api-notice">
-                🔑 <strong>API Key &amp; Secret Key</strong> are found in your <a href="https://developer.fedex.com" target="_blank" style="color:#3730a3;">FedEx Developer Portal</a> under My Projects → Manage API Projects. These are required for live label generation.
+                🔑 <strong>API Key &amp; Secret Key</strong> are in your <a href="https://developer.fedex.com" target="_blank" style="color:#3730a3;">FedEx Developer Portal</a> under My Projects → Manage API Projects. Required for live label generation.
             </div>
 
             <div class="fedex-grid">
@@ -352,32 +351,36 @@
                     <label>Secret Key</label>
                     <input type="password" id="fedex-secret-key" placeholder="From FedEx Developer Portal" />
                 </div>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.05em;margin:16px 0 12px;">Ship To — Binmaster (your fixed return address)</div>
+            <div class="fedex-grid">
                 <div class="field-group">
-                    <label>Ship From — Company</label>
+                    <label>Company</label>
                     <input type="text" id="fedex-company" placeholder="Binmaster" />
                 </div>
                 <div class="field-group">
-                    <label>Ship From — Contact</label>
-                    <input type="text" id="fedex-contact" placeholder="Support Team" />
+                    <label>Contact Name</label>
+                    <input type="text" id="fedex-contact" placeholder="Mike Atkins" />
                 </div>
                 <div class="field-group" style="grid-column:1/-1;">
-                    <label>Ship From — Street Address</label>
+                    <label>Street Address</label>
                     <input type="text" id="fedex-street" placeholder="3435 Schworer Dr" />
                 </div>
                 <div class="field-group">
-                    <label>Ship From — City</label>
+                    <label>City</label>
                     <input type="text" id="fedex-city" placeholder="Lincoln" />
                 </div>
                 <div class="field-group">
-                    <label>Ship From — State</label>
+                    <label>State</label>
                     <input type="text" id="fedex-state" placeholder="NE" />
                 </div>
                 <div class="field-group">
-                    <label>Ship From — Zip</label>
+                    <label>Zip</label>
                     <input type="text" id="fedex-zip" placeholder="68504" />
                 </div>
                 <div class="field-group">
-                    <label>Ship From — Phone</label>
+                    <label>Phone</label>
                     <input type="text" id="fedex-phone" placeholder="800-278-4241" />
                 </div>
                 <div class="field-group">
@@ -389,15 +392,56 @@
                         <option value="STANDARD_OVERNIGHT">Standard Overnight</option>
                     </select>
                 </div>
-                <div class="field-group">
-                    <label>FedEx Contact Email</label>
-                    <input type="email" id="fedex-email" placeholder="shipping@binmaster.com" />
-                </div>
             </div>
+
             <div class="action-row">
                 <button class="save-btn" onclick="saveFedEx()">Save FedEx Settings</button>
                 <span class="tpl-status" id="fedex-status"></span>
             </div>
+
+            <!-- Package Presets -->
+            <div class="section-divider">
+                <div class="section-divider-title">Package Presets</div>
+                <p class="desc">Define up to 10 package sizes for quick selection when creating return labels on case pages.</p>
+                <div id="presets-list" style="margin-bottom:16px;"></div>
+                <div class="preset-add-grid">
+                    <div class="field-group" style="margin:0;">
+                        <label>Preset Name</label>
+                        <input type="text" id="preset-name" placeholder="e.g. Small Box" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Length (in)</label>
+                        <input type="text" id="preset-length" placeholder="12" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Width (in)</label>
+                        <input type="text" id="preset-width" placeholder="10" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Height (in)</label>
+                        <input type="text" id="preset-height" placeholder="6" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>Weight (lbs)</label>
+                        <input type="text" id="preset-weight" placeholder="2" />
+                    </div>
+                    <div class="field-group" style="margin:0;">
+                        <label>&nbsp;</label>
+                        <button class="io-btn primary" onclick="addPreset()">+ Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Label Cleanup -->
+            <div class="section-divider">
+                <div class="section-divider-title">Label Cleanup</div>
+                <p class="desc">Delete FedEx labels from the media library that are older than 30 days to keep storage tidy.</p>
+                <div class="io-row">
+                    <button class="io-btn danger" onclick="cleanupOldLabels()">🗑 Delete Labels Older Than 30 Days</button>
+                    <span class="io-status" id="cleanup-status"></span>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -471,6 +515,7 @@
                 <span class="var-pill" onclick="copyVar('{case_notes}')">{case_notes}</span>
                 <span class="var-pill" onclick="copyVar('{fedex_tracking}')">{fedex_tracking}</span>
                 <span class="var-pill" onclick="copyVar('{ship_date}')">{ship_date}</span>
+                <span class="var-pill" onclick="copyVar('{fedex_label_url}')">{fedex_label_url}</span>
                 <span class="var-pill" onclick="copyVar('{replacement_sent}')">{replacement_sent}</span>
                 <span class="var-pill" onclick="copyVar('{address}')">{address}</span>
                 <span class="var-pill" onclick="copyVar('{city}')">{city}</span>
@@ -523,7 +568,7 @@
                 <span class="notice-icon">🔒</span>
                 <div>
                     <strong>Security is currently disabled.</strong> All pages are publicly accessible.
-                    When you are ready to activate login requirements, flip the toggle below.
+                    When you are ready to activate login requirements flip the toggle below.
                     The master admin account (davezelnio@gmail.com) always has full access.
                 </div>
             </div>
@@ -543,16 +588,12 @@
                 <div class="agent-card">
                     <div class="agent-card-top">
                         <div class="agent-avatar" style="background:#800000;">D</div>
-                        <div>
-                            <div class="agent-name">Dave Zelnio</div>
-                            <div><span class="role-badge role-admin">Admin</span></div>
-                        </div>
+                        <div><div class="agent-name">Dave Zelnio</div><div><span class="role-badge role-admin">Admin</span></div></div>
                     </div>
                     <div class="agent-email">davezelnio@gmail.com</div>
                     <div style="font-size:11px;color:#aaa;">Master account — cannot be removed</div>
                 </div>
             </div>
-
             <div class="add-agent-form" id="add-agent-form">
                 <h4 id="add-agent-title">Add New Agent</h4>
                 <input type="hidden" id="edit-agent-id" />
@@ -679,10 +720,10 @@
     ];
 
     const EMAIL_DEFAULTS = {
-        rma:   { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote: { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit:{ title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs:    { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+        rma:   { title:'RMA Email',    subject:'RMA Case {case_number} — Received',  body:'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote: { title:'Quote Email',  subject:'Repair Quote — Case {case_number}',   body:'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit:{ title:'Credit Email', subject:'Credit Issued — Case {case_number}',  body:'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:    { title:'CS Email',     subject:'Case Update — {case_number}',         body:'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
 
     const SAMPLE = {
@@ -695,6 +736,7 @@
         evaluation_notes:'Capacitor failure. Repair is possible.',
         case_notes:'Customer very responsive. Prefers email.',
         fedex_tracking:'7489234892348923', ship_date:'May 10, 2026',
+        fedex_label_url:'https://dlzpyrcskcvlsdtgwfko.supabase.co/storage/v1/object/public/media/fedex-labels/CASE-26-2001_2026-05-10_sample.pdf',
         replacement_sent:'No', address:'123 Main St', city:'Lincoln', state:'NE', zip:'68501'
     };
 
@@ -707,6 +749,7 @@
         if (tab === 'media') loadMediaLibrary();
         if (tab === 'products') loadProductManager();
         if (tab === 'agents') loadAgents();
+        if (tab === 'fedex') loadPresets();
     }
 
     // ── Media Library ───────────────────────────────────────────────
@@ -736,7 +779,7 @@
     async function loadMediaLibrary() {
         const grid = document.getElementById('media-grid');
         const { data } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('fedex-labels'));
         if (files.length === 0) { grid.innerHTML = '<div class="media-empty">No media yet. Drag images above to get started.</div>'; return; }
         grid.innerHTML = files.map(f => {
             const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
@@ -781,8 +824,8 @@
         const grid = document.getElementById('media-picker-grid');
         grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">Loading...</div>';
         const { data } = await supabaseClient.storage.from('media').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
-        if (files.length === 0) { grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">No media yet. Upload images in the Media Library tab first.</div>'; return; }
+        const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('fedex-labels'));
+        if (files.length === 0) { grid.innerHTML = '<div style="font-size:13px;color:#aaa;grid-column:1/-1;">No media yet.</div>'; return; }
         grid.innerHTML = files.map(f => {
             const url = `${SUPABASE_URL}/storage/v1/object/public/media/${f.name}`;
             return `<div class="media-picker-item" onclick="selectPickerItem('${url}',this)">
@@ -886,7 +929,6 @@
             zip: document.getElementById('fedex-zip').value.trim(),
             phone: document.getElementById('fedex-phone').value.trim(),
             service: document.getElementById('fedex-service').value,
-            contact_email: document.getElementById('fedex-email').value.trim(),
         };
         localStorage.setItem('fedex_settings', JSON.stringify(s));
         flash('fedex-status', 'Saved!');
@@ -906,7 +948,72 @@
         if (s.zip) document.getElementById('fedex-zip').value = s.zip;
         if (s.phone) document.getElementById('fedex-phone').value = s.phone;
         if (s.service) document.getElementById('fedex-service').value = s.service;
-        if (s.contact_email) document.getElementById('fedex-email').value = s.contact_email;
+    }
+
+    // ── Package Presets ─────────────────────────────────────────────
+    function loadPresets() {
+        const presets = JSON.parse(localStorage.getItem('fedex_presets') || '[]');
+        const list = document.getElementById('presets-list');
+        if (!list) return;
+        if (presets.length === 0) {
+            list.innerHTML = '<div style="font-size:12px;color:#aaa;padding:8px 0;">No presets yet. Add up to 10 below.</div>';
+            return;
+        }
+        list.innerHTML = `<table class="presets-table">
+            <thead><tr>
+                <th>Name</th>
+                <th>L × W × H (in)</th>
+                <th>Weight (lbs)</th>
+                <th></th>
+            </tr></thead>
+            <tbody>${presets.map((p, i) => `<tr>
+                <td style="font-weight:600;">${p.name}</td>
+                <td>${p.length} × ${p.width} × ${p.height}</td>
+                <td>${p.weight}</td>
+                <td style="text-align:right;"><button class="io-btn small danger" onclick="deletePreset(${i})">Remove</button></td>
+            </tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function addPreset() {
+        const name = document.getElementById('preset-name').value.trim();
+        const length = document.getElementById('preset-length').value.trim();
+        const width = document.getElementById('preset-width').value.trim();
+        const height = document.getElementById('preset-height').value.trim();
+        const weight = document.getElementById('preset-weight').value.trim();
+        if (!name || !length || !width || !height || !weight) { alert('All fields are required.'); return; }
+        const presets = JSON.parse(localStorage.getItem('fedex_presets') || '[]');
+        if (presets.length >= 10) { alert('Maximum 10 presets allowed.'); return; }
+        presets.push({ name, length: parseFloat(length), width: parseFloat(width), height: parseFloat(height), weight: parseFloat(weight) });
+        localStorage.setItem('fedex_presets', JSON.stringify(presets));
+        ['preset-name','preset-length','preset-width','preset-height','preset-weight'].forEach(id => document.getElementById(id).value = '');
+        loadPresets();
+    }
+
+    function deletePreset(index) {
+        if (!confirm('Remove this preset?')) return;
+        const presets = JSON.parse(localStorage.getItem('fedex_presets') || '[]');
+        presets.splice(index, 1);
+        localStorage.setItem('fedex_presets', JSON.stringify(presets));
+        loadPresets();
+    }
+
+    // ── Label Cleanup ───────────────────────────────────────────────
+    async function cleanupOldLabels() {
+        const statusEl = document.getElementById('cleanup-status');
+        if (!confirm('Delete all FedEx labels older than 30 days from media/fedex-labels/?')) return;
+        statusEl.textContent = 'Scanning...';
+        statusEl.className = 'io-status';
+        const { data, error } = await supabaseClient.storage.from('media').list('fedex-labels', { limit: 500, sortBy: { column: 'created_at', order: 'asc' } });
+        if (error) { statusEl.textContent = 'Error: ' + error.message; statusEl.className = 'io-status error'; return; }
+        const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const toDelete = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && new Date(f.created_at) < cutoff);
+        if (toDelete.length === 0) { statusEl.textContent = 'No labels older than 30 days found.'; statusEl.className = 'io-status'; return; }
+        const paths = toDelete.map(f => `fedex-labels/${f.name}`);
+        const { error: delError } = await supabaseClient.storage.from('media').remove(paths);
+        if (delError) { statusEl.textContent = 'Error: ' + delError.message; statusEl.className = 'io-status error'; }
+        else { statusEl.textContent = `Deleted ${toDelete.length} label${toDelete.length !== 1 ? 's' : ''}.`; statusEl.className = 'io-status success'; }
+        setTimeout(() => statusEl.textContent = '', 5000);
     }
 
     // ── Email ───────────────────────────────────────────────────────
@@ -924,10 +1031,7 @@
     function saveFollowUp() {
         localStorage.setItem('followup_days', document.getElementById('followup-days').value || '30');
         localStorage.setItem('followup_warning', document.getElementById('followup-warning').value || '7');
-        localStorage.setItem('email_template_followup', JSON.stringify({
-            subject: document.getElementById('followup-subject').value,
-            body: document.getElementById('followup-body').value
-        }));
+        localStorage.setItem('email_template_followup', JSON.stringify({ subject: document.getElementById('followup-subject').value, body: document.getElementById('followup-body').value }));
         flash('followup-status', 'Saved!');
     }
 
@@ -957,11 +1061,7 @@
     }
 
     function saveTemplate() {
-        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify({
-            title: document.getElementById('tpl-title').value.trim(),
-            subject: document.getElementById('tpl-subject').value.trim(),
-            body: document.getElementById('tpl-body').value
-        }));
+        localStorage.setItem(`email_template_${currentEmailTab}`, JSON.stringify({ title: document.getElementById('tpl-title').value.trim(), subject: document.getElementById('tpl-subject').value.trim(), body: document.getElementById('tpl-body').value }));
         flash('tpl-status', 'Saved!');
     }
 
