@@ -133,29 +133,12 @@
         .fedex-btn:disabled { background: #aaa; cursor: not-allowed; }
         .fedex-btn.secondary { background: #e0e0e0; color: #555; }
         .fedex-btn.secondary:hover { background: #ccc; }
+        .fedex-label-link { font-size: 12px; color: #4d148c; text-decoration: none; font-weight: 600; }
+        .fedex-label-link:hover { text-decoration: underline; }
         .fedex-status { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 5px; display: none; }
         .fedex-status.success { display: block; background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
         .fedex-status.error { display: block; background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; }
         .fedex-status.loading { display: block; background: #f0f0ff; border: 1px solid #c7d2fe; color: #4338ca; }
-
-        /* Weight modal */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
-        .modal-overlay.open { display: flex; }
-        .modal { background: white; border-radius: 10px; padding: 24px; width: 460px; max-width: 95vw; }
-        .modal h3 { font-size: 16px; font-weight: 700; color: #800000; margin-bottom: 16px; }
-        .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
-        .modal input, .modal select, .modal textarea { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 7px 9px; font-size: 13px; font-family: Arial, sans-serif; }
-        .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: #800000; }
-        .modal textarea { min-height: 80px; resize: vertical; }
-        .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
-        .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
-        .modal-footer .btn-primary { background: #4d148c; color: white; border-color: #4d148c; }
-        .modal-footer .btn-primary:hover { background: #3a0f6b; }
-
-        /* Email modal */
-        #email-modal .modal { width: 620px; max-height: 85vh; overflow-y: auto; }
-        #email-modal .modal h3 { color: #800000; }
-        #email-modal .modal-footer .btn-primary { background: #800000; border-color: #800000; }
 
         /* Copilot */
         .copilot-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 16px; }
@@ -177,6 +160,29 @@
         .no-match { font-size: 12px; color: #aaa; font-style: italic; }
         .copilot-loading { font-size: 12px; color: #aaa; }
 
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: white; border-radius: 10px; padding: 24px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+        .modal h3 { font-size: 16px; font-weight: 700; color: #4d148c; margin-bottom: 6px; }
+        .modal .modal-desc { font-size: 12px; color: #666; margin-bottom: 16px; }
+        .modal label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; display: block; margin-bottom: 4px; margin-top: 12px; }
+        .modal input, .modal select { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 7px 9px; font-size: 13px; font-family: Arial, sans-serif; }
+        .modal input:focus, .modal select:focus { outline: none; border-color: #4d148c; }
+        .modal-section { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 14px; margin-top: 14px; }
+        .modal-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 8px; }
+        .modal-addr-line { font-size: 13px; color: #333; line-height: 1.7; }
+        .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+        .modal-footer button { padding: 7px 20px; font-size: 13px; border-radius: 5px; cursor: pointer; border: 1px solid #ccc; background: white; }
+        .modal-footer .btn-fedex { background: #4d148c; color: white; border-color: #4d148c; }
+        .modal-footer .btn-fedex:hover { background: #3a0f6b; }
+        .modal-footer .btn-fedex:disabled { background: #aaa; border-color: #aaa; cursor: not-allowed; }
+        .modal-warning { background: #fff8e1; border: 1px solid #ffe082; border-radius: 5px; padding: 10px 12px; margin-top: 14px; font-size: 12px; color: #555; }
+
+        #email-modal .modal { width: 620px; }
+        #email-modal .modal h3 { color: #800000; }
+        #email-modal .modal-footer .btn-primary { background: #800000; border-color: #800000; color: white; }
+
         @media (max-width: 900px) {
             .page-wrap { flex-direction: column; }
             .copilot-col { width: 100%; position: static; }
@@ -197,8 +203,6 @@
 </div>
 
 <div class="page-wrap">
-
-    <!-- Main Column -->
     <div class="main-col">
 
         <!-- Row 1 -->
@@ -300,7 +304,13 @@
                 </div>
                 <div class="field-group">
                     <label>Ship Date</label>
-                    <input type="text" id="field-ship-date" placeholder="e.g. May 10, 2026" style="width:140px;" />
+                    <input type="text" id="field-ship-date" placeholder="Auto-filled" style="width:140px;" />
+                </div>
+                <div class="field-group">
+                    <label>Return Label</label>
+                    <div id="label-link-wrap">
+                        <span style="font-size:12px;color:#aaa;" id="label-link-placeholder">No label yet</span>
+                    </div>
                 </div>
                 <button class="fedex-btn" onclick="openLabelModal()">📦 Create Return Label</button>
                 <button class="fedex-btn secondary" onclick="trackFedEx()">🔍 Track</button>
@@ -334,7 +344,6 @@
             </div>
         </div>
 
-        <!-- Save Bar -->
         <div class="save-bar">
             <button class="save-btn" onclick="saveCase()">Save Changes</button>
             <span class="save-status" id="save-status"></span>
@@ -342,7 +351,7 @@
 
     </div>
 
-    <!-- Copilot Column -->
+    <!-- Copilot -->
     <div class="copilot-col">
         <div class="copilot-card">
             <h4>🤖 Copilot</h4>
@@ -369,37 +378,38 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- FedEx Label Modal -->
 <div class="modal-overlay" id="fedex-modal">
     <div class="modal">
         <h3>📦 Create Return Label</h3>
-        <p style="font-size:12px;color:#666;margin-bottom:4px;">This creates a prepaid return label. Binmaster pays the postage.</p>
+        <p class="modal-desc">Customer ships their product back to Binmaster. You pay the postage.</p>
 
-        <label>Ship To (Customer) — Name</label>
-        <input type="text" id="fl-name" />
-        <label>Company</label>
-        <input type="text" id="fl-company" />
-        <label>Address</label>
-        <input type="text" id="fl-address" />
-        <label>City</label>
-        <input type="text" id="fl-city" style="width:100%;" />
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px;">
+        <label>Package Preset</label>
+        <select id="fl-preset" onchange="applyPreset()">
+            <option value="">— Select a package size —</option>
+        </select>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:10px;">
             <div>
-                <label>State</label>
-                <input type="text" id="fl-state" placeholder="NE" />
+                <label>Length (in)</label>
+                <input type="text" id="fl-length" placeholder="12" />
             </div>
             <div>
-                <label>Zip</label>
-                <input type="text" id="fl-zip" placeholder="68501" />
+                <label>Width (in)</label>
+                <input type="text" id="fl-width" placeholder="10" />
+            </div>
+            <div>
+                <label>Height (in)</label>
+                <input type="text" id="fl-height" placeholder="6" />
+            </div>
+            <div>
+                <label>Weight (lbs)</label>
+                <input type="text" id="fl-weight" placeholder="2" />
             </div>
         </div>
-        <label>Customer Phone (required by FedEx)</label>
-        <input type="text" id="fl-phone" placeholder="402-555-0000" />
-        <label>Package Weight (lbs)</label>
-        <input type="text" id="fl-weight" placeholder="2" />
+
         <label>Service Type</label>
         <select id="fl-service">
             <option value="FEDEX_GROUND">FedEx Ground</option>
@@ -408,13 +418,29 @@
             <option value="STANDARD_OVERNIGHT">Standard Overnight</option>
         </select>
 
-        <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:5px;padding:10px 12px;margin-top:14px;font-size:12px;color:#555;">
-            ⚠ Label will be charged to your FedEx account. Make sure customer address is correct before generating.
+        <!-- Ship FROM — customer -->
+        <div class="modal-section">
+            <h4>Ship From (Customer)</h4>
+            <div id="modal-ship-from" class="modal-addr-line"></div>
+            <div style="margin-top:8px;">
+                <label style="margin-top:0;">Customer Phone (required by FedEx)</label>
+                <input type="text" id="fl-phone" placeholder="402-555-0000" />
+            </div>
+        </div>
+
+        <!-- Ship TO — Binmaster -->
+        <div class="modal-section">
+            <h4>Ship To (Binmaster)</h4>
+            <div id="modal-ship-to" class="modal-addr-line"></div>
+        </div>
+
+        <div class="modal-warning">
+            ⚠ This label will be charged to your FedEx account. Verify the customer address is correct before generating.
         </div>
 
         <div class="modal-footer">
             <button onclick="closeLabelModal()">Cancel</button>
-            <button class="btn-primary" id="generate-btn" onclick="generateLabel()">Generate Label</button>
+            <button class="btn-fedex" id="generate-btn" onclick="generateLabel()">Generate Label &amp; Save to Media</button>
         </div>
     </div>
 </div>
@@ -431,7 +457,7 @@
         <textarea id="modal-body" rows="12"></textarea>
         <div class="modal-footer">
             <button onclick="closeModal()">Cancel</button>
-            <button class="btn-primary" onclick="sendEmail()" style="background:#800000;border-color:#800000;color:white;">Open in Email Client</button>
+            <button class="btn-primary" onclick="sendEmail()" style="background:#800000;border-color:#800000;color:white;padding:7px 20px;font-size:13px;border-radius:5px;cursor:pointer;border:1px solid #800000;">Open in Email Client</button>
         </div>
     </div>
 </div>
@@ -487,7 +513,10 @@
     function onCreditInput() {
         if (creditNoteAdded) return;
         const val = document.getElementById('field-credit').value.trim();
-        if (val.length > 0 && parseFloat(val) > 0) { creditNoteAdded = true; document.getElementById('field-status').value = 'Credited'; }
+        if (val.length > 0 && parseFloat(val) > 0) {
+            creditNoteAdded = true;
+            document.getElementById('field-status').value = 'Credited';
+        }
     }
 
     async function markComplete() {
@@ -503,17 +532,57 @@
             alert('FedEx account not configured. Go to Settings → FedEx first.');
             return;
         }
-        // Pre-fill from case
-        document.getElementById('fl-name').value = caseData.contact_name || '';
-        document.getElementById('fl-company').value = caseData.company || '';
-        document.getElementById('fl-address').value = caseData.address || '';
-        document.getElementById('fl-city').value = caseData.city || '';
-        document.getElementById('fl-state').value = caseData.state || '';
-        document.getElementById('fl-zip').value = caseData.zip || '';
-        document.getElementById('fl-phone').value = '';
-        document.getElementById('fl-weight').value = '2';
+        if (!fs.api_key || !fs.secret_key) {
+            alert('FedEx API Key and Secret Key are not configured. Go to Settings → FedEx and add them.');
+            return;
+        }
+
+        // Load package presets into dropdown
+        const presets = JSON.parse(localStorage.getItem('fedex_presets') || '[]');
+        const sel = document.getElementById('fl-preset');
+        sel.innerHTML = '<option value="">— Select a package size —</option>';
+        presets.forEach((p, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${p.name} (${p.length}x${p.width}x${p.height}in, ${p.weight}lb)`;
+            sel.appendChild(opt);
+        });
+
+        // Set service type default
         document.getElementById('fl-service').value = fs.service || 'FEDEX_GROUND';
+
+        // Clear dims
+        ['fl-length','fl-width','fl-height','fl-weight','fl-phone'].forEach(id => document.getElementById(id).value = '');
+
+        // Ship FROM = customer
+        document.getElementById('modal-ship-from').innerHTML = [
+            `<strong>${caseData.contact_name || ''}</strong>`,
+            caseData.company || '',
+            caseData.address || '',
+            [caseData.city, caseData.state, caseData.zip].filter(Boolean).join(', ')
+        ].filter(Boolean).join('<br>');
+
+        // Ship TO = Binmaster
+        document.getElementById('modal-ship-to').innerHTML = [
+            `<strong>${fs.contact || 'Mike Atkins'}</strong>`,
+            `c/o ${fs.company || 'Binmaster'}`,
+            fs.street || '',
+            [fs.city, fs.state, fs.zip].filter(Boolean).join(', ')
+        ].filter(Boolean).join('<br>');
+
         document.getElementById('fedex-modal').classList.add('open');
+    }
+
+    function applyPreset() {
+        const presets = JSON.parse(localStorage.getItem('fedex_presets') || '[]');
+        const idx = document.getElementById('fl-preset').value;
+        if (idx === '') return;
+        const p = presets[parseInt(idx)];
+        if (!p) return;
+        document.getElementById('fl-length').value = p.length;
+        document.getElementById('fl-width').value = p.width;
+        document.getElementById('fl-height').value = p.height;
+        document.getElementById('fl-weight').value = p.weight;
     }
 
     function closeLabelModal() {
@@ -523,54 +592,55 @@
     async function generateLabel() {
         const fs = JSON.parse(localStorage.getItem('fedex_settings') || '{}');
         const btn = document.getElementById('generate-btn');
-        const statusEl = document.getElementById('fedex-status');
 
-        // Validate
-        const required = { name: 'Customer name', address: 'Address', city: 'City', state: 'State', zip: 'Zip' };
-        for (const [id, label] of Object.entries(required)) {
-            if (!document.getElementById(`fl-${id}`).value.trim()) {
-                alert(`${label} is required.`);
-                return;
-            }
+        const length = parseFloat(document.getElementById('fl-length').value);
+        const width = parseFloat(document.getElementById('fl-width').value);
+        const height = parseFloat(document.getElementById('fl-height').value);
+        const weight = parseFloat(document.getElementById('fl-weight').value);
+
+        if (!length || !width || !height || !weight) {
+            alert('Please select a package preset or enter dimensions and weight.');
+            return;
         }
-
-        if (!fs.api_key || !fs.secret_key) {
-            setFedExStatus('FedEx API Key and Secret Key are not configured. Go to Settings → FedEx and add them.', 'error');
+        if (!caseData.address || !caseData.city || !caseData.state || !caseData.zip) {
+            alert('Customer address is incomplete on this case. Fill in the address before generating a label.');
             closeLabelModal();
             return;
         }
 
         btn.disabled = true;
         btn.textContent = 'Generating...';
-
-        // Parse ship-from address
-        const addressParts = (fs.ship_from || '').split(',');
-        const shipFrom = {
-            company: fs.company || 'Binmaster',
-            contact: fs.contact || 'Support',
-            phone: fs.phone || '8002784241',
-            address: addressParts[0]?.trim() || '3435 Schworer Dr',
-            city: addressParts[1]?.trim() || 'Lincoln',
-            state: addressParts[2]?.trim().split(' ')[0] || 'NE',
-            zip: addressParts[2]?.trim().split(' ')[1] || '68504'
-        };
+        setFedExStatus('Contacting FedEx API...', 'loading');
+        closeLabelModal();
 
         const body = {
             apiKey: fs.api_key,
             secretKey: fs.secret_key,
             accountNumber: fs.account_number,
             serviceType: document.getElementById('fl-service').value,
-            caseNumber: caseData.case_number || '',
-            weight: parseFloat(document.getElementById('fl-weight').value) || 2,
-            shipFrom,
-            shipTo: {
-                name: document.getElementById('fl-name').value.trim(),
-                company: document.getElementById('fl-company').value.trim(),
-                address: document.getElementById('fl-address').value.trim(),
-                city: document.getElementById('fl-city').value.trim(),
-                state: document.getElementById('fl-state').value.trim(),
-                zip: document.getElementById('fl-zip').value.trim(),
+            caseNumber: caseData.case_number || caseId,
+            packagePreset: { length, width, height, weight },
+            supabaseUrl: SUPABASE_URL,
+            supabaseKey: SUPABASE_KEY,
+            // Ship FROM = customer
+            shipFrom: {
+                name: caseData.contact_name || '',
+                company: caseData.company || '',
+                address: caseData.address || '',
+                city: caseData.city || '',
+                state: caseData.state || '',
+                zip: caseData.zip || '',
                 phone: document.getElementById('fl-phone').value.trim() || '4025550000'
+            },
+            // Ship TO = Binmaster
+            shipTo: {
+                contact: fs.contact || 'Mike Atkins',
+                company: fs.company || 'Binmaster',
+                address: fs.street || '3435 Schworer Dr',
+                city: fs.city || 'Lincoln',
+                state: fs.state || 'NE',
+                zip: fs.zip || '68504',
+                phone: (fs.phone || '8002784241').replace(/\D/g,'')
             }
         };
 
@@ -583,142 +653,46 @@
             const data = await res.json();
 
             if (data.error) {
-                setFedExStatus(`Error: ${data.error}${data.detail ? ' — ' + JSON.stringify(data.detail).substring(0, 120) : ''}`, 'error');
+                setFedExStatus(`FedEx Error: ${data.error}${data.detail ? ' — ' + JSON.stringify(data.detail).substring(0, 150) : ''}`, 'error');
             } else {
-                // Success — save tracking number and open label
+                // Save tracking + label URL to case
                 document.getElementById('field-fedex').value = data.trackingNumber || '';
                 document.getElementById('field-ship-date').value = today();
+                caseData.fedex_label_url = data.labelUrl;
 
-                // Save tracking to DB immediately
                 await supabaseClient.from('rma_cases').update({
                     fedex_tracking: data.trackingNumber,
-                    ship_date: new Date().toISOString()
+                    ship_date: new Date().toISOString(),
+                    fedex_label_url: data.labelUrl
                 }).eq('id', caseId);
 
-                setFedExStatus(`✓ Label created! Tracking: ${data.trackingNumber}`, 'success');
-
-                // Open label PDF
+                // Show label link
                 if (data.labelUrl) {
-                    window.open(data.labelUrl, '_blank');
+                    document.getElementById('label-link-wrap').innerHTML =
+                        `<a class="fedex-label-link" href="${data.labelUrl}" target="_blank">📄 View Label PDF</a>`;
                 }
+
+                setFedExStatus(`✓ Label created! Tracking: ${data.trackingNumber} — saved to media/fedex-labels/`, 'success');
             }
         } catch(e) {
             setFedExStatus('Request failed: ' + e.message, 'error');
         }
 
         btn.disabled = false;
-        btn.textContent = 'Generate Label';
-        closeLabelModal();
+        btn.textContent = 'Generate Label & Save to Media';
     }
 
     function setFedExStatus(msg, type) {
         const el = document.getElementById('fedex-status');
         el.textContent = msg;
         el.className = `fedex-status ${type}`;
-        if (type === 'success') setTimeout(() => el.className = 'fedex-status', 10000);
+        if (type === 'success') setTimeout(() => el.className = 'fedex-status', 15000);
     }
 
     function trackFedEx() {
         const tracking = document.getElementById('field-fedex').value.trim();
         if (!tracking) { alert('No tracking number on this case yet.'); return; }
         window.open(`https://www.fedex.com/fedextrack/?trknbr=${tracking}`, '_blank');
-    }
-
-    // ── Copilot ─────────────────────────────────────────────────────
-    async function loadCopilot(d) {
-        await Promise.all([ loadContactMatch(d), loadCaseHistory(d), loadFollowUp(d) ]);
-    }
-
-    async function loadContactMatch(d) {
-        const el = document.getElementById('copilot-contact');
-        const suggestSection = document.getElementById('copilot-suggest-section');
-        const suggestEl = document.getElementById('copilot-suggest');
-        if (!d.email && !d.company) { el.innerHTML = '<div class="no-match">No email or company to match.</div>'; return; }
-        let match = null;
-        if (d.email) {
-            const { data } = await supabaseClient.from('contacts').select('*').ilike('email', d.email).limit(1);
-            if (data && data.length > 0) match = data[0];
-        }
-        if (!match && d.company) {
-            const { data } = await supabaseClient.from('contacts').select('*').ilike('company', `%${d.company}%`).limit(1);
-            if (data && data.length > 0) match = data[0];
-        }
-        if (!match) { el.innerHTML = '<div class="no-match">No contact match found.</div>'; suggestSection.style.display = 'none'; return; }
-        el.innerHTML = `<div class="copilot-match">
-            <div class="match-name">${match.name || '—'}</div>
-            <div>${match.company || ''}</div>
-            <div>${match.email || ''}</div>
-            ${match.phone ? `<div>📞 ${match.phone}</div>` : ''}
-            ${match.address ? `<div>${match.address}</div>` : ''}
-            ${match.city || match.state ? `<div>${[match.city, match.state, match.zip].filter(Boolean).join(', ')}</div>` : ''}
-        </div>`;
-        const suggestions = [];
-        if (!d.address && match.address) suggestions.push({ field: 'Address', value: match.address, key: 'address' });
-        if (!d.city && match.city) suggestions.push({ field: 'City', value: match.city, key: 'city' });
-        if (!d.state && match.state) suggestions.push({ field: 'State', value: match.state, key: 'state' });
-        if (!d.zip && match.zip) suggestions.push({ field: 'Zip', value: match.zip, key: 'zip' });
-        if (!d.company && match.company) suggestions.push({ field: 'Company', value: match.company, key: 'company' });
-        if (suggestions.length > 0) {
-            suggestSection.style.display = 'block';
-            suggestEl.innerHTML = suggestions.map(s => `<div class="copilot-suggest"><strong>${s.field}:</strong> ${s.value}<br><button class="fill-btn" onclick="fillField('${s.key}','${s.value.replace(/'/g,"\\'")}')">Fill In</button></div>`).join('');
-        } else { suggestSection.style.display = 'none'; }
-    }
-
-    function fillField(key, value) {
-        caseData[key] = value;
-        if (key === 'address') document.getElementById('disp-address').textContent = value;
-        if (key === 'company') document.getElementById('disp-company').textContent = value;
-        if (['city','state','zip'].includes(key)) {
-            const csz = [caseData.city, caseData.state, caseData.zip].filter(Boolean).join(', ');
-            document.getElementById('disp-csz').textContent = csz;
-        }
-        document.getElementById('save-status').textContent = 'Unsaved changes';
-        document.getElementById('save-status').className = 'save-status';
-    }
-
-    async function loadCaseHistory(d) {
-        const el = document.getElementById('copilot-history');
-        if (!d.email && !d.company) { el.innerHTML = '<div class="no-match">No email or company to search.</div>'; return; }
-        let query = supabaseClient.from('rma_cases').select('id,case_number,status,product_name,date_created,issue_type').neq('id', caseId).order('date_created', { ascending: false }).limit(5);
-        if (d.email) query = query.ilike('email', d.email);
-        else if (d.company) query = query.ilike('company', `%${d.company}%`);
-        const { data } = await query;
-        if (!data || data.length === 0) { el.innerHTML = '<div class="no-match">No previous cases found.</div>'; return; }
-        el.innerHTML = data.map(c => `<div class="case-history-item">
-            <a href="/admin/rma-case.html?id=${c.id}">${c.case_number}</a>
-            <span style="margin-left:6px;font-size:11px;background:#f0f0f0;padding:1px 6px;border-radius:8px;">${c.status}</span>
-            <div class="history-meta">${c.product_name || '—'} · ${c.issue_type || '—'}</div>
-            <div class="history-meta">${c.date_created ? new Date(c.date_created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''}</div>
-        </div>`).join('');
-    }
-
-    function loadFollowUp(d) {
-        const el = document.getElementById('copilot-followup');
-        if (!d.date_created) { el.innerHTML = '<div class="no-match">No date available.</div>'; return; }
-        const daysSince = Math.floor((new Date() - new Date(d.date_created)) / (1000 * 60 * 60 * 24));
-        const followUpDays = parseInt(localStorage.getItem('followup_days') || '30');
-        const daysUntil = followUpDays - daysSince;
-        let html = `<div style="margin-bottom:6px;font-size:12px;">Case age: <strong>${daysSince} day${daysSince !== 1 ? 's' : ''}</strong></div>`;
-        if (d.follow_up_sent) {
-            html += `<div style="color:#16a34a;font-size:12px;">✓ Follow-up sent</div>`;
-        } else if (daysUntil <= 0) {
-            html += `<div style="color:#dc2626;font-size:12px;font-weight:600;">⚠ Follow-up overdue by ${Math.abs(daysUntil)} days</div>`;
-            html += `<button class="fill-btn" style="margin-top:6px;" onclick="sendFollowUp()">Send Follow-up</button>`;
-        } else if (daysUntil <= 7) {
-            html += `<div style="color:#f59e0b;font-size:12px;font-weight:600;">⏰ Due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}</div>`;
-            html += `<button class="fill-btn" style="margin-top:6px;background:#f59e0b;" onclick="sendFollowUp()">Send Now</button>`;
-        } else {
-            html += `<div style="color:#888;font-size:12px;">Follow-up due in ${daysUntil} days</div>`;
-        }
-        el.innerHTML = html;
-    }
-
-    function sendFollowUp() {
-        const saved = localStorage.getItem('email_template_followup');
-        const subject = saved ? JSON.parse(saved).subject : `Follow-up on RMA Case ${caseData.case_number}`;
-        const body = saved ? JSON.parse(saved).body : `Dear ${caseData.contact_name || 'Customer'},\n\nWe wanted to follow up on your RMA case ${caseData.case_number}.\n\nCurrent Status: ${caseData.status}\nProduct: ${caseData.product_name || ''}\n\nBinmaster Support`;
-        window.location.href = `mailto:${caseData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        supabaseClient.from('rma_cases').update({ follow_up_sent: true, follow_up_date: new Date().toISOString() }).eq('id', caseId);
     }
 
     // ── Load case ───────────────────────────────────────────────────
@@ -750,10 +724,20 @@
         document.getElementById('field-received').value = d.received_description || '';
         document.getElementById('field-evaluation').value = d.evaluation_notes || '';
         document.getElementById('field-fedex').value = d.fedex_tracking || '';
-        document.getElementById('field-ship-date').value = d.ship_date ? new Date(d.ship_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        document.getElementById('field-ship-date').value = d.ship_date
+            ? new Date(d.ship_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+            : '';
+
+        // Show label link if exists
+        if (d.fedex_label_url) {
+            document.getElementById('label-link-wrap').innerHTML =
+                `<a class="fedex-label-link" href="${d.fedex_label_url}" target="_blank">📄 View Label PDF</a>`;
+        }
+
         if (d.received_description) receivedNoteAdded = true;
         if (d.evaluation_notes) evaluationNoteAdded = true;
         if (d.credit_amount && parseFloat(d.credit_amount) > 0) creditNoteAdded = true;
+
         try { caseNotes = d.case_notes ? JSON.parse(d.case_notes) : []; }
         catch(e) { caseNotes = d.case_notes ? [{ date: today(), text: d.case_notes }] : []; }
         renderNotes();
@@ -830,8 +814,10 @@
         };
         const { error } = await supabaseClient.from('rma_cases').update(updates).eq('id', caseId);
         btn.disabled = false;
-        if (error) { statusEl.textContent = 'Error: ' + error.message; statusEl.className = 'save-status error'; }
-        else {
+        if (error) {
+            statusEl.textContent = 'Error: ' + error.message;
+            statusEl.className = 'save-status error';
+        } else {
             statusEl.textContent = 'Saved successfully.';
             statusEl.className = 'save-status success';
             saveEmailButtonStates();
@@ -846,6 +832,105 @@
         const { data } = await supabaseClient.from('contacts').select('id').ilike('email', caseData.email).limit(1);
         if (data && data.length > 0) await supabaseClient.from('contacts').update(payload).eq('id', data[0].id);
         else await supabaseClient.from('contacts').insert([payload]);
+    }
+
+    // ── Copilot ─────────────────────────────────────────────────────
+    async function loadCopilot(d) {
+        await Promise.all([loadContactMatch(d), loadCaseHistory(d), loadFollowUp(d)]);
+    }
+
+    async function loadContactMatch(d) {
+        const el = document.getElementById('copilot-contact');
+        const suggestSection = document.getElementById('copilot-suggest-section');
+        const suggestEl = document.getElementById('copilot-suggest');
+        if (!d.email && !d.company) { el.innerHTML = '<div class="no-match">No email or company to match.</div>'; return; }
+        let match = null;
+        if (d.email) {
+            const { data } = await supabaseClient.from('contacts').select('*').ilike('email', d.email).limit(1);
+            if (data && data.length > 0) match = data[0];
+        }
+        if (!match && d.company) {
+            const { data } = await supabaseClient.from('contacts').select('*').ilike('company', `%${d.company}%`).limit(1);
+            if (data && data.length > 0) match = data[0];
+        }
+        if (!match) { el.innerHTML = '<div class="no-match">No contact match found.</div>'; suggestSection.style.display = 'none'; return; }
+        el.innerHTML = `<div class="copilot-match">
+            <div class="match-name">${match.name || '—'}</div>
+            <div>${match.company || ''}</div>
+            <div>${match.email || ''}</div>
+            ${match.phone ? `<div>📞 ${match.phone}</div>` : ''}
+            ${match.address ? `<div>${match.address}</div>` : ''}
+            ${match.city||match.state ? `<div>${[match.city,match.state,match.zip].filter(Boolean).join(', ')}</div>` : ''}
+        </div>`;
+        const suggestions = [];
+        if (!d.address && match.address) suggestions.push({ field:'Address', value:match.address, key:'address' });
+        if (!d.city && match.city) suggestions.push({ field:'City', value:match.city, key:'city' });
+        if (!d.state && match.state) suggestions.push({ field:'State', value:match.state, key:'state' });
+        if (!d.zip && match.zip) suggestions.push({ field:'Zip', value:match.zip, key:'zip' });
+        if (!d.company && match.company) suggestions.push({ field:'Company', value:match.company, key:'company' });
+        if (suggestions.length > 0) {
+            suggestSection.style.display = 'block';
+            suggestEl.innerHTML = suggestions.map(s =>
+                `<div class="copilot-suggest"><strong>${s.field}:</strong> ${s.value}<br>
+                <button class="fill-btn" onclick="fillField('${s.key}','${s.value.replace(/'/g,"\\'")}')">Fill In</button></div>`
+            ).join('');
+        } else { suggestSection.style.display = 'none'; }
+    }
+
+    function fillField(key, value) {
+        caseData[key] = value;
+        if (key === 'address') document.getElementById('disp-address').textContent = value;
+        if (key === 'company') document.getElementById('disp-company').textContent = value;
+        if (['city','state','zip'].includes(key)) {
+            document.getElementById('disp-csz').textContent = [caseData.city,caseData.state,caseData.zip].filter(Boolean).join(', ');
+        }
+        document.getElementById('save-status').textContent = 'Unsaved changes';
+        document.getElementById('save-status').className = 'save-status';
+    }
+
+    async function loadCaseHistory(d) {
+        const el = document.getElementById('copilot-history');
+        if (!d.email && !d.company) { el.innerHTML = '<div class="no-match">No email or company.</div>'; return; }
+        let query = supabaseClient.from('rma_cases').select('id,case_number,status,product_name,date_created,issue_type').neq('id', caseId).order('date_created',{ascending:false}).limit(5);
+        if (d.email) query = query.ilike('email', d.email);
+        else if (d.company) query = query.ilike('company', `%${d.company}%`);
+        const { data } = await query;
+        if (!data || data.length === 0) { el.innerHTML = '<div class="no-match">No previous cases found.</div>'; return; }
+        el.innerHTML = data.map(c => `<div class="case-history-item">
+            <a href="/admin/rma-case.html?id=${c.id}">${c.case_number}</a>
+            <span style="margin-left:6px;font-size:11px;background:#f0f0f0;padding:1px 6px;border-radius:8px;">${c.status}</span>
+            <div class="history-meta">${c.product_name||'—'} · ${c.issue_type||'—'}</div>
+            <div class="history-meta">${c.date_created?new Date(c.date_created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</div>
+        </div>`).join('');
+    }
+
+    function loadFollowUp(d) {
+        const el = document.getElementById('copilot-followup');
+        if (!d.date_created) { el.innerHTML = '<div class="no-match">No date available.</div>'; return; }
+        const daysSince = Math.floor((new Date() - new Date(d.date_created)) / (1000*60*60*24));
+        const followUpDays = parseInt(localStorage.getItem('followup_days') || '30');
+        const daysUntil = followUpDays - daysSince;
+        let html = `<div style="margin-bottom:6px;font-size:12px;">Case age: <strong>${daysSince} day${daysSince!==1?'s':''}</strong></div>`;
+        if (d.follow_up_sent) {
+            html += `<div style="color:#16a34a;font-size:12px;">✓ Follow-up sent</div>`;
+        } else if (daysUntil <= 0) {
+            html += `<div style="color:#dc2626;font-size:12px;font-weight:600;">⚠ Follow-up overdue by ${Math.abs(daysUntil)} days</div>`;
+            html += `<button class="fill-btn" style="margin-top:6px;" onclick="sendFollowUp()">Send Follow-up</button>`;
+        } else if (daysUntil <= 7) {
+            html += `<div style="color:#f59e0b;font-size:12px;font-weight:600;">⏰ Due in ${daysUntil} day${daysUntil!==1?'s':''}</div>`;
+            html += `<button class="fill-btn" style="margin-top:6px;background:#f59e0b;" onclick="sendFollowUp()">Send Now</button>`;
+        } else {
+            html += `<div style="color:#888;font-size:12px;">Follow-up due in ${daysUntil} days</div>`;
+        }
+        el.innerHTML = html;
+    }
+
+    function sendFollowUp() {
+        const saved = localStorage.getItem('email_template_followup');
+        const subject = saved ? JSON.parse(saved).subject : `Follow-up on RMA Case ${caseData.case_number}`;
+        const body = saved ? JSON.parse(saved).body : `Dear ${caseData.contact_name||'Customer'},\n\nWe wanted to follow up on your RMA case ${caseData.case_number}.\n\nCurrent Status: ${caseData.status}\nProduct: ${caseData.product_name||''}\n\nBinmaster Support`;
+        window.location.href = `mailto:${caseData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        supabaseClient.from('rma_cases').update({ follow_up_sent: true, follow_up_date: new Date().toISOString() }).eq('id', caseId);
     }
 
     // ── Email ───────────────────────────────────────────────────────
@@ -865,35 +950,36 @@
     }
 
     const EMAIL_DEFAULTS = {
-        rma:   { title: 'RMA Email',    subject: 'RMA Case {case_number} — Received',  body: 'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
-        quote: { title: 'Quote Email',  subject: 'Repair Quote — Case {case_number}',   body: 'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
-        credit:{ title: 'Credit Email', subject: 'Credit Issued — Case {case_number}',  body: 'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
-        cs:    { title: 'CS Email',     subject: 'Case Update — {case_number}',         body: 'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
+        rma:   { title:'RMA Email',    subject:'RMA Case {case_number} — Received',  body:'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
+        quote: { title:'Quote Email',  subject:'Repair Quote — Case {case_number}',   body:'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
+        credit:{ title:'Credit Email', subject:'Credit Issued — Case {case_number}',  body:'Dear {contact_name},\n\nA credit of ${credit_amount} has been issued for case {case_number}.\n\nPlease allow 5-7 business days for processing.\n\nBinmaster Support' },
+        cs:    { title:'CS Email',     subject:'Case Update — {case_number}',         body:'Dear {contact_name},\n\nThis is an update regarding your case {case_number}.\n\nCurrent Status: {status}\n\nPlease don\'t hesitate to reach out.\n\nBinmaster Support' }
     };
 
     function fillTemplate(text) {
         return text
-            .replace(/{case_number}/g, caseData.case_number || '')
-            .replace(/{contact_name}/g, caseData.contact_name || '')
-            .replace(/{company}/g, caseData.company || '')
-            .replace(/{product_name}/g, document.getElementById('field-product').value || '')
-            .replace(/{issue_type}/g, document.getElementById('field-issue-type').value || '')
-            .replace(/{issue_notes}/g, document.getElementById('field-issue-notes').value || '')
-            .replace(/{status}/g, document.getElementById('field-status').value || '')
-            .replace(/{repair_amount}/g, document.getElementById('field-repair').value || '0.00')
-            .replace(/{credit_amount}/g, document.getElementById('field-credit').value || '0.00')
-            .replace(/{credit_type}/g, document.getElementById('field-credit-type').value || '')
-            .replace(/{document_number}/g, caseData.document_number || '')
-            .replace(/{received_description}/g, document.getElementById('field-received').value || '')
-            .replace(/{evaluation_notes}/g, document.getElementById('field-evaluation').value || '')
-            .replace(/{case_notes}/g, caseNotes.map(n => `${n.date}: ${n.text}`).join('\n') || '')
-            .replace(/{fedex_tracking}/g, document.getElementById('field-fedex').value || '')
-            .replace(/{ship_date}/g, document.getElementById('field-ship-date').value || '')
-            .replace(/{replacement_sent}/g, replacementValue || '')
-            .replace(/{address}/g, caseData.address || '')
-            .replace(/{city}/g, caseData.city || '')
-            .replace(/{state}/g, caseData.state || '')
-            .replace(/{zip}/g, caseData.zip || '');
+            .replace(/{case_number}/g, caseData.case_number||'')
+            .replace(/{contact_name}/g, caseData.contact_name||'')
+            .replace(/{company}/g, caseData.company||'')
+            .replace(/{product_name}/g, document.getElementById('field-product').value||'')
+            .replace(/{issue_type}/g, document.getElementById('field-issue-type').value||'')
+            .replace(/{issue_notes}/g, document.getElementById('field-issue-notes').value||'')
+            .replace(/{status}/g, document.getElementById('field-status').value||'')
+            .replace(/{repair_amount}/g, document.getElementById('field-repair').value||'0.00')
+            .replace(/{credit_amount}/g, document.getElementById('field-credit').value||'0.00')
+            .replace(/{credit_type}/g, document.getElementById('field-credit-type').value||'')
+            .replace(/{document_number}/g, caseData.document_number||'')
+            .replace(/{received_description}/g, document.getElementById('field-received').value||'')
+            .replace(/{evaluation_notes}/g, document.getElementById('field-evaluation').value||'')
+            .replace(/{case_notes}/g, caseNotes.map(n=>`${n.date}: ${n.text}`).join('\n')||'')
+            .replace(/{fedex_tracking}/g, document.getElementById('field-fedex').value||'')
+            .replace(/{ship_date}/g, document.getElementById('field-ship-date').value||'')
+            .replace(/{fedex_label_url}/g, caseData.fedex_label_url||'')
+            .replace(/{replacement_sent}/g, replacementValue||'')
+            .replace(/{address}/g, caseData.address||'')
+            .replace(/{city}/g, caseData.city||'')
+            .replace(/{state}/g, caseData.state||'')
+            .replace(/{zip}/g, caseData.zip||'');
     }
 
     function openEmailModal(type) {
