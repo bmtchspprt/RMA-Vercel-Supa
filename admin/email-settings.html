@@ -719,6 +719,15 @@
         'received_description','evaluation_notes','case_notes','replacement_sent'
     ];
 
+    const STATUS_MAP = {
+        complete: 'Completed', completed: 'Completed',
+        submitted: 'Submitted',
+        received: 'Received',
+        evaluation: 'Evaluation',
+        credited: 'Credited',
+        replaced: 'Replaced'
+    };
+
     const EMAIL_DEFAULTS = {
         rma:   { title:'RMA Email',    subject:'RMA Case {case_number} — Received',  body:'Dear {contact_name},\n\nThank you for contacting Binmaster. We have received your RMA request and assigned case number {case_number}.\n\nProduct: {product_name}\nIssue: {issue_type}\n\nWe will be in touch shortly.\n\nBinmaster Support' },
         quote: { title:'Quote Email',  subject:'Repair Quote — Case {case_number}',   body:'Dear {contact_name},\n\nFollowing our evaluation of your {product_name}, we are pleased to provide the following repair quote:\n\nRepair Cost: ${repair_amount}\n\nPlease let us know how you would like to proceed.\n\nBinmaster Support' },
@@ -1269,31 +1278,65 @@
         document.getElementById('upload-modal').classList.add('open');
     }
 
+    function buildRow(r) {
+        const row = {};
+        DB_COLUMNS.forEach(col => {
+            const val = r[col];
+            if (col === 'repair_amount' || col === 'credit_amount') {
+                // Strip any $ signs and parse as float
+                const cleaned = String(val || '').replace(/[$,]/g, '').trim();
+                row[col] = cleaned !== '' ? parseFloat(cleaned) || null : null;
+            } else if (col === 'replacement_sent') {
+                // Convert TRUE/FALSE string or boolean to proper boolean
+                row[col] = val === true || String(val).toLowerCase() === 'true';
+            } else if (col === 'date_created') {
+                row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
+            } else {
+                row[col] = (val !== undefined && val !== null) ? String(val) : null;
+            }
+        });
+        // Normalize status capitalization
+        row.status = STATUS_MAP[String(row.status || '').toLowerCase()] || row.status || 'Submitted';
+        return row;
+    }
+
     async function confirmUpload() {
         const btn = document.getElementById('confirm-upload-btn');
-        btn.disabled = true; btn.textContent = 'Importing...';
+        btn.disabled = true;
+        btn.textContent = 'Importing...';
+
         const existing = new Set(allCases.map(c => c.case_number));
-        const newRows = pendingUploadRows.filter(r => !existing.has(r.case_number)).map(r => {
-            const row = {};
-            DB_COLUMNS.forEach(col => {
-                const val = r[col];
-             if (col === 'repair_amount' || col === 'credit_amount') row[col] = val !== '' ? parseFloat(val) || null : null;
-else if (col === 'replacement_sent') row[col] = val === true || String(val).toLowerCase() === 'true';
-else if (col === 'date_created') row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
-else row[col] = val !== undefined ? String(val) : null;
-            });
-const statusMap = { complete: 'Completed', submitted: 'Submitted', received: 'Received', evaluation: 'Evaluation', credited: 'Credited', replaced: 'Replaced' };
-row.status = statusMap[String(row.status || '').toLowerCase()] || row.status || 'Submitted';
-            return row;
-        });
-        let imported = 0, errors = 0;
-        for (let i = 0; i < newRows.length; i += 50) {
-            const { error } = await supabaseClient.from('rma_cases').insert(newRows.slice(i, i + 50));
-            if (error) errors += Math.min(50, newRows.length - i);
-            else imported += Math.min(50, newRows.length - i);
+        const newRows = pendingUploadRows
+            .filter(r => r.case_number && !existing.has(r.case_number))
+            .map(buildRow);
+
+        let imported = 0;
+        let errors = 0;
+
+        // Insert one row at a time to avoid payload size issues with long text fields
+        for (let i = 0; i < newRows.length; i++) {
+            const { error } = await supabaseClient.from('rma_cases').insert([newRows[i]]);
+            if (error) {
+                console.error(`Row ${i} (${newRows[i].case_number}) failed:`, error.message);
+                errors++;
+            } else {
+                imported++;
+            }
+            // Update button text every 10 rows so user sees progress
+            if (i % 10 === 0) {
+                btn.textContent = `Importing... (${i + 1}/${newRows.length})`;
+            }
         }
-        closeUploadModal(); btn.textContent = 'Import Cases'; btn.disabled = false;
-        setIOStatus(errors > 0 ? `Imported ${imported}, ${errors} failed.` : `Imported ${imported} cases.`, errors > 0 ? 'error' : 'success');
+
+        closeUploadModal();
+        btn.textContent = 'Import Cases';
+        btn.disabled = false;
+        setIOStatus(
+            errors > 0
+                ? `Imported ${imported}, ${errors} failed. Check console for details.`
+                : `Imported ${imported} cases successfully.`,
+            errors > 0 ? 'error' : 'success'
+        );
         await loadAllCases();
     }
 
@@ -1303,7 +1346,7 @@ row.status = statusMap[String(row.status || '').toLowerCase()] || row.status || 
     function setIOStatus(msg, type) {
         const el = document.getElementById('io-status');
         el.textContent = msg; el.className = 'io-status' + (type ? ' ' + type : '');
-        setTimeout(() => el.textContent = '', 5000);
+        setTimeout(() => el.textContent = '', 8000);
     }
 
     function flash(id, msg) {
