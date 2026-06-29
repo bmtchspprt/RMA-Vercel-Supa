@@ -1278,6 +1278,7 @@
             DB_COLUMNS.forEach(col => {
                 const val = r[col];
                 if (col === 'repair_amount' || col === 'credit_amount') row[col] = val !== '' ? parseFloat(val) || null : null;
+                    else if (col === 'replacement_sent') row[col] = val === true || String(val).toLowerCase() === 'true';
                 else if (col === 'date_created') row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
                 else row[col] = val !== undefined ? String(val) : null;
             });
