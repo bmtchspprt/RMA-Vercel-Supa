@@ -1282,7 +1282,8 @@
                 else row[col] = val !== undefined ? String(val) : null;
             });
 const statusMap = { complete: 'Completed', submitted: 'Submitted', received: 'Received', evaluation: 'Evaluation', credited: 'Credited', replaced: 'Replaced' };
-row.status = statusMap[String(row.status || '').toLowerCase()] || row.status || 'Submitted';            return row;
+row.status = statusMap[String(row.status || '').toLowerCase()] || row.status || 'Submitted';
+            return row;
         });
         let imported = 0, errors = 0;
         for (let i = 0; i < newRows.length; i += 50) {
