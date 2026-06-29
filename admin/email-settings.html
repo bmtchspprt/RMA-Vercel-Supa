@@ -1281,8 +1281,8 @@
                 else if (col === 'date_created') row[col] = val ? new Date(val).toISOString() : new Date().toISOString();
                 else row[col] = val !== undefined ? String(val) : null;
             });
-            if (!row.status) row.status = 'Submitted';
-            return row;
+const statusMap = { complete: 'Completed', submitted: 'Submitted', received: 'Received', evaluation: 'Evaluation', credited: 'Credited', replaced: 'Replaced' };
+row.status = statusMap[String(row.status || '').toLowerCase()] || row.status || 'Submitted';            return row;
         });
         let imported = 0, errors = 0;
         for (let i = 0; i < newRows.length; i += 50) {
