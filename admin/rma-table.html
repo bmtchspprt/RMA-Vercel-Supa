@@ -41,17 +41,22 @@
         .charts-toggle:hover { opacity: 0.75; }
         .toggle-arrow { display: inline-block; font-size: 11px; transition: transform 0.25s ease; }
         .toggle-arrow.open { transform: rotate(180deg); }
-        .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; overflow: hidden; max-height: 320px; transition: max-height 0.35s ease, opacity 0.3s ease, margin-bottom 0.3s ease; opacity: 1; }
-        .charts-row.collapsed { max-height: 0; opacity: 0; margin-bottom: 0; }
+
+        .charts-area { overflow: hidden; max-height: 0; opacity: 0; margin-bottom: 0; transition: max-height 0.4s ease, opacity 0.3s ease, margin-bottom 0.3s ease; }
+        .charts-area.open { max-height: 900px; opacity: 1; margin-bottom: 24px; }
+
+        .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .charts-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
         .chart-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
         .chart-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 16px; }
-        .chart-card canvas { max-height: 220px; }
+        .chart-card canvas { max-height: 200px; }
         .stats-box { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
         .stats-box h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 16px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-item { background: #f9f9f9; border-radius: 6px; padding: 12px 14px; }
         .stat-item .s-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin-bottom: 4px; }
-        .stat-item .s-value { font-size: 24px; font-weight: 700; color: #222; }
+        .stat-item .s-value { font-size: 22px; font-weight: 700; color: #222; }
         .stat-item.red .s-value { color: #800000; }
         .stat-item.blue .s-value { color: #1d4ed8; }
         .stat-item.green .s-value { color: #166534; }
@@ -124,22 +129,31 @@
         <span id="toggle-label">Show Charts</span>
     </div>
 
-    <div class="charts-row collapsed" id="charts-row">
-        <div class="stats-box">
-            <h3>Case Summary</h3>
-            <div class="stats-grid">
-                <div class="stat-item red"><div class="s-label">Total Active</div><div class="s-value" id="m-total">—</div></div>
-                <div class="stat-item blue"><div class="s-label">Submitted</div><div class="s-value" id="m-submitted">—</div></div>
-                <div class="stat-item"><div class="s-label">Received</div><div class="s-value" id="m-received">—</div></div>
-                <div class="stat-item purple"><div class="s-label">Evaluation</div><div class="s-value" id="m-evaluation">—</div></div>
-                <div class="stat-item green"><div class="s-label">Credited</div><div class="s-value" id="m-credited">—</div></div>
-                <div class="stat-item green"><div class="s-label">Replaced</div><div class="s-value" id="m-replaced">—</div></div>
-                <div class="stat-item"><div class="s-label">Total Credit $</div><div class="s-value" style="font-size:18px;" id="m-credit">—</div></div>
-                <div class="stat-item"><div class="s-label">Total Repair $</div><div class="s-value" style="font-size:18px;" id="m-repair">—</div></div>
+    <div class="charts-area" id="charts-area">
+        <!-- Row 1: Summary + Product Pie + Line -->
+        <div class="charts-row">
+            <div class="stats-box">
+                <h3>Case Summary</h3>
+                <div class="stats-grid">
+                    <div class="stat-item red"><div class="s-label">Total Active</div><div class="s-value" id="m-total">—</div></div>
+                    <div class="stat-item blue"><div class="s-label">Submitted</div><div class="s-value" id="m-submitted">—</div></div>
+                    <div class="stat-item"><div class="s-label">Received</div><div class="s-value" id="m-received">—</div></div>
+                    <div class="stat-item purple"><div class="s-label">Evaluation</div><div class="s-value" id="m-evaluation">—</div></div>
+                    <div class="stat-item green"><div class="s-label">Credited</div><div class="s-value" id="m-credited">—</div></div>
+                    <div class="stat-item green"><div class="s-label">Replaced</div><div class="s-value" id="m-replaced">—</div></div>
+                    <div class="stat-item"><div class="s-label">Total Credit $</div><div class="s-value" style="font-size:16px;" id="m-credit">—</div></div>
+                    <div class="stat-item"><div class="s-label">Total Repair $</div><div class="s-value" style="font-size:16px;" id="m-repair">—</div></div>
+                </div>
             </div>
+            <div class="chart-card"><h3>Cases by Product</h3><canvas id="pie-chart"></canvas></div>
+            <div class="chart-card"><h3>RMA Cases by Month</h3><canvas id="line-chart"></canvas></div>
         </div>
-        <div class="chart-card"><h3>Cases by Product</h3><canvas id="pie-chart"></canvas></div>
-        <div class="chart-card"><h3>RMA Cases by Month</h3><canvas id="line-chart"></canvas></div>
+        <!-- Row 2: Issue Type Pie + Credits 3mo + Repair 3mo -->
+        <div class="charts-row">
+            <div class="chart-card"><h3>Cases by Issue Type</h3><canvas id="issue-pie-chart"></canvas></div>
+            <div class="chart-card"><h3>Credits — Last 3 Months</h3><canvas id="credit-bar-chart"></canvas></div>
+            <div class="chart-card"><h3>Repair $ — Last 3 Months</h3><canvas id="repair-bar-chart"></canvas></div>
+        </div>
     </div>
 
     <div class="filters">
@@ -159,7 +173,7 @@
     </div>
 
     <div class="table-controls">
-        <div class="page-title">Active Cases</div>
+        <div class="page-title">Active Cases <span style="font-size:13px;font-weight:400;color:#888;">— last 3 months</span></div>
         <div class="controls-right">
             <div class="count" id="active-count">—</div>
             <div class="view-toggle">
@@ -189,7 +203,7 @@
         </table>
     </div>
 
-    <div class="section-label completed">Completed Cases</div>
+    <div class="section-label completed">Completed Cases <span style="font-size:11px;font-weight:400;color:#888;">— last 3 months</span></div>
     <div style="margin-bottom:6px;">
         <span class="count" id="completed-count" style="font-size:13px;color:#666;"></span>
     </div>
@@ -214,6 +228,13 @@
     let chartsBuilt = false;
     let currentView = 'default';
     let resizing = null;
+
+    // Only legitimate products for the pie chart
+    const VALID_PRODUCTS = ['NCR','CNCR','SmartBob','Rotary','Probe','Vibrating Rod','Senix','Gateway','C100','DPM','Loadcell','Other'];
+
+    // 3-month cutoff
+    const THREE_MONTHS_AGO = new Date();
+    THREE_MONTHS_AGO.setMonth(THREE_MONTHS_AGO.getMonth() - 3);
 
     const ALL_COLUMNS = [
         { key: 'case_number', label: 'Case #' },
@@ -242,22 +263,29 @@
 
     const DEFAULT_COLUMNS = [
         'case_number','date_created','contact_name','company',
-        'product_name','issue_type','status','document_number','attached_documents'
+        'product_name','issue_type','document_number','attached_documents','status'
     ];
     let customColumns = [...DEFAULT_COLUMNS];
-    const COLORS = ['#800000','#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50'];
+    const COLORS = ['#800000','#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#16a085','#2980b9','#8e44ad','#2c3e50','#7f8c8d','#d35400'];
 
     function toggleCharts() {
         chartsOpen = !chartsOpen;
-        document.getElementById('charts-row').classList.toggle('collapsed', !chartsOpen);
+        document.getElementById('charts-area').classList.toggle('open', chartsOpen);
         document.getElementById('toggle-arrow').classList.toggle('open', chartsOpen);
         document.getElementById('toggle-label').textContent = chartsOpen ? 'Hide Charts' : 'Show Charts';
-        // Build charts on first open
         if (chartsOpen && !chartsBuilt && allCases.length > 0) {
-            buildPieChart(allCases.filter(c => c.status !== 'Completed'));
-            buildLineChart(allCases);
+            buildAllCharts();
             chartsBuilt = true;
         }
+    }
+
+    function buildAllCharts() {
+        const active = allCases.filter(c => c.status !== 'Completed');
+        buildPieChart(active);
+        buildIssuePieChart(active);
+        buildLineChart(allCases);
+        buildCreditBarChart();
+        buildRepairBarChart();
     }
 
     function switchView(view) {
@@ -332,7 +360,8 @@
             return;
         }
         allCases = data;
-        computeMetrics(data.filter(c => c.status !== 'Completed'));
+        const active = allCases.filter(c => c.status !== 'Completed');
+        computeMetrics(active);
         buildHeaders();
         filterTables();
     }
@@ -352,13 +381,36 @@
     }
 
     function buildPieChart(cases) {
+        // Only count legitimate products, group everything else into Other
         const counts = {};
-        cases.forEach(c => { if (c.product_name) counts[c.product_name] = (counts[c.product_name] || 0) + 1; });
-        const labels = Object.keys(counts);
+        cases.forEach(c => {
+            const p = VALID_PRODUCTS.includes(c.product_name) ? c.product_name : (c.product_name ? 'Other' : null);
+            if (p) counts[p] = (counts[p] || 0) + 1;
+        });
+        // Sort by count desc
+        const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+        const labels = sorted.map(e => e[0]);
+        const values = sorted.map(e => e[1]);
         new Chart(document.getElementById('pie-chart'), {
             type: 'pie',
-            data: { labels, datasets: [{ data: Object.values(counts), backgroundColor: COLORS.slice(0, labels.length), borderWidth: 1 }] },
-            options: { plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } } }
+            data: { labels, datasets: [{ data: values, backgroundColor: COLORS.slice(0, labels.length), borderWidth: 1 }] },
+            options: { plugins: { legend: { position: 'right', labels: { font: { size: 10 }, boxWidth: 12 } } } }
+        });
+    }
+
+    function buildIssuePieChart(cases) {
+        const counts = {};
+        cases.forEach(c => {
+            if (c.issue_type) counts[c.issue_type] = (counts[c.issue_type] || 0) + 1;
+        });
+        const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+        const labels = sorted.map(e => e[0]);
+        const values = sorted.map(e => e[1]);
+        const colors = ['#800000','#2980b9','#27ae60','#e67e22','#8e44ad','#e74c3c','#16a085','#f39c12','#2c3e50','#d35400','#7f8c8d','#c0392b'];
+        new Chart(document.getElementById('issue-pie-chart'), {
+            type: 'pie',
+            data: { labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 1 }] },
+            options: { plugins: { legend: { position: 'right', labels: { font: { size: 10 }, boxWidth: 12 } } } }
         });
     }
 
@@ -367,7 +419,7 @@
         cases.forEach(c => {
             if (!c.date_created) return;
             const d = new Date(c.date_created);
-            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'00')}`;
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
             monthly[key] = (monthly[key] || 0) + 1;
         });
         const sorted = Object.keys(monthly).sort();
@@ -378,6 +430,74 @@
                 datasets: [{ data: sorted.map(k => monthly[k]), borderColor: '#800000', backgroundColor: 'rgba(128,0,0,0.08)', borderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 }]
             },
             options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } }
+        });
+    }
+
+    function getLast3MonthsLabels() {
+        const labels = [];
+        for (let i = 2; i >= 0; i--) {
+            const d = new Date();
+            d.setMonth(d.getMonth() - i);
+            labels.push(d.toLocaleString('default', { month: 'short', year: '2-digit' }));
+        }
+        return labels;
+    }
+
+    function getLast3MonthsKey(offset) {
+        const d = new Date();
+        d.setMonth(d.getMonth() - offset);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    function buildCreditBarChart() {
+        const keys = [getLast3MonthsKey(2), getLast3MonthsKey(1), getLast3MonthsKey(0)];
+        const monthly = {};
+        keys.forEach(k => monthly[k] = 0);
+        allCases.forEach(c => {
+            if (!c.date_created || !c.credit_amount) return;
+            const d = new Date(c.date_created);
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+            if (monthly[key] !== undefined) monthly[key] += parseFloat(c.credit_amount) || 0;
+        });
+        new Chart(document.getElementById('credit-bar-chart'), {
+            type: 'bar',
+            data: {
+                labels: getLast3MonthsLabels(),
+                datasets: [{ label: 'Credits ($)', data: keys.map(k => parseFloat(monthly[k].toFixed(2))), backgroundColor: '#27ae60', borderRadius: 4 }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { font: { size: 11 }, callback: v => '$' + v.toLocaleString() } },
+                    x: { ticks: { font: { size: 11 } } }
+                }
+            }
+        });
+    }
+
+    function buildRepairBarChart() {
+        const keys = [getLast3MonthsKey(2), getLast3MonthsKey(1), getLast3MonthsKey(0)];
+        const monthly = {};
+        keys.forEach(k => monthly[k] = 0);
+        allCases.forEach(c => {
+            if (!c.date_created || !c.repair_amount) return;
+            const d = new Date(c.date_created);
+            const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+            if (monthly[key] !== undefined) monthly[key] += parseFloat(c.repair_amount) || 0;
+        });
+        new Chart(document.getElementById('repair-bar-chart'), {
+            type: 'bar',
+            data: {
+                labels: getLast3MonthsLabels(),
+                datasets: [{ label: 'Repair ($)', data: keys.map(k => parseFloat(monthly[k].toFixed(2))), backgroundColor: '#800000', borderRadius: 4 }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { font: { size: 11 }, callback: v => '$' + v.toLocaleString() } },
+                    x: { ticks: { font: { size: 11 } } }
+                }
+            }
         });
     }
 
@@ -405,7 +525,10 @@
         const search = document.getElementById('search').value.toLowerCase();
         const status = document.getElementById('filter-status').value;
         const product = document.getElementById('filter-product').value;
+        // Filter to last 3 months
         return cases.filter(c => {
+            if (!c.date_created) return false;
+            if (new Date(c.date_created) < THREE_MONTHS_AGO) return false;
             const matchSearch = !search ||
                 (c.contact_name||'').toLowerCase().includes(search) ||
                 (c.email||'').toLowerCase().includes(search) ||
